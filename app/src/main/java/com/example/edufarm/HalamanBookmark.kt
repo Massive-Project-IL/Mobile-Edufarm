@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -17,12 +18,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,12 +41,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edufarm.ui.theme.EdufarmTheme
+import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanBookmark : ComponentActivity() {
+
+class HalamanBookmarkActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,6 +62,7 @@ class HalamanBookmark : ComponentActivity() {
         }
     }
 }
+
 
 @Composable
 fun BookmarkScreen(modifier: Modifier) {
@@ -77,50 +85,88 @@ fun BookmarkScreen(modifier: Modifier) {
 @Composable
 fun TopBar() {
     Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        IconButton(
+            onClick = { /* Aksi kembali */ },
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.back),
+                contentDescription = "Back",
+                modifier = Modifier.size(21.dp)
+            )
+        }
+        Text(
+            text = "Simpan Pelatihan",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = poppinsFontFamily
+        )
+    }
+}
+
+
+@Composable
+fun SearchBar() {
+    var searchQuery by remember { mutableStateOf(TextFieldValue("Cari Pelatihan")) }
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .height(50.dp)
+            .background(color = colorResource(R.color.white), RoundedCornerShape(10.dp))
+            .border(
+                width = 2.dp,
+                color = colorResource(R.color.green), // Warna hijau untuk border
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.back), // Ganti dengan resource ikon back yang sesuai
-                contentDescription = "Back",
-                modifier = Modifier
-                    .size(24.dp) // Sesuaikan ukuran agar sama dengan ukuran teks
-                    .padding(end = 8.dp)
+            // Ikon Pencarian
+            Icon(
+                painter = painterResource(id = R.drawable.search), // Ganti dengan ikon pencarian Anda
+                contentDescription = "Search Icon",
+                tint = Color.Gray,
+                modifier = Modifier.size(width = 25.5.dp, height = 24.dp)
             )
-            Text(
-                text = "Simpan Pelatihan",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Text Field
+            BasicTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.gray_text)
+                ),
+                decorationBox = { innerTextField ->
+                    if (searchQuery.text.isEmpty()) {
+                        Text(
+                            text = "Cari Pelatihan",
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontSize = 16.sp,
+                                color = colorResource(R.color.gray_text),
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                    }
+                    innerTextField() // Menampilkan isi dari BasicTextField
+                }
             )
         }
     }
 }
 
-@Composable
-fun SearchBar() {
-    var searchQuery by remember { mutableStateOf("") }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .background(Color.White, RoundedCornerShape(8.dp))
-            .padding(horizontal = 16.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        BasicTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-    }
-}
 
 @Composable
 fun CategoryChips() {
@@ -134,11 +180,21 @@ fun CategoryChips() {
             Box(
                 modifier = Modifier
                     .padding(end = 8.dp)
-                    .background(Color(0xFFE0E0E0), RoundedCornerShape(20.dp))
+                    .background(color = colorResource(R.color.white), RoundedCornerShape(6.dp))
                     .clickable { /* Aksi pilih kategori */ }
+                    .border(
+                        width = 2.dp,
+                        color = colorResource(R.color.green), // Warna hijau untuk border
+                        shape = RoundedCornerShape(6.dp)
+                    )
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text(text = category, color = Color.Black)
+                Text(
+                    text = category,
+                    color = Color.Black,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = poppinsFontFamily
+                )
             }
         }
     }
@@ -166,7 +222,8 @@ fun BookmarkCard() {
             Text(
                 text = "Pelatihan Menanam Kacang Tanah",
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = poppinsFontFamily
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
