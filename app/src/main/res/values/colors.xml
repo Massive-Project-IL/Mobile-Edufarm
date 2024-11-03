@@ -8,7 +8,10 @@
     <color name="background">#F4F4EE</color>
     <color name="gray_bookmark">#999999</color>
     <color name="gray_live">#DADADA</color>
+    <color name="card_live">#F5F1F1</color>
     <color name="gray_text">#9B9B9B</color>
     <color name="green_icon">#51D195</color>
     <color name="green_text">#5AA180</color>
+    <color name="green_titel">#39966A</color>
+    <color name="kategori_white">#F4F4F4</color>
 </resources>
