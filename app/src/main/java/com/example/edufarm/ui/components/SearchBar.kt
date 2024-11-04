@@ -41,7 +41,7 @@ fun SearchBar(placeholder: String) {
                 shape = RoundedCornerShape(10.dp)
             )
             .border(
-                width = 2.dp,
+                width = 1.dp,
                 color = colorResource(R.color.green),
                 shape = RoundedCornerShape(10.dp)
             )
