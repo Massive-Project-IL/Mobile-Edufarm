@@ -51,7 +51,12 @@ class HalamanSubMateri : ComponentActivity() {
         setContent {
             EdufarmTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SubMateriScreen(modifier = Modifier.padding(innerPadding))
+                    SubMateriScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onNavigateToIsiMateri = { /* Navigasi ke halaman isi materi */ },
+                        onNavigateToMateriDokumen = { /* Navigasi ke halaman dokumen */ },
+                        onNavigateToMateriVideo = { /* Navigasi ke halaman video */ }
+                    )
                 }
             }
         }
@@ -59,18 +64,29 @@ class HalamanSubMateri : ComponentActivity() {
 }
 
 // Definisikan model data Materi
-data class Materi(val title: String, val image: Int)
+data class Materi(
+    val title: String,
+    val image: Int,
+    val buttonText: String,
+    val buttonAction: () -> Unit // Aksi yang akan dijalankan saat tombol diklik
+)
 
 // Lanjutkan ke dalam composable SubMateriScreen
 @Composable
-fun SubMateriScreen(modifier: Modifier = Modifier) {
+fun SubMateriScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToIsiMateri: () -> Unit = {},
+    onNavigateToMateriDokumen: () -> Unit = {},
+    onNavigateToMateriVideo: () -> Unit = {}
+) {
     // Data statis untuk listOfMateri
     val listOfMateri = listOf(
-        Materi("Pemilihan Benih Kacang Tanah", R.drawable.image_1), // Langsung gunakan ID tanpa .toString()
-        Materi("Persiapan Tanah Kacang Tanah", R.drawable.image_1),
-        Materi("Pengendalian Hama Kacang Tanah", R.drawable.image_1),
-        Materi("Panen Tanaman Kacang Tanah", R.drawable.image_1),
-        Materi("Penjualan Tanaman Kacang Tanah", R.drawable.image_1)
+        Materi("Pemilihan Benih Kacang Tanah", R.drawable.image_1, "Ayo, Belajar", onNavigateToIsiMateri),
+        Materi("Persiapan Tanah Kacang Tanah", R.drawable.image_2, "Ayo, Belajar", onNavigateToIsiMateri),
+        Materi("Pengendalian Hama Kacang Tanah", R.drawable.image_3, "Ayo, Belajar", onNavigateToIsiMateri),
+        Materi("Panen Tanaman Kacang Tanah", R.drawable.image_4, "Ayo, Belajar", onNavigateToIsiMateri),
+        Materi("Video Tutorial Penanaman Kacang Tanah", R.drawable.image_5, "Tonton Video", onNavigateToMateriVideo),
+        Materi("Dokumen Tentang Kacang Tanah", R.drawable.image_6, "Download", onNavigateToMateriDokumen)
     )
 
     Column(
@@ -107,66 +123,64 @@ fun SubMateriScreen(modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
 fun MateriCard(materi: Materi) {
     Card(
-        shape = RoundedCornerShape(16.dp), // Ganti ini sesuai radius di Figma jika perlu berbeda
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
-            .fillMaxWidth() // Lebar sesuai dengan layout di Figma
-            .height(151 .dp) // Tinggi sesuai layout di Figma
+            .fillMaxWidth()
+            .height(151.dp)
     ) {
         Row(
             modifier = Modifier
                 .padding(start = 18.dp, top = 24.dp, bottom = 24.dp, end = 18.dp)
                 .fillMaxWidth()
                 .height(104.dp),
-            verticalAlignment = Alignment.Top // Memulai elemen di bagian atas
+            verticalAlignment = Alignment.Top
         ) {
-            // Menggunakan gambar dengan rounded corner yang sama dengan desain
             Image(
                 painter = painterResource(id = materi.image),
                 contentDescription = "Image for ${materi.title}",
-                contentScale = ContentScale.Crop, // Mengatur gambar agar memenuhi area yang dialokasikan
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(width = 120.dp, height = 104.dp)
-                    .clip(RoundedCornerShape(14.dp)) // Corner radius untuk gambar sesuai desain Figma
+                    .clip(RoundedCornerShape(14.dp))
             )
             Spacer(modifier = Modifier.width(14.dp))
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween // Menyebar elemen di column
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Teks judul di bagian atas, align kiri
                 Text(
                     text = materi.title,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFontFamily,
-                    fontSize = 13.sp,
                     color = Color.Black,
-                    modifier = Modifier.align(Alignment.Start)
+                    modifier = Modifier
+                        .align(Alignment.Start)
+
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Tombol di bagian bawah
                 Button(
-                    onClick = { /* Handle click action */ },
+                    onClick = materi.buttonAction,
                     shape = RoundedCornerShape(6.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.green)// Warna hijau sesuai desain Anda
+                        containerColor = colorResource(R.color.green)
                     ),
-                    contentPadding = PaddingValues(horizontal = 1.dp, vertical = 0.dp), // Mengurangi padding default button
+                    contentPadding = PaddingValues(horizontal = 3.dp, vertical = 0.dp),
                     modifier = Modifier
                         .width(78.dp)
                         .height(22.dp)
                 ) {
                     Text(
-                        text = "Ayo, Belajar",
+                        text = materi.buttonText,
                         fontWeight = FontWeight.Medium,
                         fontFamily = poppinsFontFamily,
                         color = Color.White,
@@ -178,14 +192,15 @@ fun MateriCard(materi: Materi) {
     }
 }
 
-
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewSubMateriScreen() {
     EdufarmTheme {
-        SubMateriScreen(modifier = Modifier)
+        SubMateriScreen(
+            modifier = Modifier,
+            onNavigateToIsiMateri = {},
+            onNavigateToMateriDokumen = {},
+            onNavigateToMateriVideo = {}
+        )
     }
 }
