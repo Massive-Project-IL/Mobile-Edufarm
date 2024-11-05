@@ -51,6 +51,8 @@ dependencies {
     implementation(libs.coil.compose)
     // Navigation Compose
     implementation(libs.navigation.compose)
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
