@@ -157,7 +157,8 @@ fun MateriCard(materi: Materi) {
             ) {
                 Text(
                     text = materi.title,
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFontFamily,
                     color = Color.Black,
