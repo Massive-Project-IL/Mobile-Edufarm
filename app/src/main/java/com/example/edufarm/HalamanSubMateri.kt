@@ -6,9 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
@@ -28,13 +32,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.edufarm.ui.components.SearchBar
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
+import com.example.edufarm.ui.theme.poppinsFontFamily
 
 class HalamanSubMateri : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,24 +59,25 @@ class HalamanSubMateri : ComponentActivity() {
 }
 
 // Definisikan model data Materi
-data class Materi(val title: String, val image: String)
+data class Materi(val title: String, val image: Int)
 
 // Lanjutkan ke dalam composable SubMateriScreen
 @Composable
 fun SubMateriScreen(modifier: Modifier = Modifier) {
     // Data statis untuk listOfMateri
     val listOfMateri = listOf(
-        Materi("Pemilihan Benih Kacang Tanah", "https://example.com/image1.jpg"),
-        Materi("Persiapan Tanah Kacang Tanah", "https://example.com/image2.jpg"),
-        Materi("Pengendalian Hama Kacang Tanah", "https://example.com/image3.jpg"),
-        Materi("Panen Tanaman Kacang Tanah", "https://example.com/image4.jpg")
+        Materi("Pemilihan Benih Kacang Tanah", R.drawable.image_1), // Langsung gunakan ID tanpa .toString()
+        Materi("Persiapan Tanah Kacang Tanah", R.drawable.image_1),
+        Materi("Pengendalian Hama Kacang Tanah", R.drawable.image_1),
+        Materi("Panen Tanaman Kacang Tanah", R.drawable.image_1),
+        Materi("Penjualan Tanaman Kacang Tanah", R.drawable.image_1)
     )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp)
+            .background(color = colorResource(R.color.background))
+            .padding(start = 35.dp, end = 35.dp, top = 5.dp)
     ) {
         // Top bar
         TopBar(title = "Materi")
@@ -80,14 +89,19 @@ fun SubMateriScreen(modifier: Modifier = Modifier) {
 
         Text(
             text = "Ayo Kita Mulai Belajar",
-            modifier = Modifier.padding(bottom = 8.dp)
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = poppinsFontFamily,
+            color = Color.Black,
+            lineHeight = 23.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
         // List of cards for each materi
         LazyColumn {
             items(listOfMateri) { materi ->
                 MateriCard(materi = materi)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -97,47 +111,75 @@ fun SubMateriScreen(modifier: Modifier = Modifier) {
 @Composable
 fun MateriCard(materi: Materi) {
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(16.dp), // Ganti ini sesuai radius di Figma jika perlu berbeda
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth() // Lebar sesuai dengan layout di Figma
+            .height(151 .dp) // Tinggi sesuai layout di Figma
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically // Memusatkan elemen secara vertikal
+                .padding(start = 18.dp, top = 24.dp, bottom = 24.dp, end = 18.dp)
+                .fillMaxWidth()
+                .height(104.dp),
+            verticalAlignment = Alignment.Top // Memulai elemen di bagian atas
         ) {
+            // Menggunakan gambar dengan rounded corner yang sama dengan desain
             Image(
-                painter = painterResource(id = R.drawable.petani), // Ganti dengan gambar lokal
-                contentDescription = null,
+                painter = painterResource(id = materi.image),
+                contentDescription = "Image for ${materi.title}",
+                contentScale = ContentScale.Crop, // Mengatur gambar agar memenuhi area yang dialokasikan
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(width = 120.dp, height = 104.dp)
+                    .clip(RoundedCornerShape(14.dp)) // Corner radius untuk gambar sesuai desain Figma
             )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
+            Spacer(modifier = Modifier.width(14.dp))
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween // Menyebar elemen di column
             ) {
+                // Teks judul di bagian atas, align kiri
                 Text(
                     text = materi.title,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = poppinsFontFamily,
+                    fontSize = 13.sp,
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.Start)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Tombol di bagian bawah
                 Button(
                     onClick = { /* Handle click action */ },
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.align(Alignment.End)
+                    shape = RoundedCornerShape(6.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.green)// Warna hijau sesuai desain Anda
+                    ),
+                    contentPadding = PaddingValues(horizontal = 1.dp, vertical = 0.dp), // Mengurangi padding default button
+                    modifier = Modifier
+                        .width(78.dp)
+                        .height(22.dp)
                 ) {
-                    Text(text = "Ayo, Belajar")
+                    Text(
+                        text = "Ayo, Belajar",
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = poppinsFontFamily,
+                        color = Color.White,
+                        fontSize = 10.sp
+                    )
                 }
             }
         }
     }
 }
+
+
+
 
 
 @Preview(showBackground = true)
