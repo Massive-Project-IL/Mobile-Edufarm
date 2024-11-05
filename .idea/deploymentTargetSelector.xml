@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
+<<<<<<< HEAD
+      <SelectionState runConfigName="HalamanBerandaPreview">
+=======
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -18,6 +21,7 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="PreviewMateriDokumenScreen">
+>>>>>>> 2aeb56c5346c141c3de8f809739af4aa6dbfe359
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

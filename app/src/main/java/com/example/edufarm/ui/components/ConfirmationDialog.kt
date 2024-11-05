@@ -42,7 +42,7 @@ fun ConfirmationDialog(
     AlertDialog(
         onDismissRequest = onDismissRequest,
         shape = RoundedCornerShape(16.dp),
-        containerColor = colorResource(R.color.background_konfirmasi),
+        containerColor = colorResource(R.color.background_confirm),
         properties = DialogProperties(
             dismissOnClickOutside = false // Mencegah dialog ditutup dengan klik di luar
         ),
