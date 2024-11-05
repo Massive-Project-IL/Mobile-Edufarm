@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -387,16 +386,7 @@ fun CardPelatihan() {
                             .padding(horizontal = 9.dp, vertical = 8.dp)
                             .clip(RoundedCornerShape(16.dp))// Agar gambar mengisi Box secara penuh
                     )
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.ic_bookmark), // Ganti dengan ID ikon bookmark Anda
-//                        contentDescription = "Bookmark",
-//                        tint = Color.White,
-//                        modifier = Modifier
-//                            .align(Alignment.TopEnd) // Menempatkan ikon di sudut kanan atas
-//                            .padding(8.dp) // Memberikan padding agar tidak terlalu mepet dengan tepi
-//                            .size(24.dp) // Mengatur ukuran ikon bookmark
-//                    )
-//                }
+//
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd) // Menempatkan di sudut kanan atas
@@ -465,7 +455,7 @@ fun CardPelatihan() {
 fun BottomNavigationBar() {
     NavigationBar(
         modifier = Modifier
-            .padding(top = 0.dp)
+            .height(61.dp)
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)), // Lengkungan sudut atas kiri dan kanan
         containerColor = colorResource(id = R.color.white) // Warna latar belakang navigasi
     ) {
@@ -491,7 +481,7 @@ fun BottomNavigationBar() {
                         fontFamily = poppinsFontFamily
                     )
                 },
-                selected = true, // Beri true untuk menandakan ini halaman aktif
+                selected = false, // Beri true untuk menandakan ini halaman aktif
                 onClick = { /* Navigasi ke halaman Beranda */ }
             )
 
