@@ -1,12 +1,16 @@
 package com.example.edufarm
-import androidx.compose.ui.tooling.preview.Preview
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,9 +20,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edufarm.ui.theme.EdufarmTheme
+import com.example.edufarm.ui.theme.poppinsFontFamily
 
 class HalamanAwal : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +61,7 @@ fun EduFarmScreen(modifier: Modifier = Modifier) {
             Text(
                 text = "Edu",
                 fontWeight = FontWeight.Bold,
+                fontFamily = poppinsFontFamily  ,
                 fontSize = 30.sp,
                 color = colorResource(id = R.color.orange_text),
                 textAlign = TextAlign.Center
@@ -71,7 +78,8 @@ fun EduFarmScreen(modifier: Modifier = Modifier) {
         }
         Text(
             text = "Sahabat Petani Modern",
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Medium,
+            fontFamily = poppinsFontFamily,
             fontSize = 14.sp,
             color = colorResource(id = R.color.black),
             textAlign = TextAlign.Center

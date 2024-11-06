@@ -56,7 +56,7 @@ fun BookmarkScreen(modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(R.color.background))
-            .padding(16.dp)
+            .padding(start = 35.dp, end = 35.dp, top = 5.dp)
     ) {
         TopBar(title = "Simpan Pelatihan")
         Spacer(modifier = Modifier.height(16.dp))
@@ -92,7 +92,7 @@ fun BookmarkScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun CategoryChips() {
-    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum")
+    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai")
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -108,7 +108,7 @@ fun CategoryChips() {
                     )
                     .clickable { /* Aksi pilih kategori */ }
                     .border(
-                        width = 2.dp,
+                        width = 1.dp,
                         color = colorResource(R.color.green),
                         shape = RoundedCornerShape(6.dp)
                     )

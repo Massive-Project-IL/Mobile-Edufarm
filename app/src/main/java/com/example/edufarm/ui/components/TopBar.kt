@@ -19,10 +19,10 @@ import com.example.edufarm.R
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
 @Composable
-fun TopBar(title: String) {
+fun TopBar(title: String, modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier // Gunakan modifier yang diteruskan dari luar
             .fillMaxWidth()
     ) {
         IconButton(
@@ -42,9 +42,13 @@ fun TopBar(title: String) {
         Text(
             text = title,
             fontSize = 18.sp,
+            lineHeight = 20.sp,
+            letterSpacing = (-0.24).sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = poppinsFontFamily
         )
     }
 }
+
+
 

@@ -4,11 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -97,7 +99,8 @@ fun CardPelatihan(
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = description,
-                    fontSize = 12.sp,
+                    fontSize = 10.sp,
+                    lineHeight = 14.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = poppinsFontFamily, // Menggunakan font Poppins
                     color = colorResource(R.color.gray_bookmark)
@@ -109,19 +112,24 @@ fun CardPelatihan(
             Button(
                 onClick = onButtonClick,
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
-                shape = RoundedCornerShape(6.dp), // Menyesuaikan sudut sesuai desain
+                shape = RoundedCornerShape(6.dp), // Sudut melengkung sesuai desain
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp), // Padding internal yang lebih sesuai
                 modifier = Modifier
-                    .height(40.dp) // Menyesuaikan tinggi tombol
+                    .width(150.dp) // Lebar button yang sesuai
+                    .height(25.dp) // Tinggi button sesuai
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
                     text = "Lihat Selengkapnya",
                     color = Color.White,
-                    fontSize = 14.sp, // Menyesuaikan ukuran teks
-                    fontWeight = FontWeight.Medium, // Menyesuaikan ketebalan teks
-                    fontFamily = poppinsFontFamily // Menggunakan font Poppins
+                    fontSize = 10.sp, // Ukuran teks disesuaikan agar sesuai dengan button
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = poppinsFontFamily,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
             }
+
 
             Spacer(modifier = Modifier.height(16.dp))
         }
