@@ -174,7 +174,7 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
                 Text(
                     text = hai,
                     fontSize = 18.sp,
-                    color = colorResource(id = R.color.kategori_white),
+                    color = colorResource(id = R.color.background),
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(3.dp)
@@ -183,10 +183,18 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
                 Text(
                     text = title,
                     fontSize = 18.sp,
-                    color = colorResource(id = R.color.kategori_white),
+                    color = colorResource(id = R.color.background),
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(3.dp)
+                )
+                Icon(
+                    painter = painterResource(id =R.drawable.bookmark_putih),
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.white),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .offset(x = 160.dp)
                 )
             }
 
@@ -196,9 +204,10 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
                 fontSize = 13.sp,
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Medium,
-                color = colorResource(id = R.color.kategori_white),
+                color = colorResource(id = R.color.background),
                 modifier = Modifier.padding(3.dp)
             )
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -259,12 +268,12 @@ fun CardLive() {
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.green_titel)
+                    color = colorResource(id = R.color.green_title)
                 )
                 Icon(
                     imageVector = Icons.Default.Notifications,
                     contentDescription = null,
-                    tint = colorResource(id = R.color.green_titel),
+                    tint = colorResource(id = R.color.green_title),
                     modifier = Modifier.size(31.dp)
 
                 )
@@ -286,7 +295,7 @@ fun CardLive() {
                     fontSize = 12.sp, // Ukuran font 12 sp
                     fontWeight = FontWeight.Medium, // Font weight medium
                     fontFamily = poppinsFontFamily, // Font Poppins
-                    color = colorResource(id = R.color.green_titel)
+                    color = colorResource(id = R.color.green_title)
                 )
             }
         }
@@ -303,7 +312,7 @@ fun CardLive() {
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_titel),
+                    color = colorResource(id = R.color.green_title),
                     modifier = Modifier.padding(bottom = 3.dp) // Jarak antara Text atas dan bawah
                 )
                 Text(
@@ -311,7 +320,7 @@ fun CardLive() {
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_titel)
+                    color = colorResource(id = R.color.green_title)
                 )
             }
             Column(
@@ -322,7 +331,7 @@ fun CardLive() {
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_titel),
+                    color = colorResource(id = R.color.green_title),
                     modifier = Modifier.padding(bottom = 3.dp) // Jarak antara Text atas dan bawah
                 )
                 Text(
@@ -330,7 +339,7 @@ fun CardLive() {
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_titel)
+                    color = colorResource(id = R.color.green_title)
                 )
             }
                 Button(
