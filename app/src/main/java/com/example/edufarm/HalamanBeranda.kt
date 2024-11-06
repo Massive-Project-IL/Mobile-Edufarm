@@ -565,16 +565,27 @@ fun HalamanBerandaPreview() {
         Scaffold {
             ContentScreen(
                 modifier = Modifier
+                    .background(color = colorResource(id = R.color.background))
                     .fillMaxSize()
                     .padding(it)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = colorResource(id = R.color.background))
+                    .padding(it)
                     .padding(16.dp)
+            )
+
+            ContentScreen(
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier) {
+fun ContentScreen(modifier: Modifier) {
     Column {
         InfoCard(
             hai = "Hai,",
