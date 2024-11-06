@@ -2,7 +2,11 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
+<<<<<<< HEAD
       <SelectionState runConfigName="HalamanBerandaPreview">
+=======
+      <SelectionState runConfigName="JadwalLiveScreenPreview">
+>>>>>>> b6a67fefbe2ea4a22448d2d228a685a6da997b1d
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2024-11-06T08:24:24.215448900Z">
           <Target type="DEFAULT_BOOT">
