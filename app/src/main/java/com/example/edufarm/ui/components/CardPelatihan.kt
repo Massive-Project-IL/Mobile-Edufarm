@@ -100,6 +100,7 @@ fun CardPelatihan(
                 Text(
                     text = description,
                     fontSize = 10.sp,
+                    lineHeight = 14.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = poppinsFontFamily, // Menggunakan font Poppins
                     color = colorResource(R.color.gray_bookmark)

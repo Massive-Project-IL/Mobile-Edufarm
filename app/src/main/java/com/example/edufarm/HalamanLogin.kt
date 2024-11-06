@@ -7,10 +7,26 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,14 +34,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.edufarm.ui.theme.EdufarmTheme
+import com.example.edufarm.ui.theme.poppinsFontFamily
 
 class HalamanLogin : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +94,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         text = "Edu",
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = poppinsFontFamily,
                         color = colorResource(id = R.color.orange_text),
                         modifier = Modifier
                                 .padding(bottom = 43.dp)
@@ -87,6 +103,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         text = "Farm",
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
+                        fontFamily = poppinsFontFamily,
                         color = colorResource(id = R.color.green_logo),
                         modifier = Modifier
                             .padding(bottom = 43.dp)
@@ -109,6 +126,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                                     "Masukan Email",
                                     color = Color.Gray,
                                     fontSize = 15.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = poppinsFontFamily,
                                     modifier = Modifier.align(Alignment.CenterStart)
                                 )
                             }
@@ -143,6 +162,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                                         "Masukan Password",
                                         color = Color.Gray,
                                         fontSize = 15.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontFamily = poppinsFontFamily,
                                         modifier = Modifier
                                             .weight(1f)
                                     )
@@ -171,7 +192,12 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .height(40.dp)
                 ) {
-                    Text(text = "Masuk", color = Color.White, fontSize = 15.sp)
+                    Text(
+                        text = "Masuk",
+                        color = Color.White,
+                        fontSize = 15.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.SemiBold)
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -181,9 +207,19 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Belum Memiliki Akun ?", fontSize = 14.sp, color = Color.Black)
+                    Text(
+                        text = "Belum Memiliki Akun ?",
+                        fontSize = 14.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Daftar disini", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = colorResource(id = R.color.green_logo))
+                    Text(
+                        text = "Daftar disini",
+                        fontSize = 14.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.green_logo))
                 }
 
                 Spacer(modifier = Modifier.height(26.dp))
@@ -200,6 +236,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         text = " atau masuk dengan ",
                         modifier = Modifier.padding(horizontal = 8.dp),
                         fontSize = 14.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Medium,
                         color = Color.Gray
                     )
                     Box(modifier = Modifier

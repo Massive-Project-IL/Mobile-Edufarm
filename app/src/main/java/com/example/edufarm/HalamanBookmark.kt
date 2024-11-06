@@ -92,7 +92,7 @@ fun BookmarkScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun CategoryChips() {
-    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum")
+    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai")
     Row(
         modifier = Modifier
             .fillMaxWidth()
