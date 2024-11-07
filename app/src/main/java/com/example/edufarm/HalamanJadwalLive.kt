@@ -1,8 +1,5 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,22 +32,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 
-class HalamanJadwalLive : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            EdufarmTheme {
-                    JadwalLiveScreen()
-                }
-            }
-        }
-    }
 
 @Composable
-fun JadwalLiveScreen(){
+fun JadwalLiveScreen(navController: NavController) {
     var selectedDay by remember { mutableStateOf("Senin") }
     val daysOfWeek = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
 
@@ -60,46 +49,54 @@ fun JadwalLiveScreen(){
             .background(colorResource(id = R.color.background))
             .padding(16.dp)
     ) {
-        TopBar(title = "Jadwal Live")
+        TopBar(
+            title = "Jadwal Live",
+            navController = navController
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = "Oktober 2024", // Ganti dengan variabel bulan dan tahun dinamis jika diperlukan
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(start = 1.dp, top = 8.dp, bottom = 8.dp) // Rata kiri
-            )
+        Text(
+            text = "Oktober 2024", // Ganti dengan variabel bulan dan tahun dinamis jika diperlukan
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.padding(start = 1.dp, top = 8.dp, bottom = 8.dp) // Rata kiri
+        )
         // Days Row (Horizontal Scrollable)
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .padding(vertical = 8.dp)
-            ) {
-                daysOfWeek.forEach { day ->
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 12.dp) // Ini untuk jarak antar elemen, tidak perlu padding di kiri
-                            .clickable { selectedDay = day }
-                            .border(
-                                width = 1.dp,
-                                color = if (day == selectedDay) colorResource(id = R.color.green) else colorResource(id = R.color.green),
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .background(
-                                color = if (day == selectedDay) colorResource(id = R.color.green) else Color.White,
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                    ) {
-                        Text(
-                            text = day,
-                            modifier = Modifier.padding(vertical = 7.dp, horizontal = 11.dp), // Padding dalam elemen
-                            color = if (day == selectedDay) Color.White else Color.Black,
-                            textAlign = TextAlign.Center
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(vertical = 8.dp)
+        ) {
+            daysOfWeek.forEach { day ->
+                Box(
+                    modifier = Modifier
+                        .padding(end = 12.dp) // Ini untuk jarak antar elemen, tidak perlu padding di kiri
+                        .clickable { selectedDay = day }
+                        .border(
+                            width = 1.dp,
+                            color = if (day == selectedDay) colorResource(id = R.color.green) else colorResource(
+                                id = R.color.green
+                            ),
+                            shape = RoundedCornerShape(8.dp)
                         )
-                    }
+                        .background(
+                            color = if (day == selectedDay) colorResource(id = R.color.green) else Color.White,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                ) {
+                    Text(
+                        text = day,
+                        modifier = Modifier.padding(
+                            vertical = 7.dp,
+                            horizontal = 11.dp
+                        ), // Padding dalam elemen
+                        color = if (day == selectedDay) Color.White else Color.Black,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -159,6 +156,6 @@ fun JadwalLiveScreen(){
 @Composable
 fun JadwalLiveScreenPreview() {
     EdufarmTheme {
-        JadwalLiveScreen()
+        JadwalLiveScreen(navController = rememberNavController())
     }
 }
