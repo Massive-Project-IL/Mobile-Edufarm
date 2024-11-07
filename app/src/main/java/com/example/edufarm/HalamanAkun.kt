@@ -228,7 +228,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.size(width = 23.dp, height = 23.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(110.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             Row(
                 modifier = Modifier
@@ -241,12 +241,12 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_keluar),
                     contentDescription = "Keluar",
-                    modifier = Modifier.size(width = 14.86.dp, height = 16.dp)
+                    modifier = Modifier.size(width = 16.86.dp, height = 18.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Keluar",
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily
                 )
@@ -288,7 +288,7 @@ fun BottomNavigationBar(selectedItem: MutableState<String>) {
                     )
                 },
                 selected = false,
-                onClick = { /* Navigasi ke halaman Live Mentor */ }
+                onClick = { /* Navigasi ke halaman Beranda */ }
             )
 
             NavigationBarItem(
