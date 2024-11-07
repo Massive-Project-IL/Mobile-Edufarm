@@ -280,8 +280,8 @@ fun BottomNavigationBar(selectedItem: String) {
                         fontFamily = poppinsFontFamily
                     )
                 },
-                selected = false,
-                onClick = { /* Navigasi ke halaman Akun */ }
+                selected = selectedItem == "Live Mentor",
+                onClick = { /* Navigasi ke halaman Live Mentor */ }
             )
 
             NavigationBarItem(

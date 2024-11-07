@@ -288,7 +288,7 @@ fun BottomNavigationBar(selectedItem: MutableState<String>) {
                     )
                 },
                 selected = false,
-                onClick = { /* Navigasi ke halaman Live Mentor */ }
+                onClick = { /* Navigasi ke halaman Beranda */ }
             )
 
             NavigationBarItem(
