@@ -56,7 +56,7 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
             navController = navController,
             title = "Materi"
         )
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Konten yang dapat di-scroll
         LazyColumn(
@@ -94,7 +94,7 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
 
                         Untuk informasi lebih lengkap mengenai teknik penanaman kacang tanah, rotasi tanaman, dan strategi pemeliharaan yang berkelanjutan, Anda dapat mengunduh dokumen tambahan yang telah kami sediakan. Dokumen ini mencakup panduan mendetail serta hasil penelitian terbaru yang dapat membantu Anda dalam meningkatkan kualitas dan kuantitas hasil panen kacang tanah secara efisien.
                     """.trimIndent(),
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     lineHeight = 20.sp,
                     letterSpacing = (-0.24).sp,
                     fontWeight = FontWeight.Normal,
@@ -113,7 +113,7 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp) // Menambahkan jarak vertikal atas dan bawah tombol
+                    .padding(vertical = 20.dp) // Menambahkan jarak vertikal atas dan bawah tombol
                     .height(40.dp)
             ) {
                 Text(
@@ -153,7 +153,7 @@ fun PreviewMateriDokumenScreen() {
         MateriDokumenScreen(
             navController = rememberNavController(),
             id = 1,
-            title = "Preview Title"
+            title = "Dokumen Tambahan : Penanaman Kacang Tanah"
         )
     }
 }

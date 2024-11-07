@@ -35,7 +35,7 @@ fun TopBar(title: String, navController: NavController, modifier: Modifier = Mod
                 painter = painterResource(id = R.drawable.back),
                 contentDescription = "Back",
                 modifier = Modifier
-                    .size(21.dp)
+                    .size(24.dp)
                     .align(Alignment.CenterStart)
             )
         }

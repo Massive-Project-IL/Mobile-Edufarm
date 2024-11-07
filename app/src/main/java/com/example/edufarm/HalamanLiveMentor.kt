@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,19 +13,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,12 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.example.edufarm.ui.components.CardLive
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
@@ -123,114 +114,6 @@ fun LiveMentorScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         LiveMentorDescription()
 
-    }
-}
-
-@Composable
-fun CardLive() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 37.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp), // Mengatur bayangan
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.green_logo))
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Bertanam Gandum",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.green)
-                )
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.green)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row {
-                Image(
-                    painter = painterResource(id = R.drawable.live),
-                    contentDescription = null,
-                    modifier = Modifier.size(width = 22.dp, height = 22.dp) // Ukuran ikon
-                )
-                Text(
-                    text = "Sedang Berlangsung",
-                    fontSize = 12.sp, // Mengatur ukuran font menjadi 11 sp
-                    fontWeight = FontWeight.Medium, // Menggunakan font weight medium
-                    fontFamily = poppinsFontFamily, // Menggunakan font Poppins
-                    color = colorResource(id = R.color.green),
-                    modifier = Modifier.offset(x = (3).dp) // Geser ke kiri sebesar 4 dp
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(
-                    text = "waktu",
-                    fontSize = 12.sp, // Mengatur ukuran font menjadi 11 sp
-                    fontWeight = FontWeight.Medium, // Menggunakan font weight medium
-                    fontFamily = poppinsFontFamily, // Menggunakan font Poppins
-                    color = colorResource(id = R.color.green),
-                    modifier = Modifier.offset(x = (15).dp, y = (-12).dp)
-                )
-                Text(
-                    text = "09.30–12.30",
-                    fontSize = 12.sp, // Mengatur ukuran font menjadi 11 sp
-                    fontWeight = FontWeight.Medium, // Menggunakan font weight medium
-                    fontFamily = poppinsFontFamily, // Menggunakan font Poppins
-                    color = colorResource(id = R.color.green),
-                    modifier = Modifier.offset(x = (15).dp, y = (-15).dp)
-                )
-            }
-            Column {
-                Text(
-                    text = "Nama Mentor",
-                    fontSize = 12.sp, // Mengatur ukuran font menjadi 11 sp
-                    fontWeight = FontWeight.Medium, // Menggunakan font weight medium
-                    fontFamily = poppinsFontFamily, // Menggunakan font Poppins
-                    color = colorResource(id = R.color.green),
-                    modifier = Modifier.offset(x = (15).dp, y = (-12).dp)
-                )
-                Text(
-                    text = "Vodka",
-                    fontSize = 12.sp, // Mengatur ukuran font menjadi 11 sp
-                    fontWeight = FontWeight.Medium, // Menggunakan font weight medium
-                    fontFamily = poppinsFontFamily, // Menggunakan font Poppins
-                    color = colorResource(id = R.color.green),
-                    modifier = Modifier.offset(x = (15).dp, y = (-15).dp)
-                )
-            }
-            Button(
-                onClick = { /* Aksi untuk tombol Gabung Live */ },
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                modifier = Modifier
-                    .offset(x = (-15).dp, y = (-6).dp) // Menggeser tombol ke kiri dan ke atas
-                    .width(91.dp) // Mengatur lebar tombol
-                    .height(24.dp), // Mengatur tinggi tombol
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text(
-                    text = "Gabung Live",
-                    color = Color.White,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = poppinsFontFamily
-                )
-            }
-        }
     }
 }
 
@@ -327,7 +210,6 @@ fun LiveMentorDescription() {
         )
     }
 }
-
 
 
 

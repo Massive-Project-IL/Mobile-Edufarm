@@ -5,11 +5,30 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,9 +39,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.edufarm.ui.components.CardLive
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
@@ -42,6 +62,28 @@ class HalamanBeranda : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ContentScreen(modifier: Modifier) {
+    Column {
+        InfoCard(
+            hai = "Hai,",
+            title = "Petani👋",
+            deskripsi = "Ayo kita belajar bertani bersama!"
+        )
+        Column {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        CardLive()
+        KategoriBertani()
+        Spacer(modifier = Modifier.height(10.dp))
+        SelectKategori()
+        RekomendasiPelatihan()
+        Spacer(modifier = Modifier.height(10.dp))
+        CardPelatihan()
+        BottomNavigationBar()
     }
 }
 
@@ -154,7 +196,6 @@ fun RekomendasiPelatihan() {
     }
 }
 
-// Composable untuk menampilkan kartu informasi (InfoCard)
 @Composable
 fun InfoCard(hai: String, title: String, deskripsi: String) {
     Card(
@@ -222,7 +263,7 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp),
-        shape = RoundedCornerShape(12.dp), // Bentuk oval pada search bar
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
     ) {
         Row(
@@ -247,137 +288,19 @@ fun SearchBar() {
 }
 
 
-// Composable untuk menampilkan informasi sesi live (CardLive)
-@Composable
-fun CardLive() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 37.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp), // Mengatur bayangan
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_live))
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Bertanam Gandum",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.green_title)
-                )
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.green_title),
-                    modifier = Modifier.size(31.dp)
-
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically, // Untuk menyelaraskan secara vertikal di tengah
-                horizontalArrangement = Arrangement.spacedBy(3.dp) // Jarak antara Image dan Text
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.live),
-                    contentDescription = null,
-                    modifier = Modifier.size(width = 26.dp, height = 22.dp) // Ukuran ikon
-                )
-
-                Text(
-                    text = "Sedang Berlangsung",
-                    fontSize = 12.sp, // Ukuran font 12 sp
-                    fontWeight = FontWeight.Medium, // Font weight medium
-                    fontFamily = poppinsFontFamily, // Font Poppins
-                    color = colorResource(id = R.color.green_title)
-                )
-            }
-        }
-            Spacer(modifier = Modifier.height(0.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(start = 15.dp, top = 0.dp, bottom = 17.dp)
-            ) {
-                Text(
-                    text = "waktu",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title),
-                    modifier = Modifier.padding(bottom = 3.dp) // Jarak antara Text atas dan bawah
-                )
-                Text(
-                    text = "09.30–12.30",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title)
-                )
-            }
-            Column(
-                modifier = Modifier.padding(end = 0.dp, top = 0.dp, bottom = 17.dp)
-            ) {
-                Text(
-                    text = "Nama Mentor",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title),
-                    modifier = Modifier.padding(bottom = 3.dp) // Jarak antara Text atas dan bawah
-                )
-                Text(
-                    text = "Vodka",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title)
-                )
-            }
-                Button(
-                    onClick = { /* Aksi untuk tombol Gabung Live */ },
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                    modifier = Modifier
-                        .padding(start = 10.dp, top = 5.dp)
-                        .width(93.dp) // Mengatur lebar tombol
-                        .height(26.dp), // Mengatur tinggi tombol
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        text = "Gabung Live",
-                        color = Color.White,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily
-                    )
-                }
-
-            }
-        }
-    }
-
 @Composable
 fun CardPelatihan() {
     Box(
         modifier = Modifier
-            .padding(horizontal = 37.dp),
+            .padding(horizontal = 35.dp),
 
-    ) {
+        ) {
         Card(
             modifier = Modifier
                 .size(width = 330.dp, height = 250.dp)
                 .offset(y = (-11).dp),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp), // Mengatur bayangan
+            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
         ) {
             Column {
@@ -385,30 +308,29 @@ fun CardPelatihan() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(140.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)), // Lengkungan hanya di bagian atas gambar
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.petani), // Ganti dengan ID gambar Anda
+                        painter = painterResource(id = R.drawable.petani),
                         contentDescription = "Deskripsi Gambar",
-                        contentScale = ContentScale.Crop, // Memastikan gambar terpotong hanya pada bagian bawah
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                             .padding(horizontal = 9.dp, vertical = 8.dp)
-                            .clip(RoundedCornerShape(16.dp))// Agar gambar mengisi Box secara penuh
+                            .clip(RoundedCornerShape(16.dp))
                     )
-//
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopEnd) // Menempatkan di sudut kanan atas
-                            .padding(24.dp) // Memberikan jarak dari tepi
-                            .background(Color.Gray, shape = RoundedCornerShape(6.dp)) // Background abu-abu dengan sudut melengkung
-                            .padding(horizontal = 2.dp, vertical = 2.dp) // Padding di dalam Box untuk membuat background lebih lebar
+                            .align(Alignment.TopEnd)
+                            .padding(24.dp)
+                            .background(Color.Gray, shape = RoundedCornerShape(6.dp))
+                            .padding(horizontal = 2.dp, vertical = 2.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.bookmark_putih), // Ganti dengan ID ikon bookmark Anda
+                            painter = painterResource(id = R.drawable.bookmark_putih),
                             contentDescription = "Bookmark",
                             tint = Color.White,
                             modifier = Modifier
-                                .size(24.dp) // Ukuran ikon
+                                .size(24.dp)
                         )
                     }
                 }
@@ -459,7 +381,6 @@ fun CardPelatihan() {
     }
 }
 
-
 @Composable
 fun BottomNavigationBar() {
     NavigationBar(
@@ -494,68 +415,68 @@ fun BottomNavigationBar() {
                 onClick = { /* Navigasi ke halaman Beranda */ }
             )
 
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.vidio), // Ganti dengan ikon live mentor
-                    contentDescription = "Live Mentor",
-                    tint = Color.Gray // Warna abu-abu untuk ikon tidak aktif
-                )
-            },
-            label = {
-                Text(
-                    text = "Live Mentor",
-                    color = Color.Gray, // Warna teks tidak aktif
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp
-                )
-            },
-            selected = false,
-            onClick = { /* Navigasi ke halaman Live Mentor */ }
-        )
+            NavigationBarItem(
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.vidio), // Ganti dengan ikon live mentor
+                        contentDescription = "Live Mentor",
+                        tint = Color.Gray // Warna abu-abu untuk ikon tidak aktif
+                    )
+                },
+                label = {
+                    Text(
+                        text = "Live Mentor",
+                        color = Color.Gray, // Warna teks tidak aktif
+                        fontSize = 10.sp,
+                        lineHeight = 10.sp
+                    )
+                },
+                selected = false,
+                onClick = { /* Navigasi ke halaman Live Mentor */ }
+            )
 
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.pelatihan), // Ganti dengan ikon pelatihan
-                    contentDescription = "Pelatihan",
-                    tint = Color.Gray
-                )
-            },
-            label = {
-                Text(
-                    text = "Pelatihan",
-                    color = Color.Gray,
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp
+            NavigationBarItem(
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.pelatihan), // Ganti dengan ikon pelatihan
+                        contentDescription = "Pelatihan",
+                        tint = Color.Gray
+                    )
+                },
+                label = {
+                    Text(
+                        text = "Pelatihan",
+                        color = Color.Gray,
+                        fontSize = 10.sp,
+                        lineHeight = 10.sp
 
-                )
-            },
-            selected = false,
-            onClick = { /* Navigasi ke halaman Pelatihan */ }
-        )
+                    )
+                },
+                selected = false,
+                onClick = { /* Navigasi ke halaman Pelatihan */ }
+            )
 
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.profil), // Ganti dengan ikon akun
-                    contentDescription = "Akun",
-                    tint = Color.Gray
-                )
-            },
-            label = {
-                Text(
-                    text = "Akun",
-                    color = Color.Gray,
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp
-                )
-            },
-            selected = false,
-            onClick = { /* Navigasi ke halaman Akun */ }
-        )
+            NavigationBarItem(
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.profil), // Ganti dengan ikon akun
+                        contentDescription = "Akun",
+                        tint = Color.Gray
+                    )
+                },
+                label = {
+                    Text(
+                        text = "Akun",
+                        color = Color.Gray,
+                        fontSize = 10.sp,
+                        lineHeight = 10.sp
+                    )
+                },
+                selected = false,
+                onClick = { /* Navigasi ke halaman Akun */ }
+            )
+        }
     }
-}
 }
 
 @Preview(showBackground = true)
@@ -581,27 +502,5 @@ fun HalamanBerandaPreview() {
                 modifier = Modifier.fillMaxSize()
             )
         }
-    }
-}
-
-@Composable
-fun ContentScreen(modifier: Modifier) {
-    Column {
-        InfoCard(
-            hai = "Hai,",
-            title = "Petani👋",
-            deskripsi = "Ayo kita belajar bertani bersama!"
-        )
-        Column {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-        CardLive()
-        KategoriBertani()
-        Spacer(modifier = Modifier.height(10.dp))
-        SelectKategori()
-        RekomendasiPelatihan()
-        Spacer(modifier = Modifier.height(10.dp))
-        CardPelatihan()
-        BottomNavigationBar()
     }
 }

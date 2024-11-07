@@ -60,7 +60,7 @@ fun ConfirmationDialog(
                     contentDescription = null,
                     contentScale = ContentScale.Fit, // Menggunakan Fit agar tidak terpotong
                     modifier = Modifier
-                        .size(170.dp) // Sesuaikan ukuran gambar sesuai keperluan
+                        .size(165.dp) // Sesuaikan ukuran gambar sesuai keperluan
                         .padding(bottom = 13.dp)
                         .aspectRatio(1f) // Mengatur aspect ratio 1:1 agar tetap proporsional
                 )
@@ -95,7 +95,7 @@ fun ConfirmationDialog(
                         ),
                         contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
                         modifier = Modifier
-                            .width(85.dp)
+                            .width(90.dp)
                             .height(35.dp)
                             .padding(end = 11.5.dp)
                     ) {
@@ -117,7 +117,7 @@ fun ConfirmationDialog(
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green_button)),
                         contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp),
                         modifier = Modifier
-                            .width(85.dp)
+                            .width(90.dp)
                             .height(35.dp)
                             .padding(start = 11.5.dp)
                     ) {

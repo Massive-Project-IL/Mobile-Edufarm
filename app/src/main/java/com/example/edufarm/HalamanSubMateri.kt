@@ -103,7 +103,7 @@ fun SubMateriScreen(
 
         Text(
             text = "Ayo Kita Mulai Belajar",
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = poppinsFontFamily,
             color = Color.Black,
@@ -129,13 +129,13 @@ fun MateriCard(materi: Materi) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(151.dp)
+            .height(160.dp)
     ) {
         Row(
             modifier = Modifier
                 .padding(start = 18.dp, top = 24.dp, bottom = 24.dp, end = 18.dp)
                 .fillMaxWidth()
-                .height(104.dp),
+                .height(110.dp),
             verticalAlignment = Alignment.Top
         ) {
             Image(
@@ -143,7 +143,7 @@ fun MateriCard(materi: Materi) {
                 contentDescription = "Image for ${materi.title}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(width = 120.dp, height = 104.dp)
+                    .size(width = 120.dp, height = 110.dp)
                     .clip(RoundedCornerShape(14.dp))
             )
             Spacer(modifier = Modifier.width(14.dp))
@@ -173,9 +173,9 @@ fun MateriCard(materi: Materi) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(R.color.green)
                     ),
-                    contentPadding = PaddingValues(horizontal = 2.dp, vertical = 0.dp),
+                    contentPadding = PaddingValues(horizontal = 3.dp, vertical = 0.dp),
                     modifier = Modifier
-                        .width(90.dp)
+                        .width(95.dp)
                         .height(22.dp)
                 ) {
                     Text(
@@ -183,7 +183,7 @@ fun MateriCard(materi: Materi) {
                         fontWeight = FontWeight.Medium,
                         fontFamily = poppinsFontFamily,
                         color = Color.White,
-                        fontSize = 10.sp
+                        fontSize = 12.sp
                     )
                 }
             }
