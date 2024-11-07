@@ -25,9 +25,6 @@
         <option name="selectionMode" value="DROPDOWN" />
 >>>>>>> 888715f (NavBaru)
       </SelectionState>
-      <SelectionState runConfigName="PreviewSubMateriScreen">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
     </selectionStates>
   </component>
 </project>
