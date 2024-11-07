@@ -15,18 +15,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.edufarm.R
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
 @Composable
-fun TopBar(title: String, modifier: Modifier = Modifier) {
+fun TopBar(title: String, navController: NavController, modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier // Gunakan modifier yang diteruskan dari luar
             .fillMaxWidth()
     ) {
         IconButton(
-            onClick = { /* Aksi kembali */ },
+            onClick = { navController.popBackStack() },
             modifier = Modifier
                 .align(Alignment.CenterStart)
         ) {

@@ -86,6 +86,8 @@ fun EduFarmScreen(modifier: Modifier = Modifier) {
         )
     }
 }
+
+
 @Preview(showBackground = true)
 @Composable
 fun EduFarmScreenPreview() {

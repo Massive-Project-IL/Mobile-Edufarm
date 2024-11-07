@@ -1,9 +1,5 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +12,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -30,29 +25,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
 
-class HalamanMateriDokumen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            EdufarmTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                   MateriDokumenScreen(modifier = Modifier.padding(innerPadding))
-                }
-            }
-        }
-    }
-}
-
-
 @Composable
-fun MateriDokumenScreen(modifier: Modifier = Modifier) {
+fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) {
     // State untuk mengontrol visibilitas tombol
     val listState = rememberLazyListState()
     val isAtBottom = remember {
@@ -70,7 +52,10 @@ fun MateriDokumenScreen(modifier: Modifier = Modifier) {
             .background(color = colorResource(R.color.background))
             .padding(start = 35.dp, end = 35.dp, top = 5.dp)
     ) {
-        TopBar(title = "Materi")
+        TopBar(
+            navController = navController,
+            title = "Materi"
+        )
         Spacer(modifier = Modifier.height(25.dp))
 
         // Konten yang dapat di-scroll
@@ -82,7 +67,7 @@ fun MateriDokumenScreen(modifier: Modifier = Modifier) {
             item {
                 // Judul Materi Dokumen
                 Text(
-                    text = "Dokumen Tambahan: Penanaman Kacang Tanah",
+                    text = "$title",
                     fontSize = 16.sp,
                     lineHeight = 20.sp,
                     letterSpacing = (-0.24).sp,
@@ -165,6 +150,10 @@ fun MateriDokumenScreen(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewMateriDokumenScreen() {
     EdufarmTheme {
-        MateriDokumenScreen(modifier = Modifier)
+        MateriDokumenScreen(
+            navController = rememberNavController(),
+            id = 1,
+            title = "Preview Title"
+        )
     }
 }

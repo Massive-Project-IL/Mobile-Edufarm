@@ -1,9 +1,5 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,54 +34,55 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.SearchBar
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanSubMateri : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            EdufarmTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SubMateriScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        onNavigateToIsiMateri = { /* Navigasi ke halaman isi materi */ },
-                        onNavigateToMateriDokumen = { /* Navigasi ke halaman dokumen */ },
-                        onNavigateToMateriVideo = { /* Navigasi ke halaman video */ }
-                    )
-                }
-            }
-        }
-    }
-}
 
-// Definisikan model data Materi
 data class Materi(
+    val id: Int,
     val title: String,
     val image: Int,
     val buttonText: String,
-    val buttonAction: () -> Unit // Aksi yang akan dijalankan saat tombol diklik
+    val buttonAction: () -> Unit
 )
 
-// Lanjutkan ke dalam composable SubMateriScreen
+
 @Composable
 fun SubMateriScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToIsiMateri: () -> Unit = {},
-    onNavigateToMateriDokumen: () -> Unit = {},
-    onNavigateToMateriVideo: () -> Unit = {}
+    navController: NavController
 ) {
-    // Data statis untuk listOfMateri
     val listOfMateri = listOf(
-        Materi("Pemilihan Benih Kacang Tanah", R.drawable.image_1, "Ayo, Belajar", onNavigateToIsiMateri),
-        Materi("Persiapan Tanah Kacang Tanah", R.drawable.image_2, "Ayo, Belajar", onNavigateToIsiMateri),
-        Materi("Pengendalian Hama Kacang Tanah", R.drawable.image_3, "Ayo, Belajar", onNavigateToIsiMateri),
-        Materi("Panen Tanaman Kacang Tanah", R.drawable.image_4, "Ayo, Belajar", onNavigateToIsiMateri),
-        Materi("Video Tutorial Penanaman Kacang Tanah", R.drawable.image_5, "Tonton Video", onNavigateToMateriVideo),
-        Materi("Dokumen Tentang Kacang Tanah", R.drawable.image_6, "Download", onNavigateToMateriDokumen)
+        Materi(1, "Pemilihan Benih Kacang Tanah", R.drawable.image_1, "Ayo, Belajar") {
+            val route = Routes.getHalamanIsiMateriRoute(1, "Pemilihan Benih Kacang Tanah")
+            navController.navigate(route)
+        },
+        Materi(2, "Persiapan Tanah Kacang Tanah", R.drawable.image_2, "Ayo, Belajar") {
+            val route = Routes.getHalamanIsiMateriRoute(1, "Persiapan Tanah Kacang Tanah")
+            navController.navigate(route)
+        },
+        Materi(3, "Pengendalian Hama Kacang Tanah", R.drawable.image_3, "Ayo, Belajar") {
+            val route = Routes.getHalamanIsiMateriRoute(3, "Pengendalian Hama Kacang Tanah")
+            navController.navigate(route)
+        },
+        Materi(4, "Panen Tanaman Kacang Tanah", R.drawable.image_4, "Ayo, Belajar") {
+            val route = Routes.getHalamanIsiMateriRoute(1, "Panen Tanaman Kacang Tanah")
+            navController.navigate(route)
+        },
+
+        Materi(5, "Video Tutorial Penanaman Kacang Tanah", R.drawable.image_5, "Tonton Video") {
+            val videoUri = "your_video_uri_here"
+            val route = Routes.getHalamanMateriVideoRoute(videoUri)
+            navController.navigate(route)
+        },
+        Materi(6, "Dokumen Tambahan : Penanaman Kacang Tanah", R.drawable.image_6, "Download") {
+            val route = Routes.getHalamanMateriDokumenRoute(6, "Dokumen Tambahan : Penanaman Kacang Tanah")
+            navController.navigate(route)
+        }
     )
 
     Column(
@@ -96,7 +92,9 @@ fun SubMateriScreen(
             .padding(start = 35.dp, end = 35.dp, top = 5.dp)
     ) {
         // Top bar
-        TopBar(title = "Materi")
+        TopBar(
+            navController = navController,
+            title = "Materi")
         Spacer(modifier = Modifier.height(8.dp))
 
         // Search bar
@@ -112,11 +110,11 @@ fun SubMateriScreen(
             lineHeight = 23.sp,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-
-        // List of cards for each materi
         LazyColumn {
             items(listOfMateri) { materi ->
                 MateriCard(materi = materi)
+
+
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -175,9 +173,9 @@ fun MateriCard(materi: Materi) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(R.color.green)
                     ),
-                    contentPadding = PaddingValues(horizontal = 3.dp, vertical = 0.dp),
+                    contentPadding = PaddingValues(horizontal = 2.dp, vertical = 0.dp),
                     modifier = Modifier
-                        .width(78.dp)
+                        .width(90.dp)
                         .height(22.dp)
                 ) {
                     Text(
@@ -193,15 +191,13 @@ fun MateriCard(materi: Materi) {
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewSubMateriScreen() {
     EdufarmTheme {
         SubMateriScreen(
-            modifier = Modifier,
-            onNavigateToIsiMateri = {},
-            onNavigateToMateriDokumen = {},
-            onNavigateToMateriVideo = {}
+            navController = rememberNavController()
         )
     }
 }

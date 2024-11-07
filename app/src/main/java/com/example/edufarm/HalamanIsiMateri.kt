@@ -1,9 +1,5 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,26 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanIsiMateri : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            EdufarmTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    IsiMateriScreen(modifier = Modifier.padding(innerPadding))
-                }
-            }
-        }
-    }
-}
-
 @Composable
-fun IsiMateriScreen(modifier: Modifier = Modifier) {
+fun IsiMateriScreen(id: Int?, title: String?, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,6 +37,7 @@ fun IsiMateriScreen(modifier: Modifier = Modifier) {
         // Top Bar dengan Padding
         TopBar(
             title = "Materi",
+            navController = navController,
             modifier = Modifier
                 .padding(start = 35.dp, end = 35.dp, top = 5.dp)
         )
@@ -81,9 +65,9 @@ fun IsiMateriScreen(modifier: Modifier = Modifier) {
                 .verticalScroll(rememberScrollState()) // Menambahkan scroll pada kolom konten
                 .padding(horizontal = 35.dp)
         ) {
-            // Judul Materi
+            // Judul Materi dan ID
             Text(
-                text = "Pemilihan Benih Kacang Tanah",
+                text = "$title",
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
                 letterSpacing = (-0.24).sp,
@@ -121,12 +105,15 @@ fun IsiMateriScreen(modifier: Modifier = Modifier) {
 }
 
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewIsiMateriScreen() {
     EdufarmTheme {
-        IsiMateriScreen(modifier = Modifier)
+        IsiMateriScreen(
+            navController = rememberNavController(),
+            id = 1,  // Pastikan id adalah Int
+            title = "Preview Title"  // Berikan nilai contoh untuk title
+        )
     }
 }
+

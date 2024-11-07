@@ -1,11 +1,7 @@
 package com.example.edufarm
 
 import android.net.Uri
-import android.os.Bundle
 import android.widget.VideoView
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,31 +30,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 
-class HalamanMateriVideo : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            EdufarmTheme {
-                val videoUri = Uri.parse("android.resource://edufarm/raw/contoh.mp4") // Ganti dengan URI video Anda
-
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MateriVideoScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        videoUri = videoUri // Menyertakan videoUri di sini
-                    )
-                }
-            }
-        }
-    }
-}
-
 
 @Composable
-fun MateriVideoScreen(modifier: Modifier = Modifier, videoUri: Uri) {
+fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
     // State untuk mengontrol apakah video diputar
     var isPlaying by remember { mutableStateOf(false) }
 
@@ -74,7 +52,9 @@ fun MateriVideoScreen(modifier: Modifier = Modifier, videoUri: Uri) {
                 .align(Alignment.TopCenter)
                 .padding(horizontal = 35.dp, vertical = 5.dp)
         ) {
-            TopBar(title = "Materi")
+            TopBar(
+                navController = navController,
+                title = "Materi")
         }
 
         if (isPlaying) {
@@ -135,7 +115,7 @@ fun MateriVideoScreen(modifier: Modifier = Modifier, videoUri: Uri) {
 @Composable
 fun PreviewMateriVideoScreen() {
     EdufarmTheme {
-        MateriVideoScreen(modifier = Modifier, videoUri = Uri.EMPTY)
+        MateriVideoScreen( navController = rememberNavController(), videoUri = Uri.EMPTY)
     }
 }
 
