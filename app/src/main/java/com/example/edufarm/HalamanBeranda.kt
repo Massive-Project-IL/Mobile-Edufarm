@@ -1,8 +1,5 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +24,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,31 +38,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.ui.components.CardLive
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanBeranda : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            EdufarmTheme {
-                Scaffold { innerPadding ->
-                    ContentScreen(
-                        modifier = Modifier
-                            .width(360.dp) // Mengatur lebar menjadi 360 dp
-                            .height(800.dp) // Mengatur tinggi menjadi 800 dp
-                            .padding(innerPadding)
-                            .padding(37.dp) // Padding internal untuk konten
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
-fun ContentScreen(modifier: Modifier) {
+fun ContentScreen(navController: NavController, modifier: Modifier) {
     Column {
         InfoCard(
             hai = "Hai,",
@@ -196,7 +176,6 @@ fun RekomendasiPelatihan() {
     }
 }
 
-// Composable untuk menampilkan kartu informasi (InfoCard)
 @Composable
 fun InfoCard(hai: String, title: String, deskripsi: String) {
     Card(
@@ -287,7 +266,6 @@ fun SearchBar() {
         }
     }
 }
-
 
 @Composable
 fun CardPelatihan() {
@@ -382,7 +360,6 @@ fun CardPelatihan() {
         }
     }
 }
-
 
 @Composable
 fun BottomNavigationBar() {
@@ -486,25 +463,10 @@ fun BottomNavigationBar() {
 @Composable
 fun HalamanBerandaPreview() {
     EdufarmTheme {
-        Scaffold {
             ContentScreen(
+                navController = rememberNavController(),
                 modifier = Modifier
-                    .background(color = colorResource(id = R.color.background))
-                    .fillMaxSize()
-                    .padding(it)
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = colorResource(id = R.color.background))
-                    .padding(it)
-                    .padding(16.dp)
-            )
-
-            ContentScreen(
-                modifier = Modifier.fillMaxSize()
-            )
-        }
     }
 }
 

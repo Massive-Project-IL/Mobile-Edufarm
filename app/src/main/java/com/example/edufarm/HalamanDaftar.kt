@@ -1,12 +1,9 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,25 +33,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanDaftar : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            EdufarmTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    DaftarScreen(modifier = Modifier.padding(innerPadding))
-                }
-            }
-        }
-    }
-}
 
 @Composable
-fun DaftarScreen(modifier: Modifier = Modifier) {
+fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -109,7 +95,7 @@ fun DaftarScreen(modifier: Modifier = Modifier) {
 
         // Daftar Button
         Button(
-            onClick = { /* handle register */ },
+            onClick = { navController.navigate(Routes.HALAMAN_NOTIFIKASI_DAFTAR) },
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
             modifier = Modifier
                 .fillMaxWidth()
@@ -120,8 +106,8 @@ fun DaftarScreen(modifier: Modifier = Modifier) {
                 color = Color.White,
                 fontSize = 15.sp,
                 fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = (-2).sp)
+                fontWeight = FontWeight.SemiBold
+            )
         }
 
         Spacer(modifier = Modifier.height(18.dp))
@@ -144,7 +130,11 @@ fun DaftarScreen(modifier: Modifier = Modifier) {
                 fontSize = 15.sp,
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.green_logo))
+                color = colorResource(id = R.color.green_logo),
+                modifier = Modifier.clickable {
+                    navController.navigate(Routes.HALAMAN_LOGIN) // Navigate to Daftar
+                }
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -269,13 +259,12 @@ fun PasswordField() {
 }
 
 
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun DaftarScreenPreview() {
     EdufarmTheme {
-        DaftarScreen(modifier = Modifier)
+        DaftarScreen(
+            navController = rememberNavController(),
+            modifier = Modifier)
     }
 }

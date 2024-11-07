@@ -10,9 +10,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.edufarm.DaftarScreen
+import com.example.edufarm.EduFarmScreen
 import com.example.edufarm.IsiMateriScreen
+import com.example.edufarm.LoginScreen
 import com.example.edufarm.MateriDokumenScreen
 import com.example.edufarm.MateriVideoScreen
+import com.example.edufarm.NotifikasiDaftarScreen
 import com.example.edufarm.SubMateriScreen
 
 @Composable
@@ -22,9 +26,24 @@ fun EdufarmNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.HALAMAN_SUB_MATERI,
+        startDestination = Routes.HALAMAN_SPLASH, // Set Splash sebagai startDestination
         modifier = modifier
     ) {
+        composable(Routes.HALAMAN_SPLASH) {
+            EduFarmScreen(navController) // Splash Screen
+        }
+        composable(Routes.HALAMAN_LOGIN) {
+            LoginScreen(navController)
+        }
+        composable(Routes.HALAMAN_DAFTAR) {
+            DaftarScreen(navController)
+        }
+        composable(Routes.HALAMAN_NOTIFIKASI_DAFTAR) {
+            NotifikasiDaftarScreen(navController)
+        }
+        composable(Routes.HALAMAN_BERANDA) {
+            EduFarmScreen(navController)
+        }
         composable(Routes.HALAMAN_SUB_MATERI) {
             SubMateriScreen(navController)
         }

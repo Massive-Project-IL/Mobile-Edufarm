@@ -1,12 +1,9 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,25 +35,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanLogin : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            EdufarmTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(modifier = Modifier.padding(innerPadding))
-                }
-            }
-        }
-    }
-}
-
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -168,7 +153,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                                             .weight(1f)
                                     )
                                 }
-                                IconButton(onClick = { /* Handle visibility toggle */ },) {
+                                IconButton(onClick = { /* Handle visibility toggle */ }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.mdi_hide_outline),
                                         contentDescription = "Hide Password",
@@ -186,7 +171,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
                 // Login Button
                 Button(
-                    onClick = { /* handle login */ },
+                    onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -219,7 +204,11 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                         fontSize = 14.sp,
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.green_logo))
+                        color = colorResource(id = R.color.green_logo),
+                        modifier = Modifier.clickable {
+                            navController.navigate(Routes.HALAMAN_DAFTAR) // Navigate to Daftar
+                        }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(26.dp))
@@ -278,6 +267,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 @Composable
 fun LoginScreenPreview() {
     EdufarmTheme {
-        LoginScreen(modifier = Modifier)
+        LoginScreen(
+            navController = rememberNavController(),
+            modifier = Modifier)
     }
 }
