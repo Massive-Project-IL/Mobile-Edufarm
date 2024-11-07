@@ -5,12 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
+import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
@@ -154,7 +161,6 @@ fun RekomendasiPelatihan() {
     }
 }
 
-// Composable untuk menampilkan kartu informasi (InfoCard)
 @Composable
 fun InfoCard(hai: String, title: String, deskripsi: String) {
     Card(
@@ -222,7 +228,7 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp),
-        shape = RoundedCornerShape(12.dp), // Bentuk oval pada search bar
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
     ) {
         Row(
@@ -246,10 +252,10 @@ fun SearchBar() {
     }
 }
 
-
-// Composable untuk menampilkan informasi sesi live (CardLive)
 @Composable
 fun CardLive() {
+    var showDialog by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -275,31 +281,29 @@ fun CardLive() {
                     contentDescription = null,
                     tint = colorResource(id = R.color.green_title),
                     modifier = Modifier.size(31.dp)
-
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically, // Untuk menyelaraskan secara vertikal di tengah
-                horizontalArrangement = Arrangement.spacedBy(3.dp) // Jarak antara Image dan Text
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.live),
                     contentDescription = null,
-                    modifier = Modifier.size(width = 26.dp, height = 22.dp) // Ukuran ikon
+                    modifier = Modifier.size(width = 26.dp, height = 22.dp)
                 )
-
                 Text(
                     text = "Sedang Berlangsung",
-                    fontSize = 12.sp, // Ukuran font 12 sp
-                    fontWeight = FontWeight.Medium, // Font weight medium
-                    fontFamily = poppinsFontFamily, // Font Poppins
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.green_title)
                 )
             }
         }
-            Spacer(modifier = Modifier.height(0.dp))
+        Spacer(modifier = Modifier.height(0.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -313,7 +317,7 @@ fun CardLive() {
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.green_title),
-                    modifier = Modifier.padding(bottom = 3.dp) // Jarak antara Text atas dan bawah
+                    modifier = Modifier.padding(bottom = 3.dp)
                 )
                 Text(
                     text = "09.30–12.30",
@@ -332,7 +336,7 @@ fun CardLive() {
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.green_title),
-                    modifier = Modifier.padding(bottom = 3.dp) // Jarak antara Text atas dan bawah
+                    modifier = Modifier.padding(bottom = 3.dp)
                 )
                 Text(
                     text = "Vodka",
@@ -342,34 +346,50 @@ fun CardLive() {
                     color = colorResource(id = R.color.green_title)
                 )
             }
-                Button(
-                    onClick = { /* Aksi untuk tombol Gabung Live */ },
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                    modifier = Modifier
-                        .padding(start = 10.dp, top = 5.dp)
-                        .width(93.dp) // Mengatur lebar tombol
-                        .height(26.dp), // Mengatur tinggi tombol
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        text = "Gabung Live",
-                        color = Color.White,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily
-                    )
-                }
-
+            Button(
+                onClick = { showDialog = true },
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 5.dp)
+                    .width(93.dp)
+                    .height(26.dp),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(
+                    text = "Gabung Live",
+                    color = Color.White,
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = poppinsFontFamily
+                )
             }
         }
     }
+
+    // Dialog untuk konfirmasi gabung live
+    if (showDialog) {
+        ConfirmationDialog(
+            message = "Apakah Kamu Mau Gabung Live ?",
+            onDismissRequest = { showDialog = false },
+            onConfirm = {
+                // Aksi untuk tombol "Ya"
+                showDialog = false
+                // Tambahkan aksi download di sini, misalnya memulai download
+            },
+            onCancel = {
+                // Aksi untuk tombol "Tidak"
+                showDialog = false
+            }
+        )
+    }
+}
 
 @Composable
 fun CardPelatihan() {
     Box(
         modifier = Modifier
-            .padding(horizontal = 37.dp),
+            .padding(horizontal = 35.dp),
 
     ) {
         Card(
@@ -377,7 +397,7 @@ fun CardPelatihan() {
                 .size(width = 330.dp, height = 250.dp)
                 .offset(y = (-11).dp),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp), // Mengatur bayangan
+            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
         ) {
             Column {
@@ -385,30 +405,29 @@ fun CardPelatihan() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(140.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)), // Lengkungan hanya di bagian atas gambar
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.petani), // Ganti dengan ID gambar Anda
+                        painter = painterResource(id = R.drawable.petani),
                         contentDescription = "Deskripsi Gambar",
-                        contentScale = ContentScale.Crop, // Memastikan gambar terpotong hanya pada bagian bawah
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                             .padding(horizontal = 9.dp, vertical = 8.dp)
-                            .clip(RoundedCornerShape(16.dp))// Agar gambar mengisi Box secara penuh
+                            .clip(RoundedCornerShape(16.dp))
                     )
-//
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopEnd) // Menempatkan di sudut kanan atas
-                            .padding(24.dp) // Memberikan jarak dari tepi
-                            .background(Color.Gray, shape = RoundedCornerShape(6.dp)) // Background abu-abu dengan sudut melengkung
-                            .padding(horizontal = 2.dp, vertical = 2.dp) // Padding di dalam Box untuk membuat background lebih lebar
+                            .align(Alignment.TopEnd)
+                            .padding(24.dp)
+                            .background(Color.Gray, shape = RoundedCornerShape(6.dp))
+                            .padding(horizontal = 2.dp, vertical = 2.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.bookmark_putih), // Ganti dengan ID ikon bookmark Anda
+                            painter = painterResource(id = R.drawable.bookmark_putih),
                             contentDescription = "Bookmark",
                             tint = Color.White,
                             modifier = Modifier
-                                .size(24.dp) // Ukuran ikon
+                                .size(24.dp)
                         )
                     }
                 }
@@ -458,7 +477,6 @@ fun CardPelatihan() {
         }
     }
 }
-
 
 @Composable
 fun BottomNavigationBar() {
