@@ -23,7 +23,7 @@ import com.example.edufarm.NotifikasiDaftarScreen
 import com.example.edufarm.PelatihanScreen
 import com.example.edufarm.ProfileScreen
 import com.example.edufarm.SubMateriScreen
-
+    
 @Composable
 fun EdufarmNavHost(
     navController: NavHostController,

@@ -9,12 +9,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,10 +47,10 @@ fun BottomNavigationBar(
         ) {
             // Daftar item navigasi
             val items = listOf(
-                Pair("Beranda", Routes.HALAMAN_BERANDA),
-                Pair("Live Mentor", Routes.HALAMAN_LIVE_MENTOR),
-                Pair("Pelatihan", Routes.HALAMAN_PELATIHAN),
-                Pair("Akun", Routes.HALAMAN_AKUN)
+                Triple("Beranda", Routes.HALAMAN_BERANDA, R.drawable.home),
+                Triple("Live Mentor", Routes.HALAMAN_LIVE_MENTOR, R.drawable.mentor),
+                Triple("Pelatihan", Routes.HALAMAN_PELATIHAN, R.drawable.pelatihan),
+                Triple("Akun", Routes.HALAMAN_AKUN, R.drawable.akun)
             )
 
             items.forEach { item ->
@@ -57,15 +59,18 @@ fun BottomNavigationBar(
                 NavigationBarItem(
                     icon = {
                         Icon(
-                            painter = painterResource(id = when (item.first) {
-                                "Beranda" -> R.drawable.beranda
-                                "Live Mentor" -> R.drawable.vidio
-                                "Pelatihan" -> R.drawable.pelatihan
-                                "Akun" -> R.drawable.akun
-                                else -> R.drawable.beranda// Default icon jika tidak cocok
+                            painter = painterResource(id = if (isSelected) item.third else {
+                                // Gunakan ikon outline jika tidak dipilih
+                                when (item.first) {
+                                    "Beranda" -> R.drawable.home_outline
+                                    "Live Mentor" -> R.drawable.mentor_outline
+                                    "Pelatihan" -> R.drawable.pelatihan_outline
+                                    "Akun" -> R.drawable.akun_outline
+                                    else -> R.drawable.home_outline // Default icon jika tidak cocok
+                                }
                             }),
                             contentDescription = item.first,
-                            tint = if (isSelected) colorResource(id = R.color.green_icon) else colorResource(R.color.gray_icon),
+                            tint = if (isSelected) colorResource(id = R.color.green_icon) else colorResource(id = R.color.gray_icon),
                             modifier = Modifier.size(width = 24.dp, height = 22.dp)
                         )
                     },
@@ -93,10 +98,18 @@ fun BottomNavigationBar(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = colorResource(id = R.color.green_icon),
+                        unselectedIconColor = colorResource(id = R.color.gray_icon),
+                        selectedTextColor = colorResource(id = R.color.green_text),
+                        unselectedTextColor = colorResource(id = R.color.gray_icon),
+                        indicatorColor = Color.Transparent // Menghilangkan background saat dipilih
+                    )
                 )
             }
         }
     }
 }
+
 

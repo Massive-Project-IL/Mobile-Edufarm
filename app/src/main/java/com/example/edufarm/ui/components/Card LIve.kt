@@ -65,7 +65,7 @@ fun CardLive() {
                     imageVector = Icons.Default.Notifications,
                     contentDescription = null,
                     tint = colorResource(id = R.color.green_title),
-                    modifier = Modifier.size(31.dp)
+                    modifier = Modifier.size(28.dp)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
