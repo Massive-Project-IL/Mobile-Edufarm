@@ -1,9 +1,5 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,137 +10,119 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
+
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
+
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.CardLive
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanLiveMentor : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            EdufarmTheme {
-                var selectedItem by remember { mutableStateOf("Beranda") }
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        BottomNavigationBar(
-                            selectedItem = selectedItem,
-                            onItemSelected = { selectedItem = it }
-                        )
-                    }
-                ) { innerPadding ->
-                    LiveMentorScreen(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
+
+@Composable
+fun LiveMentorScreen(
+    navController: NavController, modifier: Modifier = Modifier
+) {
+    val selectedItem = remember { mutableStateOf("Live Mentor") } // Menyimpan item yang dipilih
+
+    Scaffold(
+        modifier = modifier,
+        bottomBar = { BottomNavigationBar(navController, selectedItem) }) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(color = colorResource(R.color.background))
+                .padding(start = 35.dp, end = 35.dp, top = 5.dp)
+        ) {
+            // Header Section
+            Text(
+                text = "Live Mentor",
+                fontSize = 18.sp,
+                fontFamily = poppinsFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                lineHeight = 20.sp,
+                letterSpacing = (-0.24).sp,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    text = "Jadwal Live Hari ini",
+                    fontSize = 12.sp,
+                    fontFamily = poppinsFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 23.sp,
+                    letterSpacing = 0.02.em, // Mengatur letter spacing menjadi 2%
+                    color = Color.Black
+                )
+                Button(
+                    onClick = { /* Handle Lihat Jadwal click */ },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.green)
+                    ),
+                    contentPadding = PaddingValues(horizontal = 1.dp, vertical = 0.dp),
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(25.dp)
+                ) {
+                    Text(
+                        text = "Lihat Jadwal",
+                        color = Color.White,
+                        fontSize = 8.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.02.em, // Mengatur letter spacing menjadi 2%
                     )
                 }
             }
+            // Placeholder for content below the header
+            // Tambahkan konten lain di sini sesuai kebutuhan
+            Spacer(modifier = Modifier.height(16.dp))
+            CardLive()
+            Spacer(modifier = Modifier.height(16.dp))
+            LiveMentorDescription()
+
         }
-    }
-}
-
-@Composable
-fun LiveMentorScreen(modifier: Modifier = Modifier) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = colorResource(R.color.background))
-            .padding(start = 35.dp, end = 35.dp, top = 5.dp)
-    ) {
-        // Header Section
-        Text(
-            text = "Live Mentor",
-            fontSize = 18.sp,
-            fontFamily = poppinsFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            lineHeight = 20.sp,
-            letterSpacing = (-0.24).sp,
-            color = Color.Black,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Text(
-                text = "Jadwal Live Hari ini",
-                fontSize = 12.sp,
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 23.sp,
-                letterSpacing = 0.02.em, // Mengatur letter spacing menjadi 2%
-                color = Color.Black
-            )
-            Button(
-                onClick = { /* Handle Lihat Jadwal click */ },
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.green)
-                ),
-                contentPadding = PaddingValues(horizontal = 1.dp, vertical = 0.dp),
-                modifier = Modifier
-                    .width(80.dp)
-                    .height(25.dp)
-            ) {
-                Text(
-                    text = "Lihat Jadwal",
-                    color = Color.White,
-                    fontSize = 8.sp,
-                    fontFamily = poppinsFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 0.02.em, // Mengatur letter spacing menjadi 2%
-                    )
-            }
-        }
-        // Placeholder for content below the header
-        // Tambahkan konten lain di sini sesuai kebutuhan
-        Spacer(modifier = Modifier.height(16.dp))
-        CardLive()
-        Spacer(modifier = Modifier.height(16.dp))
-        LiveMentorDescription()
-
     }
 }
 
 @Composable
 fun LiveMentorDescription() {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         // Title
         Text(
@@ -234,121 +212,13 @@ fun LiveMentorDescription() {
     }
 }
 
-@Composable
-fun BottomNavigationBar(selectedItem: String, onItemSelected: (String) -> Unit) {
-    NavigationBar(
-        modifier = Modifier
-            .height(61.dp)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-        containerColor = colorResource(id = R.color.white)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 35.dp)
-                .padding(top = 15.dp, bottom = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.beranda),
-                        contentDescription = "Beranda",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(width = 24.dp, height = 22.dp)
-                    )
-                },
-                label = {
-                    Text(
-                        text = "Beranda",
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp
-                    )
-                },
-                selected = selectedItem == "Beranda",
-                onClick = { /* Navigasi ke halaman Beranda */ }
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.mentor),
-                        contentDescription = "Live Mentor",
-                        tint = colorResource(id = R.color.green),
-                        modifier = Modifier.size(width = 22.dp, height = 22.dp)
-                    )
-                },
-                label = {
-                    Text(
-                        text = "Live Mentor",
-                        color = colorResource(id = R.color.green),
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily
-                    )
-                },
-                selected = selectedItem == "Live Mentor",
-                onClick = { /* Navigasi ke halaman Live Mentor */ }
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.pelatihan),
-                        contentDescription = "Pelatihan",
-                        tint = Color.Gray
-                    )
-                },
-                label = {
-                    Text(
-                        text = "Pelatihan",
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp
-                    )
-                },
-                selected = selectedItem == "Pelatihan",
-                onClick = { /* Navigasi ke halaman Pelatihan */ }
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.profil),
-                        contentDescription = "Akun",
-                        tint = Color.Gray
-                    )
-                },
-                label = {
-                    Text(
-                        text = "Akun",
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp
-                    )
-                },
-                selected = selectedItem == "Akun",
-                onClick = { /* Navigasi ke halaman Akun */ }
-            )
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewLiveMentorScreen() {
     EdufarmTheme {
-        Scaffold(
-            bottomBar = {
-                BottomNavigationBar(
-                    selectedItem = "",
-                    onItemSelected = {}
-                )
-            }
-        ) {
-            LiveMentorScreen(Modifier.padding(it))
-        }
+        LiveMentorScreen(
+            navController = rememberNavController(), modifier = Modifier
+        )
     }
 }

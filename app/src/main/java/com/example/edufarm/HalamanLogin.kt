@@ -171,7 +171,7 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
 
                 // Login Button
                 Button(
-                    onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
+                    onClick = { navController.navigate(Routes.HALAMAN_BERANDA) },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                     modifier = Modifier
                         .fillMaxWidth()
