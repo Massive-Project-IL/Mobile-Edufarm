@@ -20,6 +20,7 @@ import com.example.edufarm.LoginScreen
 import com.example.edufarm.MateriDokumenScreen
 import com.example.edufarm.MateriVideoScreen
 import com.example.edufarm.NotifikasiDaftarScreen
+import com.example.edufarm.PelatihanScreen
 import com.example.edufarm.ProfileScreen
 import com.example.edufarm.SubMateriScreen
 
@@ -57,6 +58,9 @@ fun EdufarmNavHost(
             LiveMentorScreen(navController)
         }
 
+        composable(Routes.HALAMAN_PELATIHAN) {
+            PelatihanScreen(navController)
+        }
 
         composable(Routes.HALAMAN_BOOKMARK){
             BookmarkScreen(navController = navController)
