@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,6 +53,7 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .background(color = colorResource(R.color.background))
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 37.dp),
             verticalArrangement = Arrangement.Top
         ) {
@@ -235,7 +238,7 @@ fun ProfileScreen(
                 Image(
                     painter = painterResource(id = R.drawable.ic_keluar),
                     contentDescription = "Keluar",
-                    modifier = Modifier.size(width = 16.86.dp, height = 18.dp)
+                    modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
