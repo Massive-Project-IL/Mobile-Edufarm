@@ -53,9 +53,18 @@ class HalamanLiveMentor : ComponentActivity() {
                 var selectedItem by remember { mutableStateOf("Beranda") }
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavigationBar(selectedItem = selectedItem) }
+                    bottomBar = {
+                        BottomNavigationBar(
+                            selectedItem = selectedItem,
+                            onItemSelected = { selectedItem = it }
+                        )
+                    }
                 ) { innerPadding ->
-                    LiveMentorScreen(modifier = Modifier.padding(innerPadding))
+                    LiveMentorScreen(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    )
                 }
             }
         }
@@ -226,7 +235,7 @@ fun LiveMentorDescription() {
 }
 
 @Composable
-fun BottomNavigationBar(selectedItem: String) {
+fun BottomNavigationBar(selectedItem: String, onItemSelected: (String) -> Unit) {
     NavigationBar(
         modifier = Modifier
             .height(61.dp)
@@ -331,6 +340,15 @@ fun BottomNavigationBar(selectedItem: String) {
 @Composable
 fun PreviewLiveMentorScreen() {
     EdufarmTheme {
-        LiveMentorScreen(modifier = Modifier)
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar(
+                    selectedItem = "",
+                    onItemSelected = {}
+                )
+            }
+        ) {
+            LiveMentorScreen(Modifier.padding(it))
+        }
     }
 }
