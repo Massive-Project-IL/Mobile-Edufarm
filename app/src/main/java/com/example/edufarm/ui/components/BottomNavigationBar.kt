@@ -70,7 +70,6 @@ fun BottomNavigationBar(
                                 }
                             }),
                             contentDescription = item.first,
-                            tint = if (isSelected) colorResource(id = R.color.green_icon) else colorResource(id = R.color.gray_icon),
                             modifier = Modifier.size(width = 24.dp, height = 22.dp)
                         )
                     },
@@ -111,5 +110,6 @@ fun BottomNavigationBar(
         }
     }
 }
+
 
 
