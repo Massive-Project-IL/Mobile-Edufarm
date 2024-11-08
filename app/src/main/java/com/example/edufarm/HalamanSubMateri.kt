@@ -91,13 +91,12 @@ fun SubMateriScreen(
             .background(color = colorResource(R.color.background))
             .padding(start = 35.dp, end = 35.dp, top = 5.dp)
     ) {
-        // Top bar
+
         TopBar(
             navController = navController,
             title = "Materi")
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Search bar
         SearchBar(placeholder = "Cari Pelatihan")
         Spacer(modifier = Modifier.height(16.dp))
 

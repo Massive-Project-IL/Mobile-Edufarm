@@ -2,6 +2,7 @@ package com.example.edufarm.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +19,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,22 +44,23 @@ fun CardPelatihan(
     onBookmarkClick: () -> Unit,
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-    poppinsFontFamily: FontFamily // Pastikan poppinsFontFamily tersedia di proyek Anda
+    poppinsFontFamily: FontFamily
 ) {
+    var isBookmarked by remember { mutableStateOf(true) }
+
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, start = 9.dp, end = 9.dp) // Padding antara gambar dan tepi kartu
+                    .padding(top = 8.dp, start = 9.dp, end = 9.dp)
             ) {
-                // Gambar Utama
                 Image(
                     painter = painterResource(id = imageRes),
                     contentDescription = null,
@@ -64,36 +70,38 @@ fun CardPelatihan(
                         .height(122.dp)
                         .clip(RoundedCornerShape(16.dp))
                 )
+
                 // Ikon Bookmark
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 19.dp, end = 15.dp)
-                        .size(24.dp) // Ukuran total termasuk ikon dan padding
+                        .size(24.dp)
                         .background(
-                            color = Color.White,
+                            color = if (isBookmarked) Color.White else Color.Gray,
                             shape = RoundedCornerShape(6.dp)
-                        ),
+                        )
+                        .clickable { isBookmarked = !isBookmarked },
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.bookmark_green),
+                        painter = painterResource(
+                            id = if (isBookmarked) R.drawable.bookmark_green else R.drawable.bookmark_putih
+                        ),
                         contentDescription = "Bookmark",
-                        modifier = Modifier.size(width = 16.dp, height = 18.dp) // Ukuran ikon
+                        modifier = Modifier.size(width = 16.dp, height = 18.dp)
                     )
                 }
             }
 
-            // Menambahkan jarak antara gambar dan konten teks
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Konten Teks
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 Text(
                     text = title,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    fontFamily = poppinsFontFamily, // Menggunakan font Poppins
+                    fontFamily = poppinsFontFamily,
                     color = Color.Black,
                 )
                 Spacer(modifier = Modifier.height(10.dp))
@@ -102,7 +110,7 @@ fun CardPelatihan(
                     fontSize = 12.sp,
                     lineHeight = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    fontFamily = poppinsFontFamily, // Menggunakan font Poppins
+                    fontFamily = poppinsFontFamily,
                     color = colorResource(R.color.gray_bookmark)
                 )
             }
@@ -112,17 +120,17 @@ fun CardPelatihan(
             Button(
                 onClick = onButtonClick,
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
-                shape = RoundedCornerShape(6.dp), // Sudut melengkung sesuai desain
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp), // Padding internal yang lebih sesuai
+                shape = RoundedCornerShape(6.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp),
                 modifier = Modifier
-                    .width(170.dp) // Lebar button yang sesuai
-                    .height(30.dp) // Tinggi button sesuai
+                    .width(170.dp)
+                    .height(30.dp)
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
                     text = "Lihat Selengkapnya",
                     color = Color.White,
-                    fontSize = 12.sp, // Ukuran teks disesuaikan agar sesuai dengan button
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
                     modifier = Modifier
@@ -130,9 +138,9 @@ fun CardPelatihan(
                 )
             }
 
-
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
+
 

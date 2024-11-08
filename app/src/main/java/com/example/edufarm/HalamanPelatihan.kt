@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
@@ -68,12 +69,13 @@ fun PelatihanScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(colorResource(id = R.color.background))
         ) {
             Column(
                 modifier = Modifier
                     .padding(horizontal = 35.dp)
             ) {
-                // Judul
+
                 Text(
                     text = "Pelatihan",
                     fontSize = 18.sp,
@@ -81,7 +83,7 @@ fun PelatihanScreen(
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 8.dp)
                 )
-                // Search Bar
+
                 SearchBarPelatihan()
                 Text(
                     text = "Kategori",
@@ -90,7 +92,7 @@ fun PelatihanScreen(
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 8.dp)
                 )
-                // Kategori
+
                 Spacer(modifier = Modifier.height(12.dp))
                 KategoriChips()
 
@@ -98,7 +100,7 @@ fun PelatihanScreen(
                     contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
                     items(5) {
-                        CardPelatihanKategori()
+                        CardPelatihanKategori(navController)
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
@@ -151,7 +153,6 @@ fun KategoriChips() {
 
     Row(
         modifier = Modifier
-            .padding(bottom = 16.dp)
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(14.dp)
@@ -188,7 +189,9 @@ fun KategoriChips() {
 }
 
 @Composable
-fun CardPelatihanKategori() {
+fun CardPelatihanKategori(navController: NavController) {
+    var isBookmarked by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -200,7 +203,7 @@ fun CardPelatihanKategori() {
 
                 drawRoundRect(
                     color = shadowColor,
-                    topLeft = Offset(0f, size.height - shadowHeight / 2), // Posisikan di bawah Card
+                    topLeft = Offset(0f, size.height - shadowHeight / 2),
                     size = Size(size.width, shadowHeight),
                     cornerRadius = CornerRadius(cornerRadius, cornerRadius),
                     alpha = 0.2f
@@ -225,18 +228,25 @@ fun CardPelatihanKategori() {
                         .padding(horizontal = 9.dp, vertical = 8.dp)
                         .clip(RoundedCornerShape(16.dp))
                 )
+
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(24.dp)
-                        .background(Color.Gray, shape = RoundedCornerShape(6.dp))
-                        .padding(horizontal = 2.dp, vertical = 2.dp)
+                        .padding(top = 19.dp, end = 15.dp)
+                        .size(24.dp)
+                        .background(
+                            color = if (isBookmarked) Color.White else Color.Gray,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .clickable { isBookmarked = !isBookmarked },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bookmark_putih),
+                    Image(
+                        painter = painterResource(
+                            id = if (isBookmarked) R.drawable.bookmark_green else R.drawable.bookmark_putih
+                        ),
                         contentDescription = "Bookmark",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(width = 16.dp, height = 18.dp)
                     )
                 }
             }
@@ -251,7 +261,7 @@ fun CardPelatihanKategori() {
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFontFamily,
-                    modifier = Modifier.padding(bottom = 4.dp) // Jarak antara judul dan deskripsi
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
 
                 Text(
@@ -265,12 +275,12 @@ fun CardPelatihanKategori() {
                 )
 
                 Button(
-                    onClick = {},
-                    shape = RoundedCornerShape(8.dp),
+                    onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
+                    shape = RoundedCornerShape(6.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                     modifier = Modifier
-                        .width(115.dp)
-                        .height(30.dp),
+                        .width(120.dp)
+                        .height(28.dp),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     Text(
@@ -278,13 +288,14 @@ fun CardPelatihanKategori() {
                         fontSize = 10.sp,
                         color = Color.White,
                         fontFamily = poppinsFontFamily,
-                        fontWeight = FontWeight(500),
+                        fontWeight = FontWeight.Medium,
                     )
                 }
             }
         }
     }
 }
+
 
 
 

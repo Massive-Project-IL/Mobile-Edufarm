@@ -45,7 +45,8 @@ fun BottomNavigationBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Daftar item navigasi
+
+            // Daftar item untuk navigasi dengan ikon dan teks
             val items = listOf(
                 Triple("Beranda", Routes.HALAMAN_BERANDA, R.drawable.home),
                 Triple("Live Mentor", Routes.HALAMAN_LIVE_MENTOR, R.drawable.mentor),
@@ -59,16 +60,17 @@ fun BottomNavigationBar(
                 NavigationBarItem(
                     icon = {
                         Icon(
-                            painter = painterResource(id = if (isSelected) item.third else {
-                                // Gunakan ikon outline jika tidak dipilih
-                                when (item.first) {
-                                    "Beranda" -> R.drawable.home_outline
-                                    "Live Mentor" -> R.drawable.mentor_outline
-                                    "Pelatihan" -> R.drawable.pelatihan_outline
-                                    "Akun" -> R.drawable.akun_outline
-                                    else -> R.drawable.home_outline // Default icon jika tidak cocok
+                            painter = painterResource(
+                                id = if (isSelected) item.third else {
+                                    when (item.first) {
+                                        "Beranda" -> R.drawable.home_outline
+                                        "Live Mentor" -> R.drawable.mentor_outline
+                                        "Pelatihan" -> R.drawable.pelatihan_outline
+                                        "Akun" -> R.drawable.akun_outline
+                                        else -> R.drawable.home_outline
+                                    }
                                 }
-                            }),
+                            ),
                             contentDescription = item.first,
                             modifier = Modifier.size(width = 24.dp, height = 22.dp)
                         )
@@ -76,7 +78,9 @@ fun BottomNavigationBar(
                     label = {
                         Text(
                             text = item.first,
-                            color = if (isSelected) colorResource(id = R.color.green_text) else colorResource(id = R.color.gray_icon),
+                            color = if (isSelected) colorResource(id = R.color.green_text) else colorResource(
+                                id = R.color.gray_icon
+                            ),
                             fontSize = 10.sp,
                             lineHeight = 10.sp,
                             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
@@ -85,12 +89,10 @@ fun BottomNavigationBar(
                     },
                     selected = isSelected,
                     onClick = {
-                        // Update item yang dipilih
                         selectedItem.value = item.first
 
-                        // Navigasi ke halaman yang sesuai
+                        // Navigasi ke halaman yang diinginkan
                         navController.navigate(item.second) {
-                            // Pop ke awal saat navigasi, menghindari duplikasi rute di stack
                             popUpTo(navController.graph.startDestinationId) {
                                 saveState = true
                             }
@@ -103,7 +105,7 @@ fun BottomNavigationBar(
                         unselectedIconColor = colorResource(id = R.color.gray_icon),
                         selectedTextColor = colorResource(id = R.color.green_text),
                         unselectedTextColor = colorResource(id = R.color.gray_icon),
-                        indicatorColor = Color.Transparent // Menghilangkan background saat dipilih
+                        indicatorColor = Color.Transparent
                     )
                 )
             }

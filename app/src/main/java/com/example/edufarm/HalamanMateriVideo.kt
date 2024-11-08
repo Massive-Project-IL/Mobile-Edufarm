@@ -38,7 +38,6 @@ import com.example.edufarm.ui.theme.EdufarmTheme
 
 @Composable
 fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
-    // State untuk mengontrol apakah video diputar
     var isPlaying by remember { mutableStateOf(false) }
 
     Box(
@@ -46,7 +45,6 @@ fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
             .fillMaxSize()
             .background(color = colorResource(R.color.background))
     ) {
-        // Top Bar di bagian atas layar
         Column(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -54,11 +52,11 @@ fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
         ) {
             TopBar(
                 navController = navController,
-                title = "Materi")
+                title = "Materi"
+            )
         }
 
         if (isPlaying) {
-            // VideoView untuk memutar video
             AndroidView(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,23 +74,21 @@ fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
                 }
             )
         } else {
-            // Gambar Utama dengan Ikon Play di Tengah
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.petani), // Ganti dengan ID gambar yang sesuai
+                    painter = painterResource(id = R.drawable.petani),
                     contentDescription = "Thumbnail Video Materi",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
                 )
 
-                // Ikon Play di Tengah Gambar
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_play), // Ganti dengan ikon play yang sesuai
+                    painter = painterResource(id = R.drawable.ic_play),
                     contentDescription = "Play Icon",
                     tint = Color.White,
                     modifier = Modifier
@@ -103,7 +99,7 @@ fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
                             shape = CircleShape
                         )
                         .padding(8.dp)
-                        .clickable { isPlaying = true } // Mengubah state untuk memulai video
+                        .clickable { isPlaying = true }
                 )
             }
         }
@@ -115,7 +111,7 @@ fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
 @Composable
 fun PreviewMateriVideoScreen() {
     EdufarmTheme {
-        MateriVideoScreen( navController = rememberNavController(), videoUri = Uri.EMPTY)
+        MateriVideoScreen(navController = rememberNavController(), videoUri = Uri.EMPTY)
     }
 }
 

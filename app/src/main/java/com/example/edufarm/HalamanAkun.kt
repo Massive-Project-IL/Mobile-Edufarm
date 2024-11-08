@@ -38,8 +38,7 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 
 @Composable
 fun ProfileScreen(
-    navController: NavController,
-    modifier: Modifier = Modifier
+    navController: NavController
 ) {
     val selectedItem = remember { mutableStateOf("Akun") }
 
@@ -257,8 +256,7 @@ fun ProfileScreen(
 fun ProfileScreenPreview() {
     EdufarmTheme {
         ProfileScreen(
-            navController = rememberNavController(),
-            modifier = Modifier
+            navController = rememberNavController()
         )
     }
 }

@@ -18,13 +18,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EdufarmTheme {
-                // Inisialisasi NavController
                 val navController = rememberNavController()
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    // Panggil EdufarmNavHost dan sambungkan dengan navController
                     EdufarmNavHost(
                         navController = navController,
                         modifier = Modifier.padding(innerPadding)

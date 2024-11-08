@@ -2,6 +2,7 @@ package com.example.edufarm
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -42,6 +41,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
@@ -52,7 +52,7 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 fun LiveMentorScreen(
     navController: NavController, modifier: Modifier = Modifier
 ) {
-    val selectedItem = remember { mutableStateOf("Live Mentor") } // Menyimpan item yang dipilih
+    val selectedItem = remember { mutableStateOf("Live Mentor") }
 
     Scaffold(
         modifier = modifier,
@@ -64,7 +64,6 @@ fun LiveMentorScreen(
                 .background(color = colorResource(R.color.background))
                 .padding(start = 35.dp, end = 35.dp, top = 5.dp)
         ) {
-            // Header Section
             Text(
                 text = "Live Mentor",
                 fontSize = 18.sp,
@@ -90,32 +89,31 @@ fun LiveMentorScreen(
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Medium,
                     lineHeight = 23.sp,
-                    letterSpacing = 0.02.em, // Mengatur letter spacing menjadi 2%
+                    letterSpacing = 0.02.em,
                     color = Color.Black
                 )
                 Button(
-                    onClick = { /* Handle Lihat Jadwal click */ },
-                    shape = RoundedCornerShape(16.dp),
+                    onClick = { navController.navigate(Routes.HALAMAN_JADWAL_LIVE) },
+                    shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(R.color.green)
                     ),
                     contentPadding = PaddingValues(horizontal = 1.dp, vertical = 0.dp),
                     modifier = Modifier
-                        .width(80.dp)
+                        .width(84.dp)
                         .height(25.dp)
                 ) {
                     Text(
                         text = "Lihat Jadwal",
                         color = Color.White,
-                        fontSize = 8.sp,
+                        fontSize = 10.sp,
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 0.02.em, // Mengatur letter spacing menjadi 2%
+                        letterSpacing = 0.02.em,
                     )
                 }
             }
-            // Placeholder for content below the header
-            // Tambahkan konten lain di sini sesuai kebutuhan
+
             Spacer(modifier = Modifier.height(16.dp))
 
             CardLiveMentor()
@@ -132,7 +130,7 @@ fun LiveMentorDescription() {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Title
+
         Text(
             text = "Yuk, Bertani Gandum Bareng! 🎉",
             fontWeight = FontWeight.SemiBold,
@@ -145,7 +143,6 @@ fun LiveMentorDescription() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Subheading
         Text(
             text = "Live Mentor: Bertanam Gandum 🌾",
             fontWeight = FontWeight.Medium,
@@ -158,7 +155,6 @@ fun LiveMentorDescription() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Description
         Text(
             text = "Belajar menanam gandum dari ahlinya! 🌱 Simak tips dan trik bertanam gandum yang benar, mulai dari pemilihan benih, pengolahan tanah, hingga perawatannya.",
             fontWeight = FontWeight.Normal,
@@ -171,7 +167,6 @@ fun LiveMentorDescription() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Section Title
         Text(
             text = "Yang akan kamu dapatkan:",
             fontWeight = FontWeight.Bold,
@@ -184,7 +179,7 @@ fun LiveMentorDescription() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // List of Benefits
+
         val benefits = listOf(
             "Panduan praktis: Belajar langsung dari pakar pertanian berpengalaman.",
             "Sharing pengalaman: Berdiskusi dan berbagi pengalaman dengan petani lainnya.",
@@ -207,7 +202,6 @@ fun LiveMentorDescription() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Closing Text
         Text(
             text = "Gabung sekarang dan raih hasil panen yang maksimal! Jangan lewatkan kesempatan emas ini! 🎉",
             fontWeight = FontWeight.Normal,
@@ -223,8 +217,8 @@ fun LiveMentorDescription() {
 @Composable
 fun CardLiveMentor() {
     var showDialog by remember { mutableStateOf(false) }
+    var isNotificationActive by remember { mutableStateOf(false) }
 
-    // Menggunakan Box sebagai container untuk membuat efek outline hijau dengan blur
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,8 +231,8 @@ fun CardLiveMentor() {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp), // Mengatur bayangan
-            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_live))
+            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
+            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
@@ -253,10 +247,14 @@ fun CardLiveMentor() {
                         color = colorResource(id = R.color.green_title)
                     )
                     Icon(
-                        imageVector = Icons.Default.Notifications,
-                        contentDescription = null,
+                        painter = painterResource(
+                            if (isNotificationActive) R.drawable.notifikasi_default else R.drawable.notifikasi_aktif
+                        ),
+                        contentDescription = "Notifikasi",
                         tint = colorResource(id = R.color.green_title),
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier
+                            .size(26.dp)
+                            .clickable { isNotificationActive = !isNotificationActive }
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))

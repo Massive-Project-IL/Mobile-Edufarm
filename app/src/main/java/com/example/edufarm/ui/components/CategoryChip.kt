@@ -19,13 +19,15 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 @Composable
 fun CategoryChip(
     category: String,
+    isSelected: Boolean = false,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
             .background(
-                color = colorResource(R.color.white),
+                color = if (isSelected) colorResource(R.color.green)
+                else colorResource(R.color.white),
                 shape = RoundedCornerShape(6.dp)
             )
             .clickable { onClick() }
@@ -38,7 +40,8 @@ fun CategoryChip(
     ) {
         Text(
             text = category,
-            color = colorResource(R.color.gray_bookmark),
+            color = if (isSelected) colorResource(R.color.white)
+            else colorResource(R.color.gray_bookmark),
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = poppinsFontFamily,

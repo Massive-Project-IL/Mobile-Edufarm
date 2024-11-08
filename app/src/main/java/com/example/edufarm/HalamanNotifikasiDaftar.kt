@@ -31,7 +31,7 @@ import com.example.edufarm.ui.theme.EdufarmTheme
 
 
 @Composable
-fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Modifier){
+fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -39,7 +39,6 @@ fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Mo
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo
         Image(
             painter = painterResource(id = R.drawable.ilustrasi),
             contentDescription = "Edu Farm Logo",
@@ -50,37 +49,36 @@ fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Mo
 
         Spacer(modifier = Modifier.height(19.dp))
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Yeayy!!,Daftar Sukses",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.black)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(34.dp))
-
-                // Button
-                Button(
-                    onClick = {navController.navigate(Routes.HALAMAN_LOGIN) },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                    modifier = Modifier
-                        .width(310.dp)
-                        .height(40.dp)
-                ) {
-                    Text(
-                        text = "Selanjutnya",
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        )
-                }
-
-
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Yeayy!!,Daftar Sukses",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(id = R.color.black)
+                )
             }
+
+            Spacer(modifier = Modifier.height(34.dp))
+
+            Button(
+                onClick = { navController.navigate(Routes.HALAMAN_LOGIN) },
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                modifier = Modifier
+                    .width(310.dp)
+                    .height(40.dp)
+            ) {
+                Text(
+                    text = "Selanjutnya",
+                    color = Color.White,
+                    fontSize = 15.sp,
+                )
+            }
+
+
+        }
     }
 }
 
@@ -90,6 +88,7 @@ fun NotifikasiDaftarScreenPreview() {
     EdufarmTheme {
         NotifikasiDaftarScreen(
             navController = rememberNavController(),
-            modifier = Modifier)
+            modifier = Modifier
+        )
     }
 }

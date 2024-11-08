@@ -12,6 +12,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -20,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.CardPelatihan
 import com.example.edufarm.ui.components.CategoryChip
 import com.example.edufarm.ui.components.SearchBar
@@ -44,7 +49,6 @@ fun BookmarkScreen(modifier: Modifier = Modifier, navController: NavController) 
         SearchBar(placeholder = "Cari Pelatihan")
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Teks "Kategori"
         Text(
             text = "Kategori",
             fontSize = 14.sp,
@@ -58,14 +62,13 @@ fun BookmarkScreen(modifier: Modifier = Modifier, navController: NavController) 
         CategoryChips()
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Memanggil CardPelatihan dengan konten bookmark
         CardPelatihan(
             title = "Pelatihan Menanam Kacang Tanah",
             description = "Materi ini akan membahas cara menanam kacang tanah dari awal sampai akhir.",
             imageRes = R.drawable.petani,
-            onBookmarkClick = { /* Aksi bookmark */ },
-            onButtonClick = { /* Aksi lihat selengkapnya */ },
-            poppinsFontFamily = poppinsFontFamily // Pastikan font tersedia di proyek
+            onBookmarkClick = { /* Aksi untuk  bookmark */ },
+            onButtonClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
+            poppinsFontFamily = poppinsFontFamily
         )
     }
 }
@@ -74,6 +77,7 @@ fun BookmarkScreen(modifier: Modifier = Modifier, navController: NavController) 
 @Composable
 fun CategoryChips(modifier: Modifier = Modifier) {
     val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai", "Padi")
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
 
     LazyRow(
         modifier = modifier.fillMaxWidth(),
@@ -82,7 +86,8 @@ fun CategoryChips(modifier: Modifier = Modifier) {
         items(categories) { category ->
             CategoryChip(
                 category = category,
-                onClick = { /* Aksi saat kategori dipilih */ }
+                isSelected = category == selectedCategory,
+                onClick = { selectedCategory = category }
             )
         }
     }
