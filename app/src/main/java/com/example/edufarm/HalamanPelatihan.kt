@@ -172,14 +172,13 @@ fun KategoriChips() {
 fun CardPelatihanKategori(){
     Card(
         modifier = Modifier
-            .padding(top = 16.dp)
             .fillMaxWidth()
             .height(260.dp)
             .offset(y = (-11).dp)
             .shadow(
                 elevation = 15.dp, // Ketinggian bayangan
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
-                ambientColor = Color.Black.copy(alpha = 3.0f), // Warna bayangan
+                ambientColor = Color.Black.copy(alpha = 3.0f),
                 spotColor = Color.Black.copy(alpha = 3.0f),
                 clip = false
             ),
