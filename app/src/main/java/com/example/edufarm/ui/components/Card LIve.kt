@@ -152,18 +152,14 @@ fun CardLive() {
         }
     }
 
-    // Dialog untuk konfirmasi gabung live
     if (showDialog) {
         ConfirmationDialog(
             message = "Apakah Kamu Mau Gabung Live ?",
             onDismissRequest = { showDialog = false },
             onConfirm = {
-                // Aksi untuk tombol "Ya"
                 showDialog = false
-                // Tambahkan aksi download di sini, misalnya memulai download
             },
             onCancel = {
-                // Aksi untuk tombol "Tidak"
                 showDialog = false
             }
         )
