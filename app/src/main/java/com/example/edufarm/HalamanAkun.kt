@@ -1,26 +1,27 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -28,27 +29,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanAkun : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            EdufarmTheme {
-                ProfileScreen()
-                }
-            }
-        }
-    }
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val selectedItem = remember { mutableStateOf("Akun") }
 
     Scaffold(
         modifier = Modifier,
-        bottomBar = { BottomNavigationBar(selectedItem) }
+        bottomBar = { BottomNavigationBar(navController, selectedItem) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -122,7 +119,6 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_edit),
@@ -137,7 +133,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                     fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.black)
                 )
-                Spacer(modifier = Modifier.width(227.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.row),
                     contentDescription = "Row",
@@ -156,13 +152,13 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Privasi & Kemananan",
+                    text = "Privasi & Keamanan",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.black)
                 )
-                Spacer(modifier = Modifier.width(95.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.row),
                     contentDescription = "Row",
@@ -171,7 +167,6 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             }
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Settings
             Text(
                 text = "Pengaturan",
                 fontSize = 18.sp,
@@ -196,7 +191,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                     fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.black)
                 )
-                Spacer(modifier = Modifier.width(178.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.row),
                     contentDescription = "Row",
@@ -221,7 +216,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                     fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.black)
                 )
-                Spacer(modifier = Modifier.width(150.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.row),
                     contentDescription = "Row",
@@ -255,113 +250,15 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun BottomNavigationBar(selectedItem: MutableState<String>) {
-    NavigationBar(
-        modifier = Modifier
-            .height(61.dp)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-        containerColor = colorResource(id = R.color.white)
-    ) {
-        Row (
-            modifier = Modifier
-                .padding(horizontal = 35.dp)
-                .padding(top = 15.dp, bottom = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.beranda),
-                        contentDescription = "Beranda",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(width = 24.dp, height = 22.dp)
-                        )
-                },
-                label = {
-                    Text(
-                        text = "Beranda",
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp
-                    )
-                },
-                selected = false,
-                onClick = { /* Navigasi ke halaman Beranda */ }
-            )
 
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.vidio),
-                        contentDescription = "Live Mentor",
-                        tint = Color.Gray
-                    )
-                },
-                label = {
-                    Text(
-                        text = "Live Mentor",
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp
-                    )
-                },
-                selected = false,
-                onClick = { /* Navigasi ke halaman Live Mentor */ }
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.pelatihan),
-                        contentDescription = "Pelatihan",
-                        tint = Color.Gray
-                    )
-                },
-                label = {
-                    Text(
-                        text = "Pelatihan",
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp
-
-                    )
-                },
-                selected = false,
-                onClick = { /* Navigasi ke halaman Pelatihan */ }
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.akun),
-                        contentDescription = "Home",
-                        tint = colorResource(id = R.color.green),
-                        modifier = Modifier.size(width = 22.dp, height = 22.dp)
-                        )
-                },
-                label = {
-                    Text(
-                        text = "Akun",
-                        color = colorResource(id = R.color.green),
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily
-                    )
-                },
-                selected = false,
-                onClick = { /* Navigasi ke halaman Akun */ }
-            )
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
     EdufarmTheme {
-        ProfileScreen()
+        ProfileScreen(
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
     }
 }

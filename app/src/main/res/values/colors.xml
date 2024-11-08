@@ -12,6 +12,7 @@
     <color name="card_live">#F4F4EE</color>
     <color name="card_notif">#F5F1F1</color>
     <color name="green_title">#39966A</color>
+    <color name="gray_icon">#999999</color>
     <color name="gray_text">#9B9B9B</color>
     <color name="green_icon">#51D195</color>
     <color name="green_text">#5AA180</color>

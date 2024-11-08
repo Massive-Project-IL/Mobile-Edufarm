@@ -99,7 +99,7 @@ fun CardPelatihan(
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = description,
-                    fontSize = 11.sp,
+                    fontSize = 12.sp,
                     lineHeight = 14.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = poppinsFontFamily, // Menggunakan font Poppins
@@ -113,16 +113,16 @@ fun CardPelatihan(
                 onClick = onButtonClick,
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
                 shape = RoundedCornerShape(6.dp), // Sudut melengkung sesuai desain
-                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp), // Padding internal yang lebih sesuai
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp), // Padding internal yang lebih sesuai
                 modifier = Modifier
-                    .width(155.dp) // Lebar button yang sesuai
-                    .height(26.dp) // Tinggi button sesuai
+                    .width(170.dp) // Lebar button yang sesuai
+                    .height(30.dp) // Tinggi button sesuai
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
                     text = "Lihat Selengkapnya",
                     color = Color.White,
-                    fontSize = 10.sp, // Ukuran teks disesuaikan agar sesuai dengan button
+                    fontSize = 12.sp, // Ukuran teks disesuaikan agar sesuai dengan button
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
                     modifier = Modifier

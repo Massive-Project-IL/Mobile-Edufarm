@@ -2,6 +2,7 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
+<<<<<<< HEAD
       <SelectionState runConfigName="HalamanPelatihan">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2024-11-07T18:17:52.286832600Z">
@@ -12,6 +13,10 @@
           </Target>
         </DropdownSelection>
         <DialogSelection />
+=======
+      <SelectionState runConfigName="PreviewEdufarmNavHost">
+        <option name="selectionMode" value="DROPDOWN" />
+>>>>>>> d9f83e172a457788edfddf3eba49e51118e6b03f
       </SelectionState>
     </selectionStates>
   </component>

@@ -22,10 +22,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,32 +42,47 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.navigation.Routes
+import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.CardLive
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
 
 @Composable
-fun ContentScreen(navController: NavController, modifier: Modifier) {
-    Column {
-        InfoCard(
-            hai = "Hai,",
-            title = "Petani👋",
-            deskripsi = "Ayo kita belajar bertani bersama!"
-        )
-        Column {
+fun ContentScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val selectedItem = remember { mutableStateOf("Beranda") } // Menyimpan item yang dipilih
+
+    Scaffold(
+        modifier = modifier,
+        bottomBar = { BottomNavigationBar(navController, selectedItem) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+        ) {
+            InfoCard(
+                hai = "Hai,",
+                title = "Petani👋",
+                deskripsi = "Ayo kita belajar bertani bersama!"
+            )
             Spacer(modifier = Modifier.height(16.dp))
+            CardLive()
+            KategoriBertani()
+            Spacer(modifier = Modifier.height(10.dp))
+            SelectKategori()
+            RekomendasiPelatihan()
+            Spacer(modifier = Modifier.height(10.dp))
+            CardPelatihan(navController)
         }
-        CardLive()
-        KategoriBertani()
-        Spacer(modifier = Modifier.height(10.dp))
-        SelectKategori()
-        RekomendasiPelatihan()
-        Spacer(modifier = Modifier.height(10.dp))
-        CardPelatihan()
-        BottomNavigationBar()
     }
 }
+
 
 @Composable
 fun KategoriBertani() {
@@ -182,16 +199,19 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
         modifier = Modifier
             .fillMaxWidth()
             .height(176.dp),
-        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),//untuk lengkung sudut
+        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp), // Untuk lengkung sudut
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.green))
-
     ) {
-        Column(modifier = Modifier
-            .padding(horizontal = 37.dp, vertical = 23.dp)
-            .padding(top = 5.dp)
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 37.dp, vertical = 23.dp)
+                .padding(top = 5.dp)
         ) {
             // Bagian judul
-            Row {
+            Row(
+                modifier = Modifier.fillMaxWidth(), // Menjadikan Row memenuhi lebar penuh
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = hai,
                     fontSize = 18.sp,
@@ -209,14 +229,18 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(3.dp)
                 )
-                Icon(
-                    painter = painterResource(id =R.drawable.bookmark_putih),
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.white),
-                    modifier = Modifier
-                        .size(24.dp)
-                        .offset(x = 160.dp)
-                )
+
+                Spacer(modifier = Modifier.weight(1f)) // Spacer untuk mendorong ikon ke kanan
+
+                IconButton(onClick = {}) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.bookmark_putih),
+                        contentDescription = "Bookmark",
+                        tint = colorResource(id = R.color.white),
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
             }
 
             // Bagian deskripsi
@@ -229,13 +253,13 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
                 modifier = Modifier.padding(3.dp)
             )
 
-
             Spacer(modifier = Modifier.height(16.dp))
 
             SearchBar()
         }
     }
 }
+
 
 @Composable
 fun SearchBar() {
@@ -268,7 +292,7 @@ fun SearchBar() {
 }
 
 @Composable
-fun CardPelatihan() {
+fun CardPelatihan(navController: NavController) {
     Box(
         modifier = Modifier
             .padding(horizontal = 37.dp),
@@ -293,7 +317,8 @@ fun CardPelatihan() {
                         painter = painterResource(id = R.drawable.petani), // Ganti dengan ID gambar Anda
                         contentDescription = "Deskripsi Gambar",
                         contentScale = ContentScale.Crop, // Memastikan gambar terpotong hanya pada bagian bawah
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
                             .padding(horizontal = 9.dp, vertical = 8.dp)
                             .clip(RoundedCornerShape(16.dp))// Agar gambar mengisi Box secara penuh
                     )
@@ -302,7 +327,10 @@ fun CardPelatihan() {
                         modifier = Modifier
                             .align(Alignment.TopEnd) // Menempatkan di sudut kanan atas
                             .padding(24.dp) // Memberikan jarak dari tepi
-                            .background(Color.Gray, shape = RoundedCornerShape(6.dp)) // Background abu-abu dengan sudut melengkung
+                            .background(
+                                Color.Gray,
+                                shape = RoundedCornerShape(6.dp)
+                            ) // Background abu-abu dengan sudut melengkung
                             .padding(horizontal = 2.dp, vertical = 2.dp) // Padding di dalam Box untuk membuat background lebih lebar
                     ) {
                         Icon(
@@ -339,7 +367,7 @@ fun CardPelatihan() {
                     )
 
                     Button(
-                        onClick = {},
+                        onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
@@ -361,112 +389,14 @@ fun CardPelatihan() {
     }
 }
 
-@Composable
-fun BottomNavigationBar() {
-    NavigationBar(
-        modifier = Modifier
-            .height(61.dp)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)), // Lengkungan sudut atas kiri dan kanan
-        containerColor = colorResource(id = R.color.white) // Warna latar belakang navigasi
-    ) {
-        Row (modifier = Modifier
-            .padding(horizontal = 35.dp)
-            .padding(top = 15.dp, bottom = 10.dp)
-        ){
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.home), // Ganti dengan ikon rumah
-                        contentDescription = "Home",
-                        tint = colorResource(id = R.color.green), // Warna hijau untuk ikon aktif
-                    )
-                },
-                label = {
-                    Text(
-                        text = "Beranda",
-                        color = colorResource(id = R.color.green), // Warna teks aktif
-                        fontSize = 10.sp,
-                        lineHeight = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily
-                    )
-                },
-                selected = false, // Beri true untuk menandakan ini halaman aktif
-                onClick = { /* Navigasi ke halaman Beranda */ }
-            )
-
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.vidio), // Ganti dengan ikon live mentor
-                    contentDescription = "Live Mentor",
-                    tint = Color.Gray // Warna abu-abu untuk ikon tidak aktif
-                )
-            },
-            label = {
-                Text(
-                    text = "Live Mentor",
-                    color = Color.Gray, // Warna teks tidak aktif
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp
-                )
-            },
-            selected = false,
-            onClick = { /* Navigasi ke halaman Live Mentor */ }
-        )
-
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.pelatihan), // Ganti dengan ikon pelatihan
-                    contentDescription = "Pelatihan",
-                    tint = Color.Gray
-                )
-            },
-            label = {
-                Text(
-                    text = "Pelatihan",
-                    color = Color.Gray,
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp
-
-                )
-            },
-            selected = false,
-            onClick = { /* Navigasi ke halaman Pelatihan */ }
-        )
-
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.profil), // Ganti dengan ikon akun
-                    contentDescription = "Akun",
-                    tint = Color.Gray
-                )
-            },
-            label = {
-                Text(
-                    text = "Akun",
-                    color = Color.Gray,
-                    fontSize = 10.sp,
-                    lineHeight = 10.sp
-                )
-            },
-            selected = false,
-            onClick = { /* Navigasi ke halaman Akun */ }
-        )
-    }
-}
-}
-
 @Preview(showBackground = true)
 @Composable
 fun HalamanBerandaPreview() {
     EdufarmTheme {
-            ContentScreen(
-                navController = rememberNavController(),
-                modifier = Modifier
-            )
+        ContentScreen(
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
     }
 }
 
