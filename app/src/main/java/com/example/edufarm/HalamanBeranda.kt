@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -60,12 +61,9 @@ fun ContentScreen(
         modifier = modifier,
         bottomBar = { BottomNavigationBar(navController, selectedItem) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-        ) {
+        Column (modifier = Modifier
+            .padding(paddingValues)
+        ){
             InfoCard(
                 hai = "Hai,",
                 title = "Petani👋",
@@ -77,8 +75,14 @@ fun ContentScreen(
             Spacer(modifier = Modifier.height(10.dp))
             SelectKategori()
             RekomendasiPelatihan()
-            Spacer(modifier = Modifier.height(10.dp))
-            CardPelatihan(navController)
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 10.dp)
+            ) {items(5)
+            {
+                CardPelatihan(navController)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            }
         }
     }
 }
@@ -319,7 +323,7 @@ fun CardPelatihan(navController: NavController) {
                         contentScale = ContentScale.Crop, // Memastikan gambar terpotong hanya pada bagian bawah
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 9.dp, vertical = 8.dp)
+                            .padding(horizontal = 10.dp, vertical = 10.dp)
                             .clip(RoundedCornerShape(16.dp))// Agar gambar mengisi Box secara penuh
                     )
 //
