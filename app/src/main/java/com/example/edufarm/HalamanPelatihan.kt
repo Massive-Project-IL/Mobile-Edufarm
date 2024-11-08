@@ -1,18 +1,33 @@
 package com.example.edufarm
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,68 +42,69 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-class HalamanPelatihan : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            EdufarmTheme {
-                PelatihanScreen()
-            }
-        }
-    }
-}
-
 @Composable
-fun PelatihanScreen() {
-    Box (modifier = Modifier
-        .fillMaxSize()
-    ){
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 35.dp)
-        ) {
-            // Judul
-            Text(
-                text = "Pelatihan",
-                fontSize = 18.sp,
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-            // Search Bar
-            SearchBarPelatihan()
-            Text(
-                text = "Kategori",
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-            // Kategori
-            Spacer(modifier = Modifier.height(12.dp))
-            KategoriChips()
+fun PelatihanScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val selectedItem = remember { mutableStateOf("Pelatihan") } // Menyimpan item yang dipilih
 
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 16.dp)
+    Scaffold(
+        modifier = modifier,
+        bottomBar = { BottomNavigationBar(navController = navController, selectedItem = selectedItem) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Menghindari tumpang tindih dengan BottomNavigationBar
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 35.dp)
             ) {
-                items(5) {
-                    CardPelatihanKategori()
-                    Spacer(modifier = Modifier.height(16.dp))
+                // Judul
+                Text(
+                    text = "Pelatihan",
+                    fontSize = 18.sp,
+                    fontFamily = poppinsFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+                // Search Bar
+                SearchBarPelatihan()
+                Text(
+                    text = "Kategori",
+                    fontFamily = poppinsFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+                // Kategori
+                Spacer(modifier = Modifier.height(12.dp))
+                KategoriChips()
+
+                LazyColumn(
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
+                    items(5) {
+                        CardPelatihanKategori()
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }
-
-        BottomNavigationBarPelatihan(
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
     }
 }
+
 
 @Composable
 fun SearchBarPelatihan() {
@@ -264,115 +280,16 @@ fun CardPelatihanKategori(){
         }
     }
 
-@Composable
-fun BottomNavigationBarPelatihan(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-    ) {
-        NavigationBar(
-            modifier = Modifier
-                .height(61.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-            containerColor = colorResource(id = R.color.white)
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 35.dp)
-                    .padding(top = 15.dp, bottom = 10.dp)
-            ) {
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.home),
-                            contentDescription = "Home",
-                            tint = colorResource(id = R.color.green),
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Beranda",
-                            color = colorResource(id = R.color.green),
-                            fontSize = 10.sp,
-                            lineHeight = 10.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            fontFamily = poppinsFontFamily
-                        )
-                    },
-                    selected = false,
-                    onClick = { /* halaman Beranda */ }
-                )
-
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.vidio),
-                            contentDescription = "Live Mentor",
-                            tint = Color.Gray
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Live Mentor",
-                            color = Color.Gray,
-                            fontSize = 10.sp,
-                            lineHeight = 10.sp
-                        )
-                    },
-                    selected = false,
-                    onClick = { /* Navigasi ke halaman Live Mentor */ }
-                )
-
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.pelatihan),
-                            contentDescription = "Pelatihan",
-                            tint = Color.Gray
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Pelatihan",
-                            color = Color.Gray,
-                            fontSize = 10.sp,
-                            lineHeight = 10.sp
-                        )
-                    },
-                    selected = false,
-                    onClick = { /* Navigasi ke halaman Pelatihan */ }
-                )
-
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.profil),
-                            contentDescription = "Akun",
-                            tint = Color.Gray
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Akun",
-                            color = Color.Gray,
-                            fontSize = 10.sp,
-                            lineHeight = 10.sp
-                        )
-                    },
-                    selected = false,
-                    onClick = { /* Navigasi ke halaman Akun */ }
-                )
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true )
 @Composable
 fun PreviewPelatihanScreen() {
     EdufarmTheme {
         Column {
-            PelatihanScreen()
+            PelatihanScreen(
+                navController = rememberNavController()
+                , modifier = Modifier
+            )
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
