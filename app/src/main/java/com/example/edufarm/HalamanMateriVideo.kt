@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +40,9 @@ import com.example.edufarm.ui.theme.EdufarmTheme
 @Composable
 fun MateriVideoScreen(navController: NavController, videoUri: Uri) {
     var isPlaying by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val videoUri = Uri.parse("android.resource://${context.packageName}/${R.raw.video_gandum}")
 
     Box(
         modifier = Modifier
