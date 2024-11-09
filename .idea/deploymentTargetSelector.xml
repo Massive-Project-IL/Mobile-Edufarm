@@ -2,11 +2,16 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
+<<<<<<< HEAD
       <SelectionState runConfigName="JadwalLiveScreenPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="PreviewEdufarmNavHost">
         <option name="selectionMode" value="DROPDOWN" />
+=======
+      <SelectionState runConfigName="app">
+        <option name="selectionMode" value="DROPDOWN" />
+>>>>>>> 10e04227526314c035b5bf983248a0918d824571
       </SelectionState>
     </selectionStates>
   </component>

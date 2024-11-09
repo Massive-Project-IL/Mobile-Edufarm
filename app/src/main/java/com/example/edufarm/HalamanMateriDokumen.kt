@@ -35,7 +35,6 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 
 @Composable
 fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) {
-    // State untuk mengontrol visibilitas tombol
     val listState = rememberLazyListState()
     val isAtBottom = remember {
         derivedStateOf {
@@ -43,7 +42,6 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
         }
     }
 
-    // State untuk mengontrol visibilitas dialog
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -58,14 +56,13 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Konten yang dapat di-scroll
+
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .weight(1f) // Membuat kolom ini fleksibel
+                .weight(1f)
         ) {
             item {
-                // Judul Materi Dokumen
                 Text(
                     text = "$title",
                     fontSize = 16.sp,
@@ -78,7 +75,6 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
-            // Konten Materi yang panjang
             item {
                 Text(
                     text = """
@@ -101,19 +97,19 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
                     fontFamily = poppinsFontFamily,
                     color = colorResource(R.color.black)
                 )
-                Spacer(modifier = Modifier.height(24.dp)) // Jarak di bawah teks
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
 
-        // Tombol Download hanya muncul jika di-scroll ke bawah
+
         if (isAtBottom.value) {
             Button(
-                onClick = { showDialog = true }, // Set showDialog to true on click
+                onClick = { showDialog = true },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp) // Menambahkan jarak vertikal atas dan bawah tombol
+                    .padding(vertical = 20.dp)
                     .height(40.dp)
             ) {
                 Text(
@@ -126,18 +122,15 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
             }
         }
 
-        // Tampilkan dialog konfirmasi jika showDialog bernilai true
+        // untuk memunculkan notifikasi konfirmasi
         if (showDialog) {
             ConfirmationDialog(
                 message = "Apakah Kamu Mau Download?",
                 onDismissRequest = { showDialog = false },
                 onConfirm = {
-                    // Aksi untuk tombol "Ya"
                     showDialog = false
-                    // Tambahkan aksi download di sini, misalnya memulai download
                 },
                 onCancel = {
-                    // Aksi untuk tombol "Tidak"
                     showDialog = false
                 }
             )

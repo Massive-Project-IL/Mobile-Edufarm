@@ -15,11 +15,13 @@ import com.example.edufarm.ContentScreen
 import com.example.edufarm.DaftarScreen
 import com.example.edufarm.EduFarmScreen
 import com.example.edufarm.IsiMateriScreen
+import com.example.edufarm.JadwalLiveScreen
 import com.example.edufarm.LiveMentorScreen
 import com.example.edufarm.LoginScreen
 import com.example.edufarm.MateriDokumenScreen
 import com.example.edufarm.MateriVideoScreen
 import com.example.edufarm.NotifikasiDaftarScreen
+import com.example.edufarm.PelatihanScreen
 import com.example.edufarm.ProfileScreen
 import com.example.edufarm.SubMateriScreen
 
@@ -30,11 +32,11 @@ fun EdufarmNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.HALAMAN_SPLASH, // Set Splash sebagai startDestination
+        startDestination = Routes.HALAMAN_SPLASH, // Membuat halaman splash di awal
         modifier = modifier
     ) {
         composable(Routes.HALAMAN_SPLASH) {
-            EduFarmScreen(navController) // Splash Screen
+            EduFarmScreen(navController)
         }
 
         composable(Routes.HALAMAN_LOGIN) {
@@ -57,8 +59,15 @@ fun EdufarmNavHost(
             LiveMentorScreen(navController)
         }
 
+        composable(Routes.HALAMAN_JADWAL_LIVE) {
+            JadwalLiveScreen(navController, modifier)
+        }
 
-        composable(Routes.HALAMAN_BOOKMARK){
+        composable(Routes.HALAMAN_PELATIHAN) {
+            PelatihanScreen(navController)
+        }
+
+        composable(Routes.HALAMAN_BOOKMARK) {
             BookmarkScreen(navController = navController)
         }
 
@@ -88,7 +97,6 @@ fun EdufarmNavHost(
             MateriVideoScreen(navController = navController, videoUri = videoUri)
         }
 
-        // Halaman Materi Dokumen
         composable(
             route = Routes.HALAMAN_MATERI_DOKUMEN,
             arguments = listOf(
@@ -101,7 +109,6 @@ fun EdufarmNavHost(
             MateriDokumenScreen(id = id, title = title, navController = navController)
         }
 
-        // Halaman Profil
         composable(Routes.HALAMAN_AKUN) {
             ProfileScreen(navController = navController)
         }

@@ -34,7 +34,6 @@ fun IsiMateriScreen(id: Int?, title: String?, navController: NavController) {
             .fillMaxSize()
             .background(color = colorResource(R.color.background))
     ) {
-        // Top Bar dengan Padding
         TopBar(
             title = "Materi",
             navController = navController,
@@ -44,7 +43,6 @@ fun IsiMateriScreen(id: Int?, title: String?, navController: NavController) {
 
         Spacer(modifier = Modifier.height(25.dp))
 
-        // Gambar Utama yang memenuhi lebar layar, berada di luar area scroll
         Box(modifier = Modifier.fillMaxWidth()) {
             Image(
                 painter = painterResource(id = R.drawable.petani),
@@ -58,14 +56,12 @@ fun IsiMateriScreen(id: Int?, title: String?, navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Konten yang dapat di-scroll
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()) // Menambahkan scroll pada kolom konten
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 35.dp)
         ) {
-            // Judul Materi dan ID
             Text(
                 text = "$title",
                 fontSize = 14.sp,
@@ -78,7 +74,6 @@ fun IsiMateriScreen(id: Int?, title: String?, navController: NavController) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Konten Materi yang panjang
             Text(
                 text = """
                     Menanam kacang tanah yang sehat dimulai dari pemilihan benih berkualitas. Benih yang unggul memiliki ciri berisi penuh, tidak keriput, dan bebas dari penyakit. Proses pemilihan ini penting untuk memastikan hasil panen yang optimal. Tanah yang subur, terhidrasi dengan baik, serta jarak tanam yang tepat akan meningkatkan kemampuan tanaman kacang tanah untuk berkembang secara efisien. Pastikan memilih benih yang sesuai dengan kondisi tanah di wilayah Anda agar hasil panen maksimal.
@@ -111,8 +106,8 @@ fun PreviewIsiMateriScreen() {
     EdufarmTheme {
         IsiMateriScreen(
             navController = rememberNavController(),
-            id = 1,  // Pastikan id adalah Int
-            title = "Preview Title"  // Berikan nilai contoh untuk title
+            id = 1,
+            title = "Pemilihan Benih Kacang Tanah"
         )
     }
 }

@@ -1,7 +1,5 @@
 package com.example.edufarm.ui.components
 
-// ConfirmationDialog.kt
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +44,7 @@ fun ConfirmationDialog(
         shape = RoundedCornerShape(16.dp),
         containerColor = colorResource(R.color.background_confirm),
         properties = DialogProperties(
-            dismissOnClickOutside = false // Mencegah dialog ditutup dengan klik di luar
+            dismissOnClickOutside = false // Mencegah dialog ditutup dengan mengklik di luar
         ),
         text = {
             Column(
@@ -54,18 +52,16 @@ fun ConfirmationDialog(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                // Gambar di bagian atas dengan contentScale yang diperbaiki
                 Image(
-                    painter = painterResource(id = R.drawable.ic_konfirmasi), // Sesuaikan dengan ID gambar
+                    painter = painterResource(id = R.drawable.ic_konfirmasi),
                     contentDescription = null,
-                    contentScale = ContentScale.Fit, // Menggunakan Fit agar tidak terpotong
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
-                        .size(165.dp) // Sesuaikan ukuran gambar sesuai keperluan
+                        .size(165.dp)
                         .padding(bottom = 13.dp)
-                        .aspectRatio(1f) // Mengatur aspect ratio 1:1 agar tetap proporsional
+                        .aspectRatio(1f)
                 )
 
-                // Teks pesan di bawah gambar
                 Text(
                     text = message,
                     fontSize = 12.sp,
@@ -79,13 +75,11 @@ fun ConfirmationDialog(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Row untuk tombol "Tidak" dan "Ya" di tengah
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Tombol "Tidak" dengan border hijau
                     OutlinedButton(
                         onClick = onCancel,
                         shape = RoundedCornerShape(15.dp),
@@ -110,7 +104,6 @@ fun ConfirmationDialog(
                         )
                     }
 
-                    // Tombol "Ya"
                     Button(
                         onClick = onConfirm,
                         shape = RoundedCornerShape(15.dp),

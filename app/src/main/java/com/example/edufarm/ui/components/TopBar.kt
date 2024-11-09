@@ -23,7 +23,7 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 fun TopBar(title: String, navController: NavController, modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier // Gunakan modifier yang diteruskan dari luar
+        modifier = modifier
             .fillMaxWidth()
     ) {
         IconButton(

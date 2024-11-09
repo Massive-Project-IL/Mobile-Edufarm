@@ -38,12 +38,10 @@ import kotlin.math.roundToInt
 
 @Composable
 fun EduFarmScreen(navController: NavController) {
-    // State untuk mengatur level opacity, skala, dan posisi animasi
     val alphaAnim = remember { Animatable(0f) }
     val scaleAnim = remember { Animatable(0.8f) }
-    val translateAnim = remember { Animatable(30f) } // Animasi translasi ke atas
+    val translateAnim = remember { Animatable(30f) }
 
-    // Animasi fade-in, scale-up, dan translasi
     LaunchedEffect(Unit) {
         alphaAnim.animateTo(
             targetValue = 1f,
@@ -58,7 +56,7 @@ fun EduFarmScreen(navController: NavController) {
             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
         )
 
-        // Delay sebelum beralih ke halaman utama
+        // Saya mendelay selama 2 detik
         kotlinx.coroutines.delay(2000)
 
         navController.navigate(Routes.HALAMAN_LOGIN) {
@@ -66,7 +64,6 @@ fun EduFarmScreen(navController: NavController) {
         }
     }
 
-    // Tampilan Splash Screen dengan animasi fade-in, scale-up, dan translasi
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,9 +77,9 @@ fun EduFarmScreen(navController: NavController) {
             contentDescription = "Edu Farm",
             modifier = Modifier
                 .size(200.dp)
-                .scale(scaleAnim.value)   // Animasi scale-up pada gambar
-                .alpha(alphaAnim.value)   // Animasi fade-in pada gambar
-                .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) } // Memperbaiki penggunaan offset
+                .scale(scaleAnim.value)
+                .alpha(alphaAnim.value)
+                .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }
                 .padding(bottom = 29.dp)
         )
         Row(
@@ -96,8 +93,8 @@ fun EduFarmScreen(navController: NavController) {
                 color = colorResource(id = R.color.orange_text),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .alpha(alphaAnim.value)    // Animasi fade-in pada teks
-                    .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }  // Memperbaiki penggunaan offset
+                    .alpha(alphaAnim.value)
+                    .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }
             )
             Text(
                 text = "Farm",
@@ -106,9 +103,9 @@ fun EduFarmScreen(navController: NavController) {
                 color = colorResource(id = R.color.green_logo),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(start = 4.dp)    // Menambahkan sedikit padding untuk perataan
-                    .alpha(alphaAnim.value)   // Animasi fade-in pada teks
-                    .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }  // Memperbaiki penggunaan offset
+                    .padding(start = 4.dp)
+                    .alpha(alphaAnim.value)
+                    .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }
             )
         }
         Text(
@@ -119,8 +116,8 @@ fun EduFarmScreen(navController: NavController) {
             color = colorResource(id = R.color.black),
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .alpha(alphaAnim.value)    // Animasi fade-in pada teks
-                .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }  // Memperbaiki penggunaan offset
+                .alpha(alphaAnim.value)
+                .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }
         )
     }
 }
