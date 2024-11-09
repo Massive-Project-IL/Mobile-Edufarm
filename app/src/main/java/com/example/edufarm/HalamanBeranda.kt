@@ -400,7 +400,7 @@ fun InfoCard(navController: NavController, title: String, deskripsi: String) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                IconButton(onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) }) {
+                IconButton(onClick = { navController.navigate(Routes.HALAMAN_BOOKMARK) }) { // ubah ke halaman bookmark
                     Icon(
                         painter = painterResource(id = R.drawable.bookmark_putih),
                         contentDescription = "Bookmark",
@@ -501,7 +501,9 @@ fun CardPelatihan(navController: NavController) {
                                 color = if (isBookmarked) Color.White else Color.Gray,
                                 shape = RoundedCornerShape(6.dp)
                             )
-                            .clickable { isBookmarked = !isBookmarked },
+                            .clickable {
+                                navController.navigate(Routes.HALAMAN_BOOKMARK) // ubah ke bookmark
+                            },
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
