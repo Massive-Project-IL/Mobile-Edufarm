@@ -17,19 +17,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +50,7 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 
 @Composable
 fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -189,25 +198,38 @@ fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
 
 @Composable
 fun InputField(placeholder: String) {
+    val emailText = remember { mutableStateOf("") }
+
     BasicTextField(
-        value = "", // Add state to handle input text
-        onValueChange = {},
+        value = emailText.value,
+        onValueChange = { emailText.value = it},
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email, // Menampilkan keyboard tipe email
+            imeAction = ImeAction.Next // Tombol Next untuk pindah ke field berikutnya
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
             .border(1.dp, colorResource(id = R.color.green_logo), RoundedCornerShape(15.dp))
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 21.dp),
+
         decorationBox = { innerTextField ->
-            Box(modifier = Modifier.fillMaxSize()) {
-                if (true) { // Replace with condition to check if field is empty
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (emailText.value.isEmpty()) {
                     Text(
                         text = placeholder,
                         color = Color.Gray,
                         fontSize = 15.sp,
-                        fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.align(Alignment.CenterStart)
+                        fontFamily = poppinsFontFamily,
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
                     )
+
                 }
                 innerTextField()
             }
@@ -217,42 +239,77 @@ fun InputField(placeholder: String) {
 
 @Composable
 fun PasswordField() {
+    val passwordText = remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
     BasicTextField(
-        value = "", // Add state to handle input text
-        onValueChange = {},
-        visualTransformation = PasswordVisualTransformation(),
+        value = passwordText.value,
+        onValueChange = {passwordText.value = it},
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password, // Menampilkan keyboard tipe password
+            imeAction = ImeAction.Done // Tombol Done untuk menyelesaikan input
+        ),
+        visualTransformation = if (!passwordVisible) {
+            PasswordVisualTransformation()
+        } else {
+            VisualTransformation.None
+        },
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
             .border(1.dp, colorResource(id = R.color.green_logo), RoundedCornerShape(15.dp))
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 21.dp),
+
         decorationBox = { innerTextField ->
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.CenterStart
+            ) {
                 Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .align(Alignment.CenterStart)
                         .fillMaxWidth()
                 ) {
-                    if (true) { // Replace with condition to check if field is empty
-                        Text(
-                            text = "Password",
-                            color = Color.Gray,
-                            fontSize = 15.sp,
-                            fontFamily = poppinsFontFamily,
-                            modifier = Modifier.weight(1f)
-                        )
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        if (passwordText.value.isEmpty()) {  // Tampilkan placeholder jika teks kosong
+                            Text(
+                                "Masukan Password",
+                                color = Color.Gray,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = poppinsFontFamily
+                            )
+                        }
+                        innerTextField()
                     }
-                    IconButton(onClick = { /* Handle visibility toggle */ }) {
+
+                    IconButton(
+                        onClick = { passwordVisible = !passwordVisible },
+                        modifier = Modifier.size(48.dp)
+                    ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.mdi_hide_outline),
-                            contentDescription = "Hide Password",
+                            painter = painterResource(
+                                id = if (passwordVisible) {
+                                    R.drawable.mdi_eye_outline
+                                } else {
+                                    R.drawable.mdi_hide_outline
+                                }
+                            ),
+                            contentDescription = if (passwordVisible) {
+                                "Hide Password"
+                            } else {
+                                "Show Password"
+                            },
                             tint = Color.Gray,
                             modifier = Modifier.size(22.dp)
                         )
                     }
                 }
-                innerTextField()
             }
         }
     )
