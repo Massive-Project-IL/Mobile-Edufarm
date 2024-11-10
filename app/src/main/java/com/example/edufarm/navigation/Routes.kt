@@ -18,7 +18,6 @@ object Routes {
     const val HALAMAN_MATERI_VIDEO = "halamanMateriVideo/{videoUri}"
     const val HALAMAN_MATERI_DOKUMEN = "halamanMateriDokumen/{id}/{title}"
     const val HALAMAN_UBAH_SANDI = "halamanUbahSandi"
-    const val HALAMAN_DUKUNGAN = "halamanDukungan"
 
     // Ini Fungsi untuk membangun rute dinamis
     fun getHalamanIsiMateriRoute(id: Int, title: String): String {

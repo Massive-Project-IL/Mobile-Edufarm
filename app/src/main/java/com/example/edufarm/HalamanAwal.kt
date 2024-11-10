@@ -40,9 +40,17 @@ import kotlin.math.roundToInt
 fun EduFarmScreen(navController: NavController) {
     val alphaAnim = remember { Animatable(0f) }
     val scaleAnim = remember { Animatable(0.8f) }
+    val bounceAnim = remember { Animatable(1.2f) }
     val translateAnim = remember { Animatable(30f) }
 
     LaunchedEffect(Unit) {
+        // Bounce animation on logo
+        bounceAnim.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
+        )
+
+        // Simultaneous alpha and scale animation
         alphaAnim.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
@@ -56,9 +64,10 @@ fun EduFarmScreen(navController: NavController) {
             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
         )
 
-        // Saya mendelay selama 2 detik
+        // Delay for splash screen
         kotlinx.coroutines.delay(2000)
 
+        // Navigate to login screen
         navController.navigate(Routes.HALAMAN_LOGIN) {
             popUpTo(Routes.HALAMAN_SPLASH) { inclusive = true }
         }
@@ -73,15 +82,16 @@ fun EduFarmScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.baru_2),
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Edu Farm",
             modifier = Modifier
                 .size(200.dp)
-                .scale(scaleAnim.value)
+                .scale(scaleAnim.value * bounceAnim.value)
                 .alpha(alphaAnim.value)
                 .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }
                 .padding(bottom = 29.dp)
         )
+
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -90,7 +100,7 @@ fun EduFarmScreen(navController: NavController) {
                 fontWeight = FontWeight.Bold,
                 fontFamily = poppinsFontFamily,
                 fontSize = 30.sp,
-                color = colorResource(id = R.color.orange_text),
+                color = colorResource(id = R.color.green_edu),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .alpha(alphaAnim.value)
@@ -108,6 +118,7 @@ fun EduFarmScreen(navController: NavController) {
                     .offset { IntOffset(x = 0, y = translateAnim.value.roundToInt()) }
             )
         }
+
         Text(
             text = "Sahabat Petani Modern",
             fontWeight = FontWeight.Medium,
@@ -121,6 +132,7 @@ fun EduFarmScreen(navController: NavController) {
         )
     }
 }
+
 
 
 

@@ -65,7 +65,7 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
     ) {
         // Logo
         Image(
-            painter = painterResource(id = R.drawable.baru_2),
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Edu Farm Logo",
             modifier = Modifier
                 .size(220.dp)
@@ -93,7 +93,7 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.orange_text),
+                        color = colorResource(id = R.color.green_edu),
                         modifier = Modifier
                                 .padding(bottom = 43.dp)
                     )

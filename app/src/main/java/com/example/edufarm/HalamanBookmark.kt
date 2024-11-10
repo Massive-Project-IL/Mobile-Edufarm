@@ -67,7 +67,7 @@ fun BookmarkScreen(modifier: Modifier = Modifier, navController: NavController) 
             description = "Materi ini akan membahas cara menanam kacang tanah dari awal sampai akhir.",
             imageRes = R.drawable.petani,
             onBookmarkClick = { /* Aksi untuk bookmark */ },
-            onButtonClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) }, // Ini sudah benar
+            onButtonClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
             poppinsFontFamily = poppinsFontFamily
         )
     }
