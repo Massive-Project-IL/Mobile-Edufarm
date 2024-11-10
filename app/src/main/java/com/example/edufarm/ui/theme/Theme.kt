@@ -49,7 +49,7 @@ fun EdufarmTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = AppTypography, // Gunakan AppTypography dari Type.kt
+        typography = AppTypography,
         content = content
     )
 }

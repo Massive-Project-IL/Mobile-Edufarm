@@ -8,7 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.edufarm.R
 
-
 val poppinsFontFamily = FontFamily(
     Font(R.font.poppins_thin, FontWeight.Thin),
     Font(R.font.poppins_extralight, FontWeight.ExtraLight),
@@ -21,7 +20,6 @@ val poppinsFontFamily = FontFamily(
     Font(R.font.poppins_black, FontWeight.Black),
 )
 
-// Set of Material typography styles to start with
 val AppTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

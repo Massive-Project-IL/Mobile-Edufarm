@@ -54,7 +54,6 @@ import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
-
 @Composable
 fun ContentScreen(
     navController: NavController,
@@ -313,7 +312,6 @@ fun SelectKategori() {
         }
     }
 }
-
 
 @Composable
 fun KategoriItem(iconRes: Int, title: String) {
