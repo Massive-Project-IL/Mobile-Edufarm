@@ -494,30 +494,30 @@ fun CardPelatihan(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(140.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)), // Lengkungan hanya di bagian atas gambar
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.petani), // Ganti dengan ID gambar Anda
+                        painter = painterResource(id = R.drawable.petani),
                         contentDescription = "Deskripsi Gambar",
-                        contentScale = ContentScale.Crop, // Memastikan gambar terpotong hanya pada bagian bawah
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 10.dp, vertical = 10.dp)
-                            .clip(RoundedCornerShape(16.dp))// Agar gambar mengisi Box secara penuh
+                            .clip(RoundedCornerShape(16.dp))
                     )
 //
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopEnd) // Menempatkan di sudut kanan atas
-                            .padding(24.dp) // Memberikan jarak dari tepi
+                            .align(Alignment.TopEnd)
+                            .padding(24.dp)
                             .background(
                                 Color.Gray,
                                 shape = RoundedCornerShape(6.dp)
-                            ) // Background abu-abu dengan sudut melengkung
-                            .padding(horizontal = 2.dp, vertical = 2.dp) // Padding di dalam Box untuk membuat background lebih lebar
+                            )
+                            .padding(horizontal = 2.dp, vertical = 2.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.bookmark_putih), // Ganti dengan ID ikon bookmark Anda
+                            painter = painterResource(id = R.drawable.bookmark_putih),
                             contentDescription = "Bookmark",
                             tint = Color.White,
                             modifier = Modifier
