@@ -35,10 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -195,20 +191,8 @@ fun CardPelatihanKategori(navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp)
-            .drawBehind {
-                val shadowColor = Color.Black.copy(alpha = 0.4f)
-                val shadowHeight = 20.dp.toPx()
-                val cornerRadius = 10.dp.toPx()
-
-                drawRoundRect(
-                    color = shadowColor,
-                    topLeft = Offset(0f, size.height - shadowHeight / 2),
-                    size = Size(size.width, shadowHeight),
-                    cornerRadius = CornerRadius(cornerRadius, cornerRadius),
-                    alpha = 0.2f
-                )
-            },
+            .height(260.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
     ) {

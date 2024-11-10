@@ -59,7 +59,7 @@ fun ContentScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val selectedItem = remember { mutableStateOf("Beranda") } // Menyimpan item yang dipilih
+    val selectedItem = remember { mutableStateOf("Beranda") }
 
     Scaffold(
         modifier = modifier,
@@ -68,20 +68,24 @@ fun ContentScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
+                .background(color = colorResource(R.color.background))
                 .fillMaxSize()
         ) {
             InfoCard(
+                navController = navController,
                 hai = "Hai,",
                 title = "Petani👋",
                 deskripsi = "Ayo kita belajar bertani bersama!"
             )
             Spacer(modifier = Modifier.height(16.dp))
             CardLive()
+            Spacer(modifier = Modifier.height(16.dp))
             KategoriBertani()
-            Spacer(modifier = Modifier.height(10.dp))
-            SelectKategori()
-            Spacer(modifier = Modifier.height(10.dp))
-            RekomendasiPelatihan()
+            Spacer(modifier = Modifier.height(6.dp))
+            SelectKategori(navController)
+            Spacer(modifier = Modifier.height(16.dp))
+            RekomendasiPelatihan(navController)
+            Spacer(modifier = Modifier.height(16.dp))
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 10.dp)
             ) {
@@ -102,7 +106,7 @@ fun CardLive() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 37.dp),
+            .padding(horizontal = 34.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
@@ -121,7 +125,7 @@ fun CardLive() {
                 )
                 Icon(
                     painter = painterResource(
-                        if (isNotificationActive) R.drawable.notifikasi_aktif else R.drawable.notifikasi_default
+                        id = if (isNotificationActive) R.drawable.notifikasi_aktif else R.drawable.notifikasi_default
                     ),
                     contentDescription = "Notifikasi",
                     tint = colorResource(id = R.color.green_title),
@@ -130,7 +134,9 @@ fun CardLive() {
                         .clickable { isNotificationActive = !isNotificationActive }
                 )
             }
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -139,77 +145,75 @@ fun CardLive() {
                 Image(
                     painter = painterResource(id = R.drawable.live),
                     contentDescription = null,
-                    modifier = Modifier.size(width = 26.dp, height = 22.dp)
+                    modifier = Modifier.size(26.dp, 22.dp)
                 )
                 Text(
                     text = "Sedang Berlangsung",
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
                     color = colorResource(id = R.color.green_title)
                 )
             }
-        }
-        Spacer(modifier = Modifier.height(0.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(start = 15.dp, top = 0.dp, bottom = 17.dp)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "waktu",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title),
-                    modifier = Modifier.padding(bottom = 3.dp)
-                )
-                Text(
-                    text = "09.30–12.30",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title)
-                )
-            }
-            Column(
-                modifier = Modifier.padding(end = 0.dp, top = 0.dp, bottom = 17.dp)
-            ) {
-                Text(
-                    text = "Nama Mentor",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title),
-                    modifier = Modifier.padding(bottom = 3.dp)
-                )
-                Text(
-                    text = "Vodka",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title)
-                )
-            }
-            Button(
-                onClick = { showDialog = true },
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                modifier = Modifier
-                    .padding(start = 10.dp, top = 5.dp)
-                    .width(93.dp)
-                    .height(26.dp),
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text(
-                    text = "Gabung Live",
-                    color = Color.White,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = poppinsFontFamily
-                )
+                Column {
+                    Text(
+                        text = "waktu",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = poppinsFontFamily,
+                        color = colorResource(id = R.color.green_title),
+                        modifier = Modifier.padding(bottom = 3.dp)
+                    )
+                    Text(
+                        text = "09.30–12.30",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = poppinsFontFamily,
+                        color = colorResource(id = R.color.green_title)
+                    )
+                }
+                Column {
+                    Text(
+                        text = "Nama Mentor",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = poppinsFontFamily,
+                        color = colorResource(id = R.color.green_title),
+                        modifier = Modifier.padding(bottom = 3.dp)
+                    )
+                    Text(
+                        text = "Vodka",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = poppinsFontFamily,
+                        color = colorResource(id = R.color.green_title)
+                    )
+                }
+                Button(
+                    onClick = { showDialog = true },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                    modifier = Modifier
+                        .width(93.dp)
+                        .height(30.dp),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Text(
+                        text = "Gabung Live",
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = poppinsFontFamily
+                    )
+                }
             }
         }
     }
@@ -218,15 +222,12 @@ fun CardLive() {
         ConfirmationDialog(
             message = "Apakah Kamu Mau Gabung Live?",
             onDismissRequest = { showDialog = false },
-            onConfirm = {
-                showDialog = false
-            },
-            onCancel = {
-                showDialog = false
-            }
+            onConfirm = { showDialog = false },
+            onCancel = { showDialog = false }
         )
     }
 }
+
 
 
 @Composable
@@ -238,74 +239,84 @@ fun KategoriBertani() {
         fontFamily = poppinsFontFamily,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 37.dp, vertical = 16.dp)
+            .padding(horizontal = 35.dp)
     )
 }
 
 @Composable
-fun SelectKategori() {
+fun SelectKategori(navController: NavController) {
     LazyRow(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 37.dp),
+            .padding(start = 37.dp, end = 37.dp)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(19.dp, Alignment.CenterHorizontally)
     ) {
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.kacang_tanah,
                 title = "Kacang Tanah"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.kacang_polong,
                 title = "Kacang Polong"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.padi,
                 title = "Padi"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.jagung,
                 title = "Jagung"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.baru_2,
                 title = "Gandum"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.kacang_tanah,
                 title = "Kacang Tanah"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.kacang_polong,
                 title = "Kacang Polong"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.padi,
                 title = "Padi"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.jagung,
                 title = "Jagung"
             )
         }
         item {
             KategoriItem(
+                navController,
                 iconRes = R.drawable.baru_2,
                 title = "Gandum"
             )
@@ -314,18 +325,22 @@ fun SelectKategori() {
 }
 
 @Composable
-fun KategoriItem(iconRes: Int, title: String) {
+fun KategoriItem(
+    navController: NavController,
+    iconRes: Int,
+    title: String,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(vertical = 0.dp)
-            .offset(y = (-20).dp)
+            .padding()
+            .clickable { navController.navigate(Routes.HALAMAN_PELATIHAN) }
     ) {
         Card(
             shape = RoundedCornerShape(15.dp),
             elevation = CardDefaults.cardElevation(3.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            modifier = Modifier.size(52.dp) // Ukuran Card yang tetap
+            modifier = Modifier.size(width = 45.dp, height = 45.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -335,14 +350,14 @@ fun KategoriItem(iconRes: Int, title: String) {
                 Image(
                     painter = painterResource(id = iconRes),
                     contentDescription = null,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier.size(width = 29.dp, height = 29.dp)
                 )
             }
         }
 
         Text(
             text = title,
-            fontSize = 7.sp,
+            fontSize = 8.sp,
             fontWeight = FontWeight.Medium,
             fontFamily = poppinsFontFamily,
             textAlign = TextAlign.Center,
@@ -353,12 +368,12 @@ fun KategoriItem(iconRes: Int, title: String) {
     }
 }
 
+
 @Composable
-fun RekomendasiPelatihan() {
+fun RekomendasiPelatihan(navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .offset(y = (-11).dp)
             .padding(horizontal = 37.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -372,28 +387,29 @@ fun RekomendasiPelatihan() {
             text = "Lihat Semua",
             fontSize = 10.sp,
             fontWeight = FontWeight.Normal,
-            fontFamily = poppinsFontFamily
+            fontFamily = poppinsFontFamily,
+            modifier = Modifier
+                .clickable { navController.navigate(Routes.HALAMAN_PELATIHAN) }
         )
     }
 }
 
 @Composable
-fun InfoCard(hai: String, title: String, deskripsi: String) {
+fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(176.dp),
-        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp), // Untuk lengkung sudut
+            .height(132.dp),
+        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.green))
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 37.dp, vertical = 23.dp)
+                .padding(horizontal = 37.dp)
                 .padding(top = 5.dp)
         ) {
-            // Bagian judul
             Row(
-                modifier = Modifier.fillMaxWidth(), // Menjadikan Row memenuhi lebar penuh
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -414,9 +430,9 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
                     modifier = Modifier.padding(3.dp)
                 )
 
-                Spacer(modifier = Modifier.weight(1f)) // Spacer untuk mendorong ikon ke kanan
+                Spacer(modifier = Modifier.weight(1f))
 
-                IconButton(onClick = {}) {
+                IconButton(onClick = {navController.navigate(Routes.HALAMAN_BOOKMARK)}) {
                     Icon(
                         painter = painterResource(id = R.drawable.bookmark_putih),
                         contentDescription = "Bookmark",
@@ -426,20 +442,16 @@ fun InfoCard(hai: String, title: String, deskripsi: String) {
                     )
                 }
             }
-
-            // Bagian deskripsi
             Text(
                 text = deskripsi,
                 fontSize = 13.sp,
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Medium,
                 color = colorResource(id = R.color.background),
-                modifier = Modifier.padding(3.dp)
+                modifier = Modifier.offset(y = (-6).dp)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             SearchBar()
+            Spacer(modifier = Modifier.padding(bottom = 23.dp))
         }
     }
 }
@@ -476,17 +488,17 @@ fun SearchBar() {
 
 @Composable
 fun CardPelatihan(navController: NavController) {
+    var isBookmarked by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
-            .padding(horizontal = 37.dp),
-
+            .padding(horizontal = 35.dp),
     ) {
         Card(
             modifier = Modifier
                 .size(width = 330.dp, height = 250.dp)
                 .offset(y = (-11).dp),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp), // Mengatur bayangan
+            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
         ) {
             Column {
@@ -494,34 +506,40 @@ fun CardPelatihan(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(140.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)), // Lengkungan hanya di bagian atas gambar
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.petani), // Ganti dengan ID gambar Anda
+                        painter = painterResource(id = R.drawable.petani),
                         contentDescription = "Deskripsi Gambar",
-                        contentScale = ContentScale.Crop, // Memastikan gambar terpotong hanya pada bagian bawah
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 10.dp, vertical = 10.dp)
-                            .clip(RoundedCornerShape(16.dp))// Agar gambar mengisi Box secara penuh
+                            .clip(RoundedCornerShape(16.dp))
                     )
-//
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopEnd) // Menempatkan di sudut kanan atas
-                            .padding(24.dp) // Memberikan jarak dari tepi
+                            .align(Alignment.TopEnd)
+                            .padding(top = 19.dp, end = 15.dp)
+                            .size(24.dp)
                             .background(
-                                Color.Gray,
+                                color = if (isBookmarked) Color.White else Color.Gray,
                                 shape = RoundedCornerShape(6.dp)
-                            ) // Background abu-abu dengan sudut melengkung
-                            .padding(horizontal = 2.dp, vertical = 2.dp) // Padding di dalam Box untuk membuat background lebih lebar
+                            )
+                            .clickable {
+                                isBookmarked = !isBookmarked
+                                if (isBookmarked) {
+                                    navController.navigate(Routes.HALAMAN_BOOKMARK)
+                                }
+                            },
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.bookmark_putih), // Ganti dengan ID ikon bookmark Anda
+                        Image(
+                            painter = painterResource(
+                                id = if (isBookmarked) R.drawable.bookmark_green else R.drawable.bookmark_putih
+                            ),
                             contentDescription = "Bookmark",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(24.dp) // Ukuran ikon
+                            modifier = Modifier.size(width = 16.dp, height = 18.dp)
                         )
                     }
                 }
@@ -536,7 +554,7 @@ fun CardPelatihan(navController: NavController) {
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = poppinsFontFamily,
-                        modifier = Modifier.padding(bottom = 4.dp) // Jarak antara judul dan deskripsi
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
 
                     Text(
@@ -546,7 +564,7 @@ fun CardPelatihan(navController: NavController) {
                         fontFamily = poppinsFontFamily,
                         lineHeight = 13.sp,
                         color = colorResource(id = R.color.gray_bookmark),
-                        modifier = Modifier.padding(bottom = 8.dp) // Jarak antara deskripsi dan tombol
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
 
                     Button(
@@ -554,7 +572,7 @@ fun CardPelatihan(navController: NavController) {
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
-                            .width(115.dp) // Membuat tombol memenuhi lebar kolom
+                            .width(115.dp)
                             .height(30.dp),
                         contentPadding = PaddingValues(0.dp)
                     ) {
@@ -571,6 +589,7 @@ fun CardPelatihan(navController: NavController) {
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

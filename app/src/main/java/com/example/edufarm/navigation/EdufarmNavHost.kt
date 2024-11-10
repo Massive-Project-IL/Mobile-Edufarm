@@ -23,7 +23,9 @@ import com.example.edufarm.MateriVideoScreen
 import com.example.edufarm.NotifikasiDaftarScreen
 import com.example.edufarm.PelatihanScreen
 import com.example.edufarm.SubMateriScreen
+import com.example.edufarm.akun.HalamanEditProfile
 import com.example.edufarm.akun.ProfileScreen
+import com.example.edufarm.akun.UbahSandiScreen
 
 @Composable
 fun EdufarmNavHost(
@@ -113,8 +115,12 @@ fun EdufarmNavHost(
             ProfileScreen(navController = navController)
         }
 
+        composable(Routes.HALAMAN_EDIT_PROFILE) {
+            HalamanEditProfile(navController = navController)
+        }
+
         composable(Routes.HALAMAN_UBAH_SANDI) {
-            ProfileScreen(navController = navController)
+            UbahSandiScreen(navController = navController)
         }
 
     }

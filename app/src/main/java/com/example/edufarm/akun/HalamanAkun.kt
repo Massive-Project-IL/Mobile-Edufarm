@@ -128,7 +128,7 @@ fun ProfileScreen(
             ProfileRowItem(
                 iconId = R.drawable.ic_edit,
                 text = "Edit",
-                onClick = { navController.navigate("editProfileScreen") } // Ganti dengan route yang sesuai
+                onClick = { navController.navigate(Routes.HALAMAN_EDIT_PROFILE) }
             )
 
             Spacer(modifier = Modifier.height(21.dp))
@@ -155,7 +155,7 @@ fun ProfileScreen(
             ProfileRowItem(
                 iconId = R.drawable.ic_aboutus,
                 text = "Tentang Kami",
-                onClick = { navController.navigate("aboutUsScreen") }
+                onClick = { }
             )
 
             Spacer(modifier = Modifier.height(60.dp))
@@ -204,8 +204,8 @@ fun ProfileRowItem(iconId: Int, text: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
-        verticalAlignment = Alignment.CenterVertically,
+            .clickable { onClick() },
+                verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             painter = painterResource(id = iconId),
