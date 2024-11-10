@@ -20,8 +20,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.R
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
+import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
@@ -44,6 +47,7 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 fun ProfileScreen(
     navController: NavController
 ) {
+    var showDialog by remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf("Akun") }
 
     Scaffold(
@@ -136,7 +140,7 @@ fun ProfileScreen(
                 onClick = { navController.navigate(Routes.HALAMAN_UBAH_SANDI) }
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(21.dp))
 
             // Pengaturan
             Text(
@@ -145,16 +149,7 @@ fun ProfileScreen(
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = poppinsFontFamily
             )
-            Spacer(modifier = Modifier.height(21.dp))
-
-            // Dukungan
-            ProfileRowItem(
-                iconId = R.drawable.ic_dukungan,
-                text = "Dukungan",
-                onClick = { navController.navigate(Routes.HALAMAN_DUKUNGAN) }
-            )
-
-            Spacer(modifier = Modifier.height(21.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             //Tentang Kami
             ProfileRowItem(
@@ -169,7 +164,7 @@ fun ProfileScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { /* Aksi logout atau navigasi ke halaman login */ }
+                    .clickable { showDialog = true }
                     .padding(vertical = 20.dp),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
@@ -177,16 +172,29 @@ fun ProfileScreen(
                 Image(
                     painter = painterResource(id = R.drawable.ic_keluar),
                     contentDescription = "Keluar",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(30.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Keluar",
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily
                 )
             }
+        }
+        if (showDialog) {
+            ConfirmationDialog(
+                message = "Apakah Kamu Yakin Ingin Keluar?",
+                onDismissRequest = { showDialog = false },
+                onConfirm = {
+                    showDialog = false
+                    navController.navigate(Routes.HALAMAN_LOGIN) {
+                        popUpTo(0)
+                    }
+                },
+                onCancel = { showDialog = false }
+            )
         }
     }
 }
