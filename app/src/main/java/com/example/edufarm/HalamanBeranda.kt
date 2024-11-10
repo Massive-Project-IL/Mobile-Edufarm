@@ -526,12 +526,7 @@ fun CardPelatihan(navController: NavController) {
                                 color = if (isBookmarked) Color.White else Color.Gray,
                                 shape = RoundedCornerShape(6.dp)
                             )
-                            .clickable {
-                                isBookmarked = !isBookmarked
-                                if (isBookmarked) {
-                                    navController.navigate(Routes.HALAMAN_BOOKMARK)
-                                }
-                            },
+                            .clickable { isBookmarked = !isBookmarked },
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
