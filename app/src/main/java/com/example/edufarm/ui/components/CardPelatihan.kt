@@ -53,7 +53,7 @@ fun CardPelatihan(
         modifier = modifier
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp)
     ) {
         Column {
             Box(

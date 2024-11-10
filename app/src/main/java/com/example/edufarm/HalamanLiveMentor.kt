@@ -279,67 +279,64 @@ fun CardLiveMentor() {
                         color = colorResource(id = R.color.green_title)
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(0.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(start = 15.dp, top = 0.dp, bottom = 17.dp)
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "waktu",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title),
-                        modifier = Modifier.padding(bottom = 3.dp)
-                    )
-                    Text(
-                        text = "09.30–12.30",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title)
-                    )
-                }
-                Column(
-                    modifier = Modifier.padding(end = 0.dp, top = 0.dp, bottom = 17.dp)
-                ) {
-                    Text(
-                        text = "Nama Mentor",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title),
-                        modifier = Modifier.padding(bottom = 3.dp)
-                    )
-                    Text(
-                        text = "Vodka",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title)
-                    )
-                }
-                Button(
-                    onClick = { showDialog = true },
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                    modifier = Modifier
-                        .padding(start = 10.dp, top = 5.dp)
-                        .width(93.dp)
-                        .height(26.dp),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        text = "Gabung Live",
-                        color = Color.White,
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily
-                    )
+                    Column {
+                        Text(
+                            text = "waktu",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = poppinsFontFamily,
+                            color = colorResource(id = R.color.green_title),
+                            modifier = Modifier.padding(bottom = 3.dp)
+                        )
+                        Text(
+                            text = "09.30–12.30",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = poppinsFontFamily,
+                            color = colorResource(id = R.color.green_title)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = "Nama Mentor",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = poppinsFontFamily,
+                            color = colorResource(id = R.color.green_title),
+                            modifier = Modifier.padding(bottom = 3.dp)
+                        )
+                        Text(
+                            text = "Vodka",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = poppinsFontFamily,
+                            color = colorResource(id = R.color.green_title)
+                        )
+                    }
+                    Button(
+                        onClick = { showDialog = true },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                        modifier = Modifier
+                            .width(93.dp)
+                            .height(30.dp),
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text(
+                            text = "Gabung Live",
+                            color = Color.White,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = poppinsFontFamily
+                        )
+                    }
                 }
             }
         }
@@ -358,6 +355,7 @@ fun CardLiveMentor() {
         )
     }
 }
+
 
 
 
