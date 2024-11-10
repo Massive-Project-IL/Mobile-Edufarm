@@ -22,8 +22,9 @@ import com.example.edufarm.MateriDokumenScreen
 import com.example.edufarm.MateriVideoScreen
 import com.example.edufarm.NotifikasiDaftarScreen
 import com.example.edufarm.PelatihanScreen
-import com.example.edufarm.ProfileScreen
 import com.example.edufarm.SubMateriScreen
+import com.example.edufarm.akun.DukunganScreen
+import com.example.edufarm.akun.ProfileScreen
 
 @Composable
 fun EdufarmNavHost(
@@ -111,6 +112,14 @@ fun EdufarmNavHost(
 
         composable(Routes.HALAMAN_AKUN) {
             ProfileScreen(navController = navController)
+        }
+
+        composable(Routes.HALAMAN_UBAH_SANDI) {
+            ProfileScreen(navController = navController)
+        }
+
+        composable(Routes.HALAMAN_DUKUNGAN) {
+            DukunganScreen(navController = navController)
         }
     }
 }

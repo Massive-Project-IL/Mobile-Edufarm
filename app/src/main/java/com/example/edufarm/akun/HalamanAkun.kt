@@ -1,4 +1,4 @@
-package com.example.edufarm
+package com.example.edufarm.akun
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.R
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
@@ -67,6 +69,7 @@ fun ProfileScreen(
             )
             Spacer(modifier = Modifier.height(25.dp))
 
+            // Foto Profil
             Box(
                 modifier = Modifier
                     .size(110.dp)
@@ -76,7 +79,7 @@ fun ProfileScreen(
                 Image(
                     painter = painterResource(id = R.drawable.fotoprofil),
                     contentDescription = "Foto Profil",
-                    modifier = Modifier.size(width = 110.dp, height = 110.dp)
+                    modifier = Modifier.size(110.dp)
                 )
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -118,57 +121,24 @@ fun ProfileScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_edit),
-                    contentDescription = "Edit",
-                    modifier = Modifier.size(width = 32.dp, height = 32.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Edit",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.black)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.row),
-                    contentDescription = "Row",
-                    modifier = Modifier.size(width = 23.dp, height = 23.dp)
-                )
-            }
+            ProfileRowItem(
+                iconId = R.drawable.ic_edit,
+                text = "Edit",
+                onClick = { navController.navigate("editProfileScreen") } // Ganti dengan route yang sesuai
+            )
+
             Spacer(modifier = Modifier.height(21.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_keamanan),
-                    contentDescription = "Privasi & Keamanan",
-                    modifier = Modifier.size(width = 32.dp, height = 32.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Privasi & Keamanan",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.black)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.row),
-                    contentDescription = "Row",
-                    modifier = Modifier.size(width = 23.dp, height = 23.dp)
-                )
-            }
+
+            //  Privasi & Keamanan
+            ProfileRowItem(
+                iconId = R.drawable.ic_keamanan,
+                text = "Privasi & Keamanan",
+                onClick = { navController.navigate(Routes.HALAMAN_UBAH_SANDI) }
+            )
+
             Spacer(modifier = Modifier.height(10.dp))
 
+            // Pengaturan
             Text(
                 text = "Pengaturan",
                 fontSize = 18.sp,
@@ -176,61 +146,30 @@ fun ProfileScreen(
                 fontFamily = poppinsFontFamily
             )
             Spacer(modifier = Modifier.height(21.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_dukungan),
-                    contentDescription = "Dukungan",
-                    modifier = Modifier.size(width = 32.dp, height = 32.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Dukungan",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.black)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.row),
-                    contentDescription = "Row",
-                    modifier = Modifier.size(width = 23.dp, height = 23.dp)
-                )
-            }
+
+            // Dukungan
+            ProfileRowItem(
+                iconId = R.drawable.ic_dukungan,
+                text = "Dukungan",
+                onClick = { navController.navigate(Routes.HALAMAN_DUKUNGAN) }
+            )
+
             Spacer(modifier = Modifier.height(21.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_aboutus),
-                    contentDescription = "About Us",
-                    modifier = Modifier.size(width = 32.dp, height = 32.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Tentang Kami",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.black)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.row),
-                    contentDescription = "Row",
-                    modifier = Modifier.size(width = 23.dp, height = 23.dp)
-                )
-            }
+
+            //Tentang Kami
+            ProfileRowItem(
+                iconId = R.drawable.ic_aboutus,
+                text = "Tentang Kami",
+                onClick = { navController.navigate("aboutUsScreen") }
+            )
+
             Spacer(modifier = Modifier.height(60.dp))
 
+            // Keluar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {}
+                    .clickable { /* Aksi logout atau navigasi ke halaman login */ }
                     .padding(vertical = 20.dp),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
@@ -251,6 +190,37 @@ fun ProfileScreen(
         }
     }
 }
+
+@Composable
+fun ProfileRowItem(iconId: Int, text: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            painter = painterResource(id = iconId),
+            contentDescription = text,
+            modifier = Modifier.size(32.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = poppinsFontFamily,
+            color = colorResource(id = R.color.black)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = painterResource(id = R.drawable.row),
+            contentDescription = "Arrow",
+            modifier = Modifier.size(23.dp)
+        )
+    }
+}
+
 
 
 

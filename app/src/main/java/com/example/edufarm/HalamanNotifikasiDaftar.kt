@@ -76,8 +76,6 @@ fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Mo
                     fontSize = 15.sp,
                 )
             }
-
-
         }
     }
 }
