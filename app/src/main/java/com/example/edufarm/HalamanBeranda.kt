@@ -228,8 +228,6 @@ fun CardLive() {
     }
 }
 
-
-
 @Composable
 fun KategoriBertani() {
     Text(
@@ -367,7 +365,6 @@ fun KategoriItem(
         )
     }
 }
-
 
 @Composable
 fun RekomendasiPelatihan(navController: NavController) {
