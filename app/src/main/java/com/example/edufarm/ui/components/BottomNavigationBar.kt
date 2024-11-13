@@ -46,7 +46,6 @@ fun BottomNavigationBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // Daftar item untuk navigasi dengan ikon dan teks
             val items = listOf(
                 Triple("Beranda", Routes.HALAMAN_BERANDA, R.drawable.home),
                 Triple("Live Mentor", Routes.HALAMAN_LIVE_MENTOR, R.drawable.mentor),
