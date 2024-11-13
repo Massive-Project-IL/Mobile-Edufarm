@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -64,7 +65,7 @@ fun SearchBar(placeholder: String) {
                 onValueChange = { searchQuery = it },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                textStyle = androidx.compose.ui.text.TextStyle(
+                textStyle = TextStyle(
                     fontSize = 14.sp,
                     color = colorResource(R.color.gray_text)
                 ),
@@ -72,7 +73,7 @@ fun SearchBar(placeholder: String) {
                     if (searchQuery.text.isEmpty()) {
                         Text(
                             text = placeholder,
-                            style = androidx.compose.ui.text.TextStyle(
+                            style = TextStyle(
                                 fontSize = 16.sp,
                                 color = colorResource(R.color.gray_text),
                                 fontWeight = FontWeight.Normal
