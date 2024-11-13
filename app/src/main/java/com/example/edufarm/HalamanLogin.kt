@@ -63,7 +63,7 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo
+
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Edu Farm Logo",

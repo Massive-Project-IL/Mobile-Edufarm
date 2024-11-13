@@ -35,7 +35,6 @@ import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 import kotlin.math.roundToInt
 
-
 @Composable
 fun EduFarmScreen(navController: NavController) {
     val alphaAnim = remember { Animatable(0f) }
