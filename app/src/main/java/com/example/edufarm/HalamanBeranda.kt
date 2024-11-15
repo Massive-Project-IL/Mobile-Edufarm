@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,8 @@ import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+
 
 @Composable
 fun ContentScreen(
@@ -61,8 +64,25 @@ fun ContentScreen(
 ) {
     val selectedItem = remember { mutableStateOf("Beranda") }
 
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.green)
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
     Scaffold(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            InfoCard(
+                navController = navController,
+                hai = "Hai,",
+                title = "Petani👋",
+                deskripsi = "Ayo kita belajar bertani bersama!"
+            )
+        },
         bottomBar = { BottomNavigationBar(navController, selectedItem) }
     ) { paddingValues ->
         Column(
@@ -70,13 +90,7 @@ fun ContentScreen(
                 .padding(paddingValues)
                 .background(color = colorResource(R.color.background))
                 .fillMaxSize()
-        ) {
-            InfoCard(
-                navController = navController,
-                hai = "Hai,",
-                title = "Petani👋",
-                deskripsi = "Ayo kita belajar bertani bersama!"
-            )
+        ){
             Spacer(modifier = Modifier.height(16.dp))
             CardLive()
             Spacer(modifier = Modifier.height(16.dp))
@@ -581,7 +595,6 @@ fun CardPelatihan(navController: NavController) {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
