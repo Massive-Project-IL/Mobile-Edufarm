@@ -461,14 +461,14 @@ fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavCo
                 color = colorResource(id = R.color.background),
                 modifier = Modifier.offset(y = (-6).dp)
             )
-            SearchBar()
+            SearchBarBeranda()
             Spacer(modifier = Modifier.padding(bottom = 23.dp))
         }
     }
 }
 
 @Composable
-fun SearchBar() {
+fun SearchBarBeranda() {
     Card(
         modifier = Modifier
             .fillMaxWidth()

@@ -84,10 +84,11 @@ fun EdufarmNavHost(
                 navArgument("title") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getInt("id")
-            val title = backStackEntry.arguments?.getString("title")
+            val id = backStackEntry.arguments?.getInt("id") ?: 0
+            val title = backStackEntry.arguments?.getString("title") ?: ""
             IsiMateriScreen(id = id, title = title, navController = navController)
         }
+
 
         composable(
             route = Routes.HALAMAN_MATERI_VIDEO,
@@ -110,6 +111,7 @@ fun EdufarmNavHost(
             val title = backStackEntry.arguments?.getString("title")
             MateriDokumenScreen(id = id, title = title, navController = navController)
         }
+
 
         composable(Routes.HALAMAN_AKUN) {
             ProfileScreen(navController = navController)

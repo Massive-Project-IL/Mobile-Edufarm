@@ -68,6 +68,8 @@ fun BookmarkScreen(modifier: Modifier = Modifier, navController: NavController) 
             imageRes = R.drawable.petani,
             onBookmarkClick = { /* Aksi untuk bookmark */ },
             onButtonClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
+            completedSubMateriCount = 1,
+            totalSubMateriCount = 6,
             poppinsFontFamily = poppinsFontFamily
         )
     }

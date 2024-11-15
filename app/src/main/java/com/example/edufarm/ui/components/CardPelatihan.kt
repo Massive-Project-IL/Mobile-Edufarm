@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,6 +45,8 @@ fun CardPelatihan(
     imageRes: Int,
     onBookmarkClick: () -> Unit,
     onButtonClick: () -> Unit,
+    completedSubMateriCount: Int,
+    totalSubMateriCount: Int,
     modifier: Modifier = Modifier,
     poppinsFontFamily: FontFamily
 ) {
@@ -117,30 +121,57 @@ fun CardPelatihan(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = onButtonClick,
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
-                shape = RoundedCornerShape(6.dp),
-                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp),
+            // Progres
+            Row(
                 modifier = Modifier
-                    .width(170.dp)
-                    .height(30.dp)
                     .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Lihat Selengkapnya",
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
+                Button(
+                    onClick = onButtonClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
+                    shape = RoundedCornerShape(6.dp),
+                    contentPadding = PaddingValues(horizontal = 2.dp, vertical = 0.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                )
+                        .width(130.dp)
+                        .height(28.dp)
+                ) {
+                    Text(
+                        text = "Lihat Selengkapnya",
+                        color = Color.White,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = poppinsFontFamily
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                // Circular Progress
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    // CircularProgressIndicator
+                    CircularProgressIndicator(
+                        progress = {
+                            completedSubMateriCount.toFloat() / totalSubMateriCount.toFloat() // Progress yang dihitung
+                        },
+                        modifier = Modifier.size(32.dp),
+                        color = colorResource(R.color.green),
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "$completedSubMateriCount / $totalSubMateriCount",
+                        fontSize = 12.sp,
+                        color = Color.Black
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
+
+
 
 

@@ -24,7 +24,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +46,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
+import com.example.edufarm.ui.components.SearchBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 
@@ -80,7 +80,8 @@ fun PelatihanScreen(
                     modifier = Modifier.padding(top = 8.dp)
                 )
 
-                SearchBarPelatihan()
+                Spacer(modifier = Modifier.height(16.dp))
+                SearchBar(placeholder = "Cari Pelatihan")
                 Text(
                     text = "Kategori",
                     fontFamily = poppinsFontFamily,
@@ -105,41 +106,6 @@ fun PelatihanScreen(
     }
 }
 
-
-@Composable
-fun SearchBarPelatihan() {
-    Card(
-        modifier = Modifier
-            .padding(top = 16.dp)
-            .fillMaxWidth()
-            .height(40.dp)
-            .border(1.dp, colorResource(id = R.color.green_button), RoundedCornerShape(12.dp)),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding()
-                .padding(start = 17.dp, bottom = 8.dp, top = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.search),
-                contentDescription = null,
-                modifier = Modifier
-                    .size( width = 25.dp, height = 25.dp),
-                tint = colorResource(R.color.gray_live)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Cari Pelatihan",
-                color = Color.Gray,
-                fontSize = 12 .sp
-            )
-        }
-    }
-}
 
 
 @Composable
@@ -185,7 +151,7 @@ fun KategoriChips() {
 }
 
 @Composable
-fun CardPelatihanKategori(navController: NavController) {
+private fun CardPelatihanKategori(navController: NavController) {
     var isBookmarked by remember { mutableStateOf(false) }
 
     Card(
@@ -279,7 +245,6 @@ fun CardPelatihanKategori(navController: NavController) {
         }
     }
 }
-
 
 
 

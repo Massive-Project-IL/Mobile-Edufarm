@@ -54,7 +54,14 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.runtime.ktx)
+
+    // untuk status bar dll
     implementation(libs.accompanist.systemuicontroller)
+
+    // untuk retrofit dan Gson Converter
+    implementation(libs.retrofit)
+    implementation(libs.converterGson)
+    implementation(libs.androidx.espresso.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

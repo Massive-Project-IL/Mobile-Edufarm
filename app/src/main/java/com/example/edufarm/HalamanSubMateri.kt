@@ -3,6 +3,7 @@ package com.example.edufarm
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,8 +22,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,56 +39,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.data.model.Materi
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.SearchBar
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
-
-
-data class Materi(
-    val id: Int,
-    val title: String,
-    val image: Int,
-    val buttonText: String,
-    val buttonAction: () -> Unit
-)
+import com.example.edufarm.viewmodel.MateriViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun SubMateriScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: MateriViewModel = viewModel() // Menggunakan ViewModel
 ) {
-    val listOfMateri = listOf(
-        Materi(1, "Pemilihan Benih Kacang Tanah", R.drawable.image_1, "Ayo, Belajar") {
-            val route = Routes.getHalamanIsiMateriRoute(1, "Pemilihan Benih Kacang Tanah")
-            navController.navigate(route)
-        },
-        Materi(2, "Persiapan Tanah Kacang Tanah", R.drawable.image_2, "Ayo, Belajar") {
-            val route = Routes.getHalamanIsiMateriRoute(1, "Persiapan Tanah Kacang Tanah")
-            navController.navigate(route)
-        },
-        Materi(3, "Pengendalian Hama Kacang Tanah", R.drawable.image_3, "Ayo, Belajar") {
-            val route = Routes.getHalamanIsiMateriRoute(3, "Pengendalian Hama Kacang Tanah")
-            navController.navigate(route)
-        },
-        Materi(4, "Panen Tanaman Kacang Tanah", R.drawable.image_4, "Ayo, Belajar") {
-            val route = Routes.getHalamanIsiMateriRoute(1, "Panen Tanaman Kacang Tanah")
-            navController.navigate(route)
-        },
-
-        Materi(5, "Video Tutorial Penanaman Kacang Tanah", R.drawable.image_5, "Tonton Video") {
-            val videoUri = "your_video_uri_here"
-            val route = Routes.getHalamanMateriVideoRoute(videoUri)
-            navController.navigate(route)
-        },
-        Materi(6, "Dokumen Tambahan : Penanaman Kacang Tanah", R.drawable.image_6, "Download") {
-            val route = Routes.getHalamanMateriDokumenRoute(6, "Dokumen Tambahan : Penanaman Kacang Tanah")
-            navController.navigate(route)
-        }
-    )
+    val listOfMateri = viewModel.materiList
 
     Column(
         modifier = Modifier
@@ -91,12 +65,11 @@ fun SubMateriScreen(
             .background(color = colorResource(R.color.background))
             .padding(start = 35.dp, end = 35.dp, top = 5.dp)
     ) {
-
         TopBar(
             navController = navController,
-            title = "Materi")
+            title = "Materi"
+        )
         Spacer(modifier = Modifier.height(8.dp))
-
         SearchBar(placeholder = "Cari Pelatihan")
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -109,86 +82,148 @@ fun SubMateriScreen(
             lineHeight = 23.sp,
             modifier = Modifier.padding(bottom = 16.dp)
         )
+
         LazyColumn {
             items(listOfMateri) { materi ->
-                MateriCard(materi = materi)
-
-
+                MateriCard(materi = materi, navController)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 }
 
+
 @Composable
-fun MateriCard(materi: Materi) {
+fun MateriCard(
+    materi: Materi,
+    navController: NavController,
+    materiViewModel: MateriViewModel = viewModel()
+) {
+    val isCompleted = materi.id in materiViewModel.completedMateriIds
+    val showCheckmark = remember { mutableStateOf(false) }
+
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(165.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .padding(start = 18.dp, top = 24.dp, bottom = 24.dp, end = 18.dp)
-                .fillMaxWidth()
-                .height(110.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Image(
-                painter = painterResource(id = materi.image),
-                contentDescription = "Image for ${materi.title}",
-                contentScale = ContentScale.Crop,
+        Box {
+            Row(
                 modifier = Modifier
-                    .size(width = 120.dp, height = 110.dp)
-                    .clip(RoundedCornerShape(14.dp))
-            )
-            Spacer(modifier = Modifier.width(14.dp))
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .padding(start = 18.dp, top = 24.dp, bottom = 24.dp, end = 18.dp)
+                    .fillMaxWidth()
+                    .height(115.dp),
+                verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = materi.title,
-                    fontSize = 14.sp,
-                    lineHeight = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = poppinsFontFamily,
-                    color = Color.Black,
+                // Gambar Materi
+                Image(
+                    painter = painterResource(id = materi.imageRes),
+                    contentDescription = "Image for ${materi.title}",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .align(Alignment.Start)
-
+                        .size(width = 120.dp, height = 115.dp)
+                        .clip(RoundedCornerShape(14.dp))
                 )
+                Spacer(modifier = Modifier.width(14.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    onClick = materi.buttonAction,
-                    shape = RoundedCornerShape(6.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.green)
-                    ),
-                    contentPadding = PaddingValues(horizontal = 3.dp, vertical = 0.dp),
+                Column(
                     modifier = Modifier
-                        .width(95.dp)
-                        .height(22.dp)
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = materi.buttonText,
-                        fontWeight = FontWeight.Medium,
+                        text = materi.title,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
                         fontFamily = poppinsFontFamily,
-                        color = Color.White,
-                        fontSize = 12.sp
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.Start)
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Row untuk tombol dan centang
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(), // Agar mengisi lebar baris
+                        horizontalArrangement = Arrangement.SpaceBetween // Untuk menempatkan tombol di kiri dan centang di kanan
+                    ) {
+                        Button(
+                            onClick = {
+                                // Tandai materi sebagai selesai
+                                materiViewModel.markAsCompleted(materi.id)
+
+                                // Navigasi ke halaman yang sesuai
+                                val route = when (materi.buttonText) {
+                                    "Ayo, Belajar" -> Routes.getHalamanIsiMateriRoute(
+                                        materi.id,
+                                        materi.title
+                                    )
+
+                                    "Tonton Video" -> Routes.getHalamanMateriVideoRoute("your_video_uri_here")
+                                    "Download" -> Routes.getHalamanMateriDokumenRoute(
+                                        materi.id,
+                                        materi.title
+                                    )
+
+                                    else -> null
+                                }
+                                route?.let { navController.navigate(it) }
+
+                                // Menunda munculnya centang
+                                showCheckmark.value = true
+                            },
+                            shape = RoundedCornerShape(6.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
+                            contentPadding = PaddingValues(horizontal = 3.dp, vertical = 0.dp),
+                            modifier = Modifier
+                                .width(95.dp)
+                                .height(24.dp)
+                        ) {
+                            Text(
+                                text = materi.buttonText,
+                                fontWeight = FontWeight.Medium,
+                                fontFamily = poppinsFontFamily,
+                                color = Color.White,
+                                fontSize = 12.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // Menunda munculnya centang
+                        LaunchedEffect(isCompleted) {
+                            if (isCompleted) {
+                                delay(10000) // Menunggu 500ms sebelum menunjukkan centang
+                                showCheckmark.value = true
+                            }
+                        }
+
+                        if (isCompleted) {
+                            Icon(
+                                painter = painterResource(R.drawable.check_circle),
+                                contentDescription = "Completed",
+                                tint = colorResource(R.color.green),
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+
+
+
 
 
 @Preview(showBackground = true)
