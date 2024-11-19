@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -500,19 +501,23 @@ fun SearchBarBeranda() {
 @Composable
 fun CardPelatihan(navController: NavController) {
     var isBookmarked by remember { mutableStateOf(false) }
+    val progressCurrent = 1 // Dummy data: current progress
+    val progressTotal = 6  // Dummy data: total progress
+    val progressFraction = progressCurrent.toFloat() / progressTotal.toFloat()
+
     Box(
         modifier = Modifier
             .padding(horizontal = 35.dp),
     ) {
         Card(
             modifier = Modifier
-                .size(width = 330.dp, height = 250.dp)
-                .offset(y = (-11).dp),
+                .size(width = 330.dp, height = 260.dp),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
         ) {
             Column {
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -573,28 +578,56 @@ fun CardPelatihan(navController: NavController) {
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
 
-                    Button(
-                        onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                        modifier = Modifier
-                            .width(115.dp)
-                            .height(30.dp),
-                        contentPadding = PaddingValues(0.dp)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "Lihat Selengkapnya",
-                            fontSize = 10.sp,
-                            color = Color.White,
-                            fontFamily = poppinsFontFamily,
-                            fontWeight = FontWeight(500),
-                        )
+                        Button(
+                            onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                            modifier = Modifier
+                                .width(115.dp)
+                                .height(30.dp),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "Lihat Selengkapnya",
+                                fontSize = 10.sp,
+                                color = Color.White,
+                                fontFamily = poppinsFontFamily,
+                                fontWeight = FontWeight(500),
+                            )
+                        }
+
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(36.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                progress = progressFraction,
+                                modifier = Modifier.size(36.dp),
+                                color = colorResource(id = R.color.green),
+                                strokeWidth = 4.dp
+                            )
+                            Text(
+                                text = "$progressCurrent/$progressTotal",
+                                fontSize = 9.sp,
+                                fontFamily = poppinsFontFamily,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable
