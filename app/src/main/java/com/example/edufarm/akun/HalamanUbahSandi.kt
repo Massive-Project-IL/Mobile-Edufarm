@@ -144,7 +144,7 @@ fun UbahSandiScreen(navController: NavController) {
 
 
 @Composable
-fun SandiField() {
+private fun SandiField() {
     val passwordText = remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -152,7 +152,7 @@ fun SandiField() {
         value = passwordText.value,
         onValueChange = {passwordText.value = it},
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password, // Menampilkan keyboard tipe password
+            keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
         ),
         visualTransformation = if (!passwordVisible) {

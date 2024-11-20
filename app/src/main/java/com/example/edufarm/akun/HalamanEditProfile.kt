@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -38,7 +40,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.R
@@ -60,17 +61,17 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
         modifier = modifier,
         bottomBar = { BottomNavigationBar(navController, selectedItem) }
     ) { innerPadding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorResource(id = R.color.background))
-                .padding(innerPadding) // Padding for content to avoid overlap with bottom bar
+                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
         ) {
-            // Green background section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(180.dp)
                     .background(
                         color = colorResource(id = R.color.green),
                         shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
@@ -79,94 +80,20 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                 TopBar(
                     title = "Edit Profile",
                     navController = navController,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
                 )
             }
 
-            // Profile Image Section - Positioned to overlap the green background
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset(y = 150.dp)
-                    .zIndex(1f)
+                    .offset(y = (-50).dp)
             ) {
                 Box(contentAlignment = Alignment.BottomEnd) {
-                    // Profile Image
                     Box(
                         modifier = Modifier
-                            .size(100.dp)
-                            .background(Color.White, CircleShape)
-                            .padding(2.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.fotoprofil),
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape)
-                        )
-                    }
-
-                    // Camera Icon
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .offset(x = 6.dp, y = 6.dp)
-                            .background(
-                                color = colorResource(id = R.color.green_logo),
-                                shape = CircleShape
-                            )
-                            .padding(6.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.camera),
-                            contentDescription = "Edit Icon",
-                            tint = Color.White,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                }
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.background))
-        ) {
-            // Green background section
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(
-                        color = colorResource(id = R.color.green),
-                        shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
-                    )
-            ) {
-                TopBar(
-                    title = "Edit Profile",
-                    navController = navController,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
-
-            // Profile Image Section - Positioned to overlap the green background
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .offset(y = 150.dp)
-                    .zIndex(1f)
-            ) {
-                Box(
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    // Profile Image
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
+                            .size(110.dp)
                             .background(Color.White, CircleShape)
                             .padding(2.dp)
                     ) {
@@ -200,23 +127,17 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                 }
             }
 
-
-            // Form Fields
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .offset(y = 200.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
-
-                Spacer(modifier = Modifier.height(69.dp))
-
                 Text(
                     text = "Nama",
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.Black,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
                 BasicTextField(
                     value = name,
@@ -233,7 +154,7 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                             colorResource(id = R.color.green_logo),
                             RoundedCornerShape(15.dp)
                         )
-                        .padding(horizontal = 21.dp),
+                        .padding(horizontal = 16.dp),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -241,12 +162,10 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                         ) {
                             if (name.isEmpty()) {
                                 Text(
-                                    "Masukan Nama Lengkap Baru",
+                                    text = "Masukan Nama Lengkap Baru",
                                     color = Color.Gray,
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontFamily = poppinsFontFamily,
-                                    modifier = Modifier.align(Alignment.CenterStart)
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
                             innerTextField()
@@ -261,7 +180,7 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.Black,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
                 BasicTextField(
                     value = email,
@@ -278,7 +197,7 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                             colorResource(id = R.color.green_logo),
                             RoundedCornerShape(15.dp)
                         )
-                        .padding(horizontal = 21.dp),
+                        .padding(horizontal = 16.dp),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -296,7 +215,7 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.Black,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
                 BasicTextField(
                     value = phoneNumber,
@@ -313,7 +232,7 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                             colorResource(id = R.color.green_logo),
                             RoundedCornerShape(15.dp)
                         )
-                        .padding(horizontal = 21.dp),
+                        .padding(horizontal = 16.dp),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -321,21 +240,20 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                         ) {
                             if (phoneNumber.isEmpty()) {
                                 Text(
-                                    "Masukan Nomor Telepon Baru",
+                                    text = "Masukan Nomor Telepon Baru",
                                     color = Color.Gray,
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontFamily = poppinsFontFamily,
-                                    modifier = Modifier.align(Alignment.CenterStart)
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
                             innerTextField()
                         }
                     }
                 )
-                Spacer(modifier = Modifier.height(63.dp))
 
-                // Login Button
+                Spacer(modifier = Modifier.height(60.dp))
+
+                // Save Changes Button
                 Button(
                     onClick = { showDialog = true },
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
@@ -352,21 +270,22 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
                     )
                 }
             }
-
         }
+
         if (showDialog) {
             ConfirmationDialog(
                 message = "Apakah Kamu Yakin Ingin Mengubahnya?",
                 onDismissRequest = { showDialog = false },
                 onConfirm = {
                     showDialog = false
-
+                    // Lakukan aksi simpan data
                 },
                 onCancel = { showDialog = false }
             )
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
