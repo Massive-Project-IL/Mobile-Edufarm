@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
@@ -49,7 +51,15 @@ fun ProfileScreen(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf("Akun") }
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
 
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
     Scaffold(
         modifier = Modifier,
         bottomBar = { BottomNavigationBar(navController, selectedItem) }

@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifier) {
@@ -56,6 +58,16 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
     var email by remember { mutableStateOf("petanimuda@gmail.com") }
     var phoneNumber by remember { mutableStateOf("") }
     val selectedItem = remember { mutableStateOf("Akun") }
+
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.green)
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
 
     Scaffold(
         modifier = modifier,
