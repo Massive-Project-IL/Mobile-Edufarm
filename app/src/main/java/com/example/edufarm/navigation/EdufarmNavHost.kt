@@ -97,7 +97,7 @@ fun EdufarmNavHost(
             )
         ) { backStackEntry ->
             val videoUri = Uri.parse(backStackEntry.arguments?.getString("videoUri"))
-            MateriVideoScreen(navController = navController, videoUri = videoUri)
+            MateriVideoScreen(navController = navController)
         }
 
         composable(

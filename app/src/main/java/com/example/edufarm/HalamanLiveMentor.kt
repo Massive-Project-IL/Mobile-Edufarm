@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
@@ -55,7 +57,15 @@ fun LiveMentorScreen(
     navController: NavController, modifier: Modifier = Modifier
 ) {
     val selectedItem = remember { mutableStateOf("Live Mentor") }
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
 
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
     Scaffold(
         modifier = modifier,
         bottomBar = { BottomNavigationBar(navController, selectedItem) }) { paddingValues ->

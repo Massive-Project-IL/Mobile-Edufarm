@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -26,9 +27,19 @@ import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun IsiMateriScreen(id: Int?, title: String?, navController: NavController) {
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()

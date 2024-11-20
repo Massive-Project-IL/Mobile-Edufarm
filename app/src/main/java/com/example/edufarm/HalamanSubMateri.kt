@@ -49,6 +49,7 @@ import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 import com.example.edufarm.viewmodel.MateriViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 
 
@@ -58,7 +59,15 @@ fun SubMateriScreen(
     viewModel: MateriViewModel = viewModel() // Menggunakan ViewModel
 ) {
     val listOfMateri = viewModel.materiList
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
 
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()

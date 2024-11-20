@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlin.math.roundToInt
 
 @Composable
@@ -42,7 +43,15 @@ fun EduFarmScreen(navController: NavController) {
     val bounceAnim = remember { Animatable(1.2f) }
     val translateAnim = remember { Animatable(30f) }
 
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
+
+
     LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
         // Bounce animation on logo
         bounceAnim.animateTo(
             targetValue = 1f,

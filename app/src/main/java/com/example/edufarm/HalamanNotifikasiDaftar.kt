@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,10 +29,21 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.theme.EdufarmTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
 fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Modifier) {
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()

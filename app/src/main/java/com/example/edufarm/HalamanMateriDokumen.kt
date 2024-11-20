@@ -14,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +32,7 @@ import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
@@ -41,8 +43,16 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
             listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1
         }
     }
-
     var showDialog by remember { mutableStateOf(false) }
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = false
+        )
+    }
 
     Column(
         modifier = Modifier
