@@ -59,6 +59,7 @@ fun SearchBar(placeholder: String) {
                 tint = colorResource(R.color.gray_live),
                 modifier = Modifier.size(width = 25.5.dp, height = 24.dp)
             )
+
             Spacer(modifier = Modifier.width(8.dp))
             BasicTextField(
                 value = searchQuery,

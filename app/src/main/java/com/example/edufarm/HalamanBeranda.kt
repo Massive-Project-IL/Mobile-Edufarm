@@ -2,6 +2,7 @@ package com.example.edufarm
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -43,7 +45,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -101,9 +105,7 @@ fun ContentScreen(
             Spacer(modifier = Modifier.height(16.dp))
             RekomendasiPelatihan(navController)
             Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 10.dp)
-            ) {
+            LazyColumn{
                 items(5) {
                     CardPelatihan(navController)
                     Spacer(modifier = Modifier.height(16.dp))
@@ -462,47 +464,87 @@ fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavCo
                 color = colorResource(id = R.color.background),
                 modifier = Modifier.offset(y = (-6).dp)
             )
-            SearchBarBeranda()
+            SearchBarBeranda(placeholder = "Cari Pelatihan"
+            ){ query -> //untuk logika pencarian nya ni
+
+                println("query dari info card: $query")
+            }
             Spacer(modifier = Modifier.padding(bottom = 23.dp))
         }
     }
 }
 
 @Composable
-fun SearchBarBeranda() {
-    Card(
+fun SearchBarBeranda(
+    placeholder: String,
+    onSearch: (String) -> Unit
+) {
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
+            .height(45.dp)
+            .background(
+                color = colorResource(R.color.white),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = colorResource(R.color.green),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Image(
+            Icon(
                 painter = painterResource(id = R.drawable.search),
-                contentDescription = null,
-                modifier = Modifier.size(33.dp)
+                contentDescription = "Search Icon",
+                tint = colorResource(R.color.gray_live),
+                modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Cari Pelatihan",
-                color = colorResource(id = R.color.gray_text),
-                fontSize = 14.sp,
+
+            BasicTextField(
+                value = searchQuery,
+                onValueChange = {
+                    searchQuery = it
+                    onSearch(it.text)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.gray_text)
+                ),
+                decorationBox = { innerTextField ->
+                    if (searchQuery.text.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                color = colorResource(R.color.gray_text),
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                    }
+                    innerTextField()
+                }
             )
         }
     }
 }
 
+
 @Composable
 fun CardPelatihan(navController: NavController) {
     var isBookmarked by remember { mutableStateOf(false) }
-    val progressCurrent = 1 // Dummy data: current progress
-    val progressTotal = 6  // Dummy data: total progress
+    val progressCurrent = 1
+    val progressTotal = 6
     val progressFraction = progressCurrent.toFloat() / progressTotal.toFloat()
 
     Box(
@@ -600,21 +642,33 @@ fun CardPelatihan(navController: NavController) {
                                 fontWeight = FontWeight(500),
                             )
                         }
+                        Text(
+                                text = "Progres Materi",
+                                fontSize = 11.sp,
+                                fontFamily = poppinsFontFamily,
+                                fontWeight = FontWeight.W400,
+                                color = Color.Black,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier
+                                    .offset(x = 15.dp)
+                        )
 
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .size(36.dp)
+
                         ) {
                             CircularProgressIndicator(
                                 progress = progressFraction,
-                                modifier = Modifier.size(36.dp),
+                                modifier = Modifier
+                                    .width(44.dp)
+                                    .height(44.dp),
                                 color = colorResource(id = R.color.green),
                                 strokeWidth = 4.dp
                             )
                             Text(
                                 text = "$progressCurrent/$progressTotal",
-                                fontSize = 9.sp,
+                                fontSize = 10.sp,
                                 fontFamily = poppinsFontFamily,
                                 fontWeight = FontWeight.SemiBold,
                                 color = Color.Black
@@ -626,8 +680,6 @@ fun CardPelatihan(navController: NavController) {
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
