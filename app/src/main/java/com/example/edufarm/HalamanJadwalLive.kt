@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -60,7 +61,7 @@ fun JadwalLiveScreen(navController: NavController) {
     var selectedDay by remember { mutableStateOf("Senin") }
     val jadwalList = DummyData.jadwalPerHari[selectedDay] ?: emptyList()
     val daysOfWeek = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
-    var isNotificationActive by remember { mutableStateOf(false) }
+    var activeNotificationIds by remember { mutableStateOf(setOf<Int>()) } // Set ID aktif
 
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
@@ -88,6 +89,7 @@ fun JadwalLiveScreen(navController: NavController) {
                 navController = navController,
                 modifier = Modifier.padding(start = 35.dp, end = 35.dp, top = 5.dp, bottom = 24.dp)
             )
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -100,13 +102,14 @@ fun JadwalLiveScreen(navController: NavController) {
                         text = "Oktober 2024",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = Color.Black,
+                        modifier = Modifier.padding(vertical = 8.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier
                             .horizontalScroll(rememberScrollState())
-                            .fillMaxWidth() // Pastikan row mengisi layar
+                            .fillMaxWidth()
                     ) {
                         daysOfWeek.forEach { day ->
                             Box(
@@ -115,7 +118,7 @@ fun JadwalLiveScreen(navController: NavController) {
                                     .clickable { selectedDay = day }
                                     .border(
                                         width = 1.dp,
-                                        color = colorResource(R.color.green_logo), // Border hijau
+                                        color = colorResource(R.color.green_logo),
                                         shape = RoundedCornerShape(8.dp)
                                     )
                                     .background(
@@ -127,7 +130,9 @@ fun JadwalLiveScreen(navController: NavController) {
                                 Text(
                                     text = day,
                                     color = if (day == selectedDay) Color.White else Color.Black,
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    fontFamily = poppinsFontFamily
                                 )
                             }
                         }
@@ -137,7 +142,6 @@ fun JadwalLiveScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Teks Hari dan Tanggal
             Text(
                 text = "$selectedDay, 19 Okt 2024",
                 fontSize = 16.sp,
@@ -146,9 +150,7 @@ fun JadwalLiveScreen(navController: NavController) {
                     .padding(start = 35.dp, end = 35.dp, bottom = 14.dp)
             )
 
-            // Konten Jadwal atau Pesan Kosong
             if (jadwalList.isEmpty()) {
-                // Jika tidak ada jadwal
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -157,22 +159,20 @@ fun JadwalLiveScreen(navController: NavController) {
                             BorderStroke(1.dp, colorResource(id = R.color.green_logo)),
                             RoundedCornerShape(10.dp)
                         )
+                        .shadow(elevation = 6.dp)
                         .background(Color.White, RoundedCornerShape(10.dp))
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        // Gambar Kalender
                         Image(
                             painter = painterResource(id = R.drawable.ic_calendar_empty),
                             contentDescription = "Empty Calendar",
                             modifier = Modifier.size(64.dp)
                         )
                         Spacer(modifier = Modifier.height(6.dp))
-
-                        // Pesan Tidak Ada Jadwal
                         Text(
                             text = "Yahh, Hari ini engga ada live mentor",
                             fontSize = 14.sp,
@@ -182,14 +182,23 @@ fun JadwalLiveScreen(navController: NavController) {
                     }
                 }
             } else {
-                // Jika ada jadwal
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(start = 35.dp, end = 35.dp)
                 ) {
                     items(jadwalList) { jadwal ->
-                        JadwalCard(jadwal, isNotificationActive) { isNotificationActive = it }
+                        JadwalCard(
+                            jadwal = jadwal,
+                            isNotificationActive = activeNotificationIds.contains(jadwal.id), // Cek apakah ID ada di Set
+                            onNotificationToggle = { isActive ->
+                                activeNotificationIds = if (isActive) {
+                                    activeNotificationIds + jadwal.id // Tambahkan ID
+                                } else {
+                                    activeNotificationIds - jadwal.id // Hapus ID
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -211,12 +220,11 @@ fun JadwalCard(
             .padding(vertical = 8.dp)
     ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            border = BorderStroke(1.dp, color = colorResource(id = R.color.green_logo)) // Border hijau
+            border = BorderStroke(1.dp, color = colorResource(id = R.color.green_logo))
         ) {
             Row(
                 modifier = Modifier
@@ -228,7 +236,6 @@ fun JadwalCard(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    // Judul
                     Text(
                         text = jadwal.title,
                         fontFamily = poppinsFontFamily,
@@ -237,11 +244,7 @@ fun JadwalCard(
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-
-                    // Mentor dan Durasi
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = jadwal.mentor,
                             fontFamily = poppinsFontFamily,
@@ -266,8 +269,6 @@ fun JadwalCard(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    // Rentang Waktu
                     Text(
                         text = jadwal.timeRange,
                         fontSize = 14.sp,
@@ -277,21 +278,26 @@ fun JadwalCard(
             }
         }
 
-        // Ikon Notifikasi di Atas Kanan
-        Icon(
-            painter = painterResource(
-                if (isNotificationActive) R.drawable.notifikasi_aktif else R.drawable.notifikasi_default
-            ),
-            contentDescription = "Notification",
-            tint = colorResource(R.color.green_logo),
+        Box(
             modifier = Modifier
-                .align(Alignment.TopEnd) // Posisi atas kanan
-                .padding(12.dp) // Posisikan di dalam padding card
-                .size(24.dp)
-                .clickable { onNotificationToggle(!isNotificationActive) }
-        )
+                .align(Alignment.TopEnd)
+                .padding(12.dp)
+                .clickable { onNotificationToggle(!isNotificationActive) } // Toggle status
+        ) {
+            Icon(
+                painter = painterResource(
+                    if (isNotificationActive) R.drawable.notifikasi_aktif else R.drawable.notifikasi_default
+                ),
+                contentDescription = "Notification",
+                tint = colorResource(R.color.green_logo),
+                modifier = Modifier.size(24.dp)
+            )
+        }
     }
 }
+
+
+
 
 
 
