@@ -65,7 +65,7 @@ fun HalamanEditProfile(navController: NavController, modifier: Modifier = Modifi
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
 

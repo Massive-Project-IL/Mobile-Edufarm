@@ -37,7 +37,7 @@ fun IsiMateriScreen(id: Int?, title: String?, navController: NavController) {
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
     Column(

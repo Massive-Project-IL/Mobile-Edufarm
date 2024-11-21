@@ -63,7 +63,7 @@ fun LiveMentorScreen(
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
     Scaffold(
@@ -244,7 +244,7 @@ fun CardLiveMentor() {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {

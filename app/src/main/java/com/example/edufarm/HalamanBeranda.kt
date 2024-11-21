@@ -63,10 +63,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
-fun ContentScreen(
-    navController: NavController,
-    modifier: Modifier = Modifier
-) {
+fun ContentScreen(navController: NavController) {
     val selectedItem = remember { mutableStateOf("Beranda") }
 
     val systemUiController = rememberSystemUiController()
@@ -75,7 +72,7 @@ fun ContentScreen(
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
     Scaffold(
@@ -686,8 +683,7 @@ fun CardPelatihan(navController: NavController) {
 fun HalamanBerandaPreview() {
     EdufarmTheme {
         ContentScreen(
-            navController = rememberNavController(),
-            modifier = Modifier
+            navController = rememberNavController()
         )
     }
 }

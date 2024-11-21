@@ -60,7 +60,7 @@ fun UbahSandiScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
 

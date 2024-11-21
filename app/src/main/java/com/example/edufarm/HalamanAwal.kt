@@ -50,7 +50,7 @@ fun EduFarmScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
         // Bounce animation on logo
         bounceAnim.animateTo(

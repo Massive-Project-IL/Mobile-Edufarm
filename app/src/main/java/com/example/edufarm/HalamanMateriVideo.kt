@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun MateriVideoScreen(navController: NavController) {
@@ -47,9 +48,18 @@ fun MateriVideoScreen(navController: NavController) {
     val context = LocalContext.current
     val videoUri = Uri.parse("android.resource://${context.packageName}/${R.raw.video_gandum}")
 
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = true
+        )
+    }
+   
     // Kontrol orientasi layar
     val activity = (LocalContext.current as? Activity)
-
     LaunchedEffect(isFullscreen) {
         (context as? Activity)?.let { activity ->
             activity.requestedOrientation = if (isFullscreen) {
@@ -59,6 +69,7 @@ fun MateriVideoScreen(navController: NavController) {
             }
         }
     }
+
 
     Box(
         modifier = Modifier

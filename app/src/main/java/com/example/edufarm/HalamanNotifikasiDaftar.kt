@@ -40,7 +40,7 @@ fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Mo
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
 

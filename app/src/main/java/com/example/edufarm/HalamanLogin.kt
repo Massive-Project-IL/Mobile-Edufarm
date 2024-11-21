@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
@@ -55,6 +57,15 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
     val emailText = remember { mutableStateOf("") }
     val passwordText = remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    val systemUiController = rememberSystemUiController()
+    val topBarColor = colorResource(id = R.color.background)
+
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = true
+        )
+    }
 
     Column(
         modifier = modifier

@@ -54,7 +54,7 @@ fun EdufarmNavHost(
         }
 
         composable(Routes.HALAMAN_BERANDA) {
-            ContentScreen(navController, modifier)
+            ContentScreen(navController)
         }
 
         composable(Routes.HALAMAN_LIVE_MENTOR) {
@@ -62,7 +62,7 @@ fun EdufarmNavHost(
         }
 
         composable(Routes.HALAMAN_JADWAL_LIVE) {
-            JadwalLiveScreen(navController, modifier)
+            JadwalLiveScreen(navController)
         }
 
         composable(Routes.HALAMAN_PELATIHAN) {

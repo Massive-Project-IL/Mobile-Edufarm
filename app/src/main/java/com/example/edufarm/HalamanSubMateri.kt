@@ -65,7 +65,7 @@ fun SubMateriScreen(
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
     Column(

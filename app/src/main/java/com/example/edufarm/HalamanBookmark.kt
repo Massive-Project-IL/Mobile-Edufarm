@@ -43,7 +43,7 @@ fun BookmarkScreen(modifier: Modifier = Modifier, navController: NavController) 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
-            darkIcons = false
+            darkIcons = true
         )
     }
     Column(
