@@ -104,7 +104,7 @@ fun ContentScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn{
                 items(5) {
-                    CardPelatihan(navController)
+                    CardPelatihanBeranda(navController)
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -538,7 +538,7 @@ fun SearchBarBeranda(
 
 
 @Composable
-fun CardPelatihan(navController: NavController) {
+private fun CardPelatihanBeranda(navController: NavController) {
     var isBookmarked by remember { mutableStateOf(false) }
     val progressCurrent = 1
     val progressTotal = 6
@@ -552,7 +552,7 @@ fun CardPelatihan(navController: NavController) {
             modifier = Modifier
                 .size(width = 330.dp, height = 260.dp),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
         ) {
             Column {

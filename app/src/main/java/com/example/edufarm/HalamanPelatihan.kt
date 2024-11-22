@@ -26,6 +26,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -106,13 +107,14 @@ fun PelatihanScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
                 KategoriChips()
+                Spacer(modifier = Modifier.height(16.dp))
 
                 LazyColumn(
-                    contentPadding = PaddingValues(vertical = 16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(5) {
                         CardPelatihanKategori(navController)
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
@@ -173,9 +175,10 @@ private fun CardPelatihanKategori(navController: NavController) {
 
         Card(
             modifier = Modifier
-                .size(width = 330.dp, height = 260.dp),
+                .fillMaxWidth()
+                .height(260.dp),
             shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
         ) {
             Column {
@@ -278,12 +281,13 @@ private fun CardPelatihanKategori(navController: NavController) {
                             modifier = Modifier
                         ) {
                             CircularProgressIndicator(
-                                progress = progressFraction,
+                                progress = { progressFraction },
                                 modifier = Modifier
                                     .width(44.dp)
                                     .height(44.dp),
                                 color = colorResource(id = R.color.green),
-                                strokeWidth = 4.dp
+                                strokeWidth = 4.dp,
+                                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
                             )
                             Text(
                                 text = "$progressCurrent/$progressTotal",

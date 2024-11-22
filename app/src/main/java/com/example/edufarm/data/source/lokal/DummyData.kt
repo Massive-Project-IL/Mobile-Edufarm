@@ -2,7 +2,6 @@ package com.example.edufarm.data.source.lokal
 
 import com.example.edufarm.data.model.Jadwal
 
-// Dummy data untuk jadwal berdasarkan hari
 object DummyData {
     val jadwalPerHari = mapOf(
         "Senin" to listOf(
