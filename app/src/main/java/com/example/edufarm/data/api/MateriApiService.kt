@@ -1,4 +1,4 @@
-package com.example.edufarm.data.source.remote
+package com.example.edufarm.data.api
 
 import com.example.edufarm.data.model.Materi
 import retrofit2.http.GET

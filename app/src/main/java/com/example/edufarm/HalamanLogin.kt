@@ -106,7 +106,7 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
                         fontFamily = poppinsFontFamily,
                         color = colorResource(id = R.color.green_edu),
                         modifier = Modifier
-                                .padding(bottom = 43.dp)
+                            .padding(bottom = 43.dp)
                     )
                     Text(
                         text = "Farm",

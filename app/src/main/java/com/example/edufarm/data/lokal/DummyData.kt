@@ -1,4 +1,4 @@
-package com.example.edufarm.data.source.lokal
+package com.example.edufarm.data.lokal
 
 import com.example.edufarm.data.model.Jadwal
 

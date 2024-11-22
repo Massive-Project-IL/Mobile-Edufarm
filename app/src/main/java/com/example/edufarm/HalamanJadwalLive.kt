@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.data.lokal.DummyData
 import com.example.edufarm.data.model.Jadwal
-import com.example.edufarm.data.source.lokal.DummyData
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
