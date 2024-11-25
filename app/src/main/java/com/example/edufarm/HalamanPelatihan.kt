@@ -122,8 +122,6 @@ fun PelatihanScreen(
     }
 }
 
-
-
 @Composable
 fun KategoriChips() {
     val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai")
@@ -173,135 +171,135 @@ private fun CardPelatihanKategori(navController: NavController) {
     val progressTotal = 6
     val progressFraction = progressCurrent.toFloat() / progressTotal.toFloat()
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(260.dp),
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
-            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
-        ) {
-            Column {
-
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(260.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
+    ) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.petani),
+                    contentDescription = "Deskripsi Gambar",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 10.dp, vertical = 10.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(140.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                        .align(Alignment.TopEnd)
+                        .padding(top = 19.dp, end = 15.dp)
+                        .size(24.dp)
+                        .background(
+                            color = if (isBookmarked) Color.White else Color.Gray,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .clickable { isBookmarked = !isBookmarked },
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.petani),
-                        contentDescription = "Deskripsi Gambar",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 10.dp, vertical = 10.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                        painter = painterResource(
+                            id = if (isBookmarked) R.drawable.bookmark_green else R.drawable.bookmark_putih
+                        ),
+                        contentDescription = "Bookmark",
+                        modifier = Modifier.size(width = 16.dp, height = 18.dp)
                     )
-                    Box(
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 15.dp)
+                    .padding(top = 8.dp)
+            ) {
+                Text(
+                    text = "Pelatihan Menanam Kacang Tanah",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = poppinsFontFamily,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                Text(
+                    text = "Materi ini akan membahas cara menanam kacang tanah dari awal sampai akhir",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = poppinsFontFamily,
+                    lineHeight = 13.sp,
+                    color = colorResource(id = R.color.gray_bookmark),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(top = 19.dp, end = 15.dp)
-                            .size(24.dp)
-                            .background(
-                                color = if (isBookmarked) Color.White else Color.Gray,
-                                shape = RoundedCornerShape(6.dp)
-                            )
-                            .clickable { isBookmarked = !isBookmarked },
-                        contentAlignment = Alignment.Center
+                            .width(115.dp)
+                            .height(30.dp),
+                        contentPadding = PaddingValues(0.dp)
                     ) {
-                        Image(
-                            painter = painterResource(
-                                id = if (isBookmarked) R.drawable.bookmark_green else R.drawable.bookmark_putih
-                            ),
-                            contentDescription = "Bookmark",
-                            modifier = Modifier.size(width = 16.dp, height = 18.dp)
+                        Text(
+                            text = "Lihat Selengkapnya",
+                            fontSize = 10.sp,
+                            color = Color.White,
+                            fontFamily = poppinsFontFamily,
+                            fontWeight = FontWeight(500),
                         )
                     }
-                }
-
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .padding(top = 8.dp)
-                ) {
                     Text(
-                        text = "Pelatihan Menanam Kacang Tanah",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-
-                    Text(
-                        text = "Materi ini akan membahas cara menanam kacang tanah dari awal sampai akhir",
+                        text = "Progres Materi",
                         fontSize = 11.sp,
-                        fontWeight = FontWeight.Normal,
                         fontFamily = poppinsFontFamily,
-                        lineHeight = 13.sp,
-                        color = colorResource(id = R.color.gray_bookmark),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        fontWeight = FontWeight.W400,
+                        color = Color.Black,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .offset(x = 15.dp)
                     )
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
                     ) {
-                        Button(
-                            onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                        CircularProgressIndicator(
+                            progress = progressFraction, // Perbaikan di sini juga
                             modifier = Modifier
-                                .width(115.dp)
-                                .height(30.dp),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Text(
-                                text = "Lihat Selengkapnya",
-                                fontSize = 10.sp,
-                                color = Color.White,
-                                fontFamily = poppinsFontFamily,
-                                fontWeight = FontWeight(500),
-                            )
-                        }
-                        Text(
-                            text = "Progres Materi",
-                            fontSize = 11.sp,
-                            fontFamily = poppinsFontFamily,
-                            fontWeight = FontWeight.W400,
-                            color = Color.Black,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .offset(x = 15.dp)
+                                .width(44.dp)
+                                .height(44.dp),
+                            color = colorResource(id = R.color.green),
+                            strokeWidth = 4.dp,
+                            trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
                         )
-
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                        ) {
-                            CircularProgressIndicator(
-                                progress = { progressFraction },
-                                modifier = Modifier
-                                    .width(44.dp)
-                                    .height(44.dp),
-                                color = colorResource(id = R.color.green),
-                                strokeWidth = 4.dp,
-                                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
-                            )
-                            Text(
-                                text = "$progressCurrent/$progressTotal",
-                                fontSize = 10.sp,
-                                fontFamily = poppinsFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.Black
-                            )
-                        }
+                        Text(
+                            text = "$progressCurrent/$progressTotal",
+                            fontSize = 10.sp,
+                            fontFamily = poppinsFontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
                     }
                 }
             }
         }
+    }
 }
+
 
 
 
