@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -30,6 +31,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -108,6 +110,71 @@ fun ContentScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun SearchBarBeranda(
+    placeholder: String,
+    onSearch: (String) -> Unit
+) {
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(45.dp)
+            .background(
+                color = colorResource(R.color.white),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = colorResource(R.color.green),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = "Search Icon",
+                tint = colorResource(R.color.gray_live),
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+
+            BasicTextField(
+                value = searchQuery,
+                onValueChange = {
+                    searchQuery = it
+                    onSearch(it.text)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                textStyle = TextStyle(
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.gray_text)
+                ),
+                decorationBox = { innerTextField ->
+                    if (searchQuery.text.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                color = colorResource(R.color.gray_text),
+                                fontWeight = FontWeight.Normal
+                            )
+                        )
+                    }
+                    innerTextField()
+                }
+            )
         }
     }
 }
@@ -259,78 +326,26 @@ fun KategoriBertani() {
 fun SelectKategori(navController: NavController) {
     LazyRow(
         modifier = Modifier
-            .padding(start = 37.dp, end = 37.dp)
+            .padding(horizontal = 36.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(19.dp, Alignment.CenterHorizontally)
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
+        items(listOf(
+            Pair(R.drawable.kacang_tanah, "Kacang Tanah"),
+            Pair(R.drawable.kacang_polong, "Kacang Polong"),
+            Pair(R.drawable.padi, "Padi"),
+            Pair(R.drawable.jagung, "Jagung"),
+            Pair(R.drawable.baru_2, "Gandum"),
+            Pair(R.drawable.kacang_tanah, "Kacang Tanah"),
+            Pair(R.drawable.kacang_polong, "Kacang Polong"),
+            Pair(R.drawable.padi, "Padi"),
+            Pair(R.drawable.jagung, "Jagung"),
+            Pair(R.drawable.baru_2, "Gandum")
+        )) { item ->
             KategoriItem(
                 navController,
-                iconRes = R.drawable.kacang_tanah,
-                title = "Kacang Tanah"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.kacang_polong,
-                title = "Kacang Polong"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.padi,
-                title = "Padi"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.jagung,
-                title = "Jagung"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.baru_2,
-                title = "Gandum"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.kacang_tanah,
-                title = "Kacang Tanah"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.kacang_polong,
-                title = "Kacang Polong"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.padi,
-                title = "Padi"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.jagung,
-                title = "Jagung"
-            )
-        }
-        item {
-            KategoriItem(
-                navController,
-                iconRes = R.drawable.baru_2,
-                title = "Gandum"
+                iconRes = item.first,
+                title = item.second
             )
         }
     }
@@ -345,14 +360,13 @@ fun KategoriItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding()
             .clickable { navController.navigate(Routes.HALAMAN_PELATIHAN) }
     ) {
         Card(
             shape = RoundedCornerShape(15.dp),
             elevation = CardDefaults.cardElevation(3.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            modifier = Modifier.size(width = 45.dp, height = 45.dp)
+            modifier = Modifier.size(45.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -362,7 +376,7 @@ fun KategoriItem(
                 Image(
                     painter = painterResource(id = iconRes),
                     contentDescription = null,
-                    modifier = Modifier.size(width = 29.dp, height = 29.dp)
+                    modifier = Modifier.size(29.dp)
                 )
             }
         }
@@ -379,6 +393,7 @@ fun KategoriItem(
         )
     }
 }
+
 
 @Composable
 fun RekomendasiPelatihan(navController: NavController) {
@@ -470,72 +485,6 @@ fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavCo
         }
     }
 }
-
-@Composable
-fun SearchBarBeranda(
-    placeholder: String,
-    onSearch: (String) -> Unit
-) {
-    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(45.dp)
-            .background(
-                color = colorResource(R.color.white),
-                shape = RoundedCornerShape(10.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = colorResource(R.color.green),
-                shape = RoundedCornerShape(10.dp)
-            )
-            .padding(horizontal = 16.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.search),
-                contentDescription = "Search Icon",
-                tint = colorResource(R.color.gray_live),
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            BasicTextField(
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    onSearch(it.text)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                textStyle = TextStyle(
-                    fontSize = 14.sp,
-                    color = colorResource(R.color.gray_text)
-                ),
-                decorationBox = { innerTextField ->
-                    if (searchQuery.text.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                color = colorResource(R.color.gray_text),
-                                fontWeight = FontWeight.Normal
-                            )
-                        )
-                    }
-                    innerTextField()
-                }
-            )
-        }
-    }
-}
-
 
 @Composable
 private fun CardPelatihanBeranda(navController: NavController) {
@@ -656,12 +605,13 @@ private fun CardPelatihanBeranda(navController: NavController) {
 
                         ) {
                             CircularProgressIndicator(
-                                progress = progressFraction,
+                                progress = { progressFraction },
                                 modifier = Modifier
                                     .width(44.dp)
                                     .height(44.dp),
                                 color = colorResource(id = R.color.green),
-                                strokeWidth = 4.dp
+                                strokeWidth = 4.dp,
+                                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
                             )
                             Text(
                                 text = "$progressCurrent/$progressTotal",

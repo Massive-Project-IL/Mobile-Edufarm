@@ -278,7 +278,9 @@ private fun CardPelatihanKategori(navController: NavController) {
                         modifier = Modifier
                     ) {
                         CircularProgressIndicator(
-                            progress = progressFraction, // Perbaikan di sini juga
+                            progress = {
+                                progressFraction // Perbaikan di sini juga
+                            },
                             modifier = Modifier
                                 .width(44.dp)
                                 .height(44.dp),

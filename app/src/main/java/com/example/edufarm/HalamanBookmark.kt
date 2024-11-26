@@ -239,7 +239,7 @@ private fun CardPelatihanBookmark(navController: NavController) {
                         modifier = Modifier
                     ) {
                         CircularProgressIndicator(
-                            progress = progressFraction,
+                            progress = { progressFraction },
                             modifier = Modifier
                                 .width(44.dp)
                                 .height(44.dp),
