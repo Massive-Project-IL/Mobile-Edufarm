@@ -194,14 +194,6 @@ fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
                     modifier = Modifier.size(22.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(48.dp))
-            IconButton(onClick = { /* handle Facebook login */ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.facebook),
-                    contentDescription = "Facebook",
-                    modifier = Modifier.size(31.dp)
-                )
-            }
         }
     }
 }
