@@ -173,7 +173,7 @@ fun ProfileScreen(
             ProfileRowItem(
                 iconId = R.drawable.logout,
                 text = "Keluar",
-                onClick = { navController.navigate(Routes.HALAMAN_LOGIN) }
+                onClick = { showDialog = true }
             )
 
         }

@@ -34,7 +34,7 @@ fun EdufarmNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.HALAMAN_SPLASH, // Membuat halaman splash di awal
+        startDestination = Routes.HALAMAN_SPLASH,
         modifier = modifier
     ) {
         composable(Routes.HALAMAN_SPLASH) {
