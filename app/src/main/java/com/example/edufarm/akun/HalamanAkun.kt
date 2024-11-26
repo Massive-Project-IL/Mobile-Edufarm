@@ -167,31 +167,15 @@ fun ProfileScreen(
                 text = "Tentang Kami",
                 onClick = { }
             )
+            Spacer(modifier = Modifier.height(12.dp))
 
-            Spacer(modifier = Modifier.height(60.dp))
+            //Keluar
+            ProfileRowItem(
+                iconId = R.drawable.logout,
+                text = "Keluar",
+                onClick = { navController.navigate(Routes.HALAMAN_LOGIN) }
+            )
 
-            // Keluar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showDialog = true }
-                    .padding(vertical = 20.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_keluar),
-                    contentDescription = "Keluar",
-                    modifier = Modifier.size(30.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Keluar",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily
-                )
-            }
         }
         if (showDialog) {
             ConfirmationDialog(
