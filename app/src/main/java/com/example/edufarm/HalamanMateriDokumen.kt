@@ -36,7 +36,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
-fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) {
+fun MateriDokumenScreen(navController: NavController) {
     val listState = rememberLazyListState()
     val isAtBottom = remember {
         derivedStateOf {
@@ -74,7 +74,7 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
         ) {
             item {
                 Text(
-                    text = "$title",
+                    text = "Dokumen Tambahan: Penanaman Kacang Tanah",
                     fontSize = 16.sp,
                     lineHeight = 20.sp,
                     letterSpacing = (-0.24).sp,
@@ -154,9 +154,7 @@ fun MateriDokumenScreen(id: Int?, title: String?, navController: NavController) 
 fun PreviewMateriDokumenScreen() {
     EdufarmTheme {
         MateriDokumenScreen(
-            navController = rememberNavController(),
-            id = 1,
-            title = "Dokumen Tambahan : Penanaman Kacang Tanah"
+            navController = rememberNavController()
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.edufarm
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +23,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,32 +43,30 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.edufarm.data.model.Materi
-import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.SearchBar
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
-import com.example.edufarm.viewmodel.MateriViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.delay
+import com.example.edufarm.viewModel.MateriViewModel
 
 
 @Composable
 fun SubMateriScreen(
     navController: NavController,
-    viewModel: MateriViewModel = viewModel() // Menggunakan ViewModel
+    kategoriId: Int,
+    viewModel: MateriViewModel = viewModel()
 ) {
-    val listOfMateri = viewModel.materiList
-    val systemUiController = rememberSystemUiController()
-    val topBarColor = colorResource(id = R.color.background)
+    val listOfMateri by viewModel.materiList.collectAsState()
+    val filteredMateri = listOfMateri.filter { it.kategori_id == kategoriId } // Filter modul berdasarkan kategoriId
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
-    LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = topBarColor,
-            darkIcons = true
-        )
+    LaunchedEffect(kategoriId) {
+        // Pastikan memuat data sesuai kategoriId
+        viewModel.fetchMateriByCategory(kategoriId)
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,8 +91,15 @@ fun SubMateriScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage ?: "Terjadi kesalahan.",
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
         LazyColumn {
-            items(listOfMateri) { materi ->
+            items(filteredMateri) { materi -> // Menggunakan filteredMateri yang sudah difilter
                 MateriCard(materi = materi, navController)
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -104,13 +110,9 @@ fun SubMateriScreen(
 
 @Composable
 fun MateriCard(
-    materi: Materi,
-    navController: NavController,
-    materiViewModel: MateriViewModel = viewModel()
+    materi: Materi, // Menggunakan objek Materi untuk mengambil data
+    navController: NavController // Untuk navigasi ke halaman detail materi
 ) {
-    val isCompleted = materi.id in materiViewModel.completedMateriIds
-    val showCheckmark = remember { mutableStateOf(false) }
-
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -127,65 +129,53 @@ fun MateriCard(
                     .height(115.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                // Gambar Materi
+                // Menentukan gambar untuk materi
+                val gambar = if (materi.gambar.isNullOrEmpty()) {
+                    // Gambar fallback jika materi.gambar null atau kosong
+                    painterResource(id = R.drawable.petani)
+                } else {
+                    rememberAsyncImagePainter(materi.gambar)
+                }
+
                 Image(
-                    painter = painterResource(id = materi.imageRes),
-                    contentDescription = "Image for ${materi.title}",
+                    painter = gambar,
+                    contentDescription = "Image for ${materi.nama_modul}",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(width = 120.dp, height = 115.dp)
-                        .clip(RoundedCornerShape(14.dp))
+                        .clip(RoundedCornerShape(14.dp)) // Membulatkan gambar
                 )
                 Spacer(modifier = Modifier.width(14.dp))
 
+                // Kolom untuk informasi materi
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // Nama Materi
                     Text(
-                        text = materi.title,
+                        text = materi.nama_modul,
                         fontSize = 14.sp,
                         lineHeight = 20.sp,
                         fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily,
                         color = Color.Black,
                         modifier = Modifier.align(Alignment.Start)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Row untuk tombol dan centang
+                    // Baris untuk tombol dan centang
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth(), // Agar mengisi lebar baris
-                        horizontalArrangement = Arrangement.SpaceBetween // Untuk menempatkan tombol di kiri dan centang di kanan
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
                             onClick = {
-                                // Tandai materi sebagai selesai
-                                materiViewModel.markAsCompleted(materi.id)
-
-                                // Navigasi ke halaman yang sesuai
-                                val route = when (materi.buttonText) {
-                                    "Ayo, Belajar" -> Routes.getHalamanIsiMateriRoute(
-                                        materi.id,
-                                        materi.title
-                                    )
-
-                                    "Tonton Video" -> Routes.getHalamanMateriVideoRoute("your_video_uri_here")
-                                    "Download" -> Routes.getHalamanMateriDokumenRoute(
-                                        materi.id,
-                                        materi.title
-                                    )
-
-                                    else -> null
-                                }
-                                route?.let { navController.navigate(it) }
-
-                                // Menunda munculnya centang
-                                showCheckmark.value = true
+                                // Navigasi ke halaman detail materi
+                                navController.navigate("halamanIsiMateri/${materi.modul_id}/${Uri.encode(materi.nama_modul)}")
                             },
                             shape = RoundedCornerShape(6.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
@@ -195,32 +185,10 @@ fun MateriCard(
                                 .height(24.dp)
                         ) {
                             Text(
-                                text = materi.buttonText,
+                                text = "Lihat Materi",
                                 fontWeight = FontWeight.Medium,
-                                fontFamily = poppinsFontFamily,
                                 color = Color.White,
                                 fontSize = 12.sp
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        // Menunda munculnya centang
-                        LaunchedEffect(isCompleted) {
-                            if (isCompleted) {
-                                delay(10000) // Menunggu 500ms sebelum menunjukkan centang
-                                showCheckmark.value = true
-                            }
-                        }
-
-                        if (isCompleted) {
-                            Icon(
-                                painter = painterResource(R.drawable.check_circle),
-                                contentDescription = "Completed",
-                                tint = colorResource(R.color.green),
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .align(Alignment.CenterVertically)
                             )
                         }
                     }
@@ -234,12 +202,12 @@ fun MateriCard(
 
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewSubMateriScreen() {
     EdufarmTheme {
         SubMateriScreen(
+            kategoriId = 1,
             navController = rememberNavController()
         )
     }
