@@ -1,7 +1,5 @@
 package com.example.edufarm.navigation
 
-import android.net.Uri
-
 object Routes {
     const val HALAMAN_SPLASH = "halamanAwal"
     const val HALAMAN_LOGIN = "halamanLogin"
@@ -13,23 +11,10 @@ object Routes {
     const val HALAMAN_AKUN = "halamanAkun"
     const val HALAMAN_NOTIFIKASI_DAFTAR = "halamanNotifikasiDaftar"
     const val HALAMAN_PELATIHAN = "halamanPelatihan"
-    const val HALAMAN_SUB_MATERI = "halamanSubMateri"
+    const val HALAMAN_SUB_MATERI = "halamanSubMateri/{kategoriId}"
     const val HALAMAN_ISI_MATERI = "halamanIsiMateri/{id}/{title}"
     const val HALAMAN_MATERI_VIDEO = "halamanMateriVideo/{videoUri}"
     const val HALAMAN_MATERI_DOKUMEN = "halamanMateriDokumen/{id}/{title}"
     const val HALAMAN_UBAH_SANDI = "halamanUbahSandi"
     const val HALAMAN_EDIT_PROFILE = "halamanEditProfile"
-
-    // Ini Fungsi untuk membangun rute dinamis
-    fun getHalamanIsiMateriRoute(id: Int, title: String): String {
-        return "halamanIsiMateri/$id/${Uri.encode(title)}"
-    }
-
-    fun getHalamanMateriVideoRoute(videoUri: String): String {
-        return "halamanMateriVideo/${Uri.encode(videoUri)}"
-    }
-
-    fun getHalamanMateriDokumenRoute(id: Int, title: String): String {
-        return "halamanMateriDokumen/$id/${Uri.encode(title)}"
-    }
 }

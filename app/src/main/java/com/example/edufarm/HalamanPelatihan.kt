@@ -14,23 +14,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,24 +43,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.edufarm.navigation.Routes
+import coil.compose.rememberAsyncImagePainter
+import com.example.edufarm.data.model.Kategori
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.SearchBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.PelatihanViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun PelatihanScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    pelatihanViewModel: PelatihanViewModel = viewModel() // Tambahkan ViewModel
 ) {
+    val pelatihanList by pelatihanViewModel.pelatihanList.collectAsState()
+    val errorMessage by pelatihanViewModel.errorMessage.collectAsState()
     val selectedItem = remember { mutableStateOf("Pelatihan") }
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
@@ -70,6 +75,7 @@ fun PelatihanScreen(
             color = topBarColor,
             darkIcons = true
         )
+        pelatihanViewModel.fetchPelatihan() // Memuat data saat screen dibuka
     }
 
     Scaffold(
@@ -106,21 +112,29 @@ fun PelatihanScreen(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                KategoriChips()
+                KategoriChips() // Tidak diubah
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(5) {
-                        CardPelatihanKategori(navController)
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage ?: "Error tidak diketahui",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(pelatihanList) { pelatihan ->
+                            CardPelatihanKategori(navController, pelatihan)
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun KategoriChips() {
@@ -165,11 +179,11 @@ fun KategoriChips() {
 }
 
 @Composable
-private fun CardPelatihanKategori(navController: NavController) {
+fun CardPelatihanKategori(
+    navController: NavController,
+    pelatihan: Kategori // Menambahkan parameter untuk mengambil data kategori dari backend
+) {
     var isBookmarked by remember { mutableStateOf(false) }
-    val progressCurrent = 1
-    val progressTotal = 6
-    val progressFraction = progressCurrent.toFloat() / progressTotal.toFloat()
 
     Card(
         modifier = Modifier
@@ -183,11 +197,15 @@ private fun CardPelatihanKategori(navController: NavController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .height(160.dp)
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.petani),
+                    painter = rememberAsyncImagePainter(
+                        model = pelatihan.gambar ?: "https://example.com/default_image.jpg", // Gambar fallback jika gambar null
+                        placeholder = painterResource(R.drawable.petani), // Gambar placeholder
+                        error = painterResource(R.drawable.petani) // Gambar error jika gagal memuat gambar
+                    ),
                     contentDescription = "Deskripsi Gambar",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -195,6 +213,8 @@ private fun CardPelatihanKategori(navController: NavController) {
                         .padding(horizontal = 10.dp, vertical = 10.dp)
                         .clip(RoundedCornerShape(16.dp))
                 )
+
+
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -217,13 +237,13 @@ private fun CardPelatihanKategori(navController: NavController) {
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 15.dp)
-                    .padding(top = 8.dp)
+            // Menampilkan teks dan tombol berdasarkan data dari backend
+            Column(modifier = Modifier
+                .padding(horizontal = 15.dp)
+                .padding(top = 8.dp)
             ) {
                 Text(
-                    text = "Pelatihan Menanam Kacang Tanah",
+                    text = pelatihan.nama_kategori, // Mengambil nama kategori dari backend
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFontFamily,
@@ -231,7 +251,7 @@ private fun CardPelatihanKategori(navController: NavController) {
                 )
 
                 Text(
-                    text = "Materi ini akan membahas cara menanam kacang tanah dari awal sampai akhir",
+                    text = pelatihan.penjelasan, // Mengambil penjelasan kategori dari backend
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = poppinsFontFamily,
@@ -246,7 +266,10 @@ private fun CardPelatihanKategori(navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { navController.navigate(Routes.HALAMAN_SUB_MATERI) },
+                        onClick = {
+                            // Pastikan kategori_id yang benar dikirim
+                            navController.navigate("halamanSubMateri/${pelatihan.kategori_id}")
+                        },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
@@ -262,40 +285,7 @@ private fun CardPelatihanKategori(navController: NavController) {
                             fontWeight = FontWeight(500),
                         )
                     }
-                    Text(
-                        text = "Progres Materi",
-                        fontSize = 11.sp,
-                        fontFamily = poppinsFontFamily,
-                        fontWeight = FontWeight.W400,
-                        color = Color.Black,
-                        textAlign = TextAlign.End,
-                        modifier = Modifier
-                            .offset(x = 15.dp)
-                    )
 
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                    ) {
-                        CircularProgressIndicator(
-                            progress = {
-                                progressFraction // Perbaikan di sini juga
-                            },
-                            modifier = Modifier
-                                .width(44.dp)
-                                .height(44.dp),
-                            color = colorResource(id = R.color.green),
-                            strokeWidth = 4.dp,
-                            trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
-                        )
-                        Text(
-                            text = "$progressCurrent/$progressTotal",
-                            fontSize = 10.sp,
-                            fontFamily = poppinsFontFamily,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.Black
-                        )
-                    }
                 }
             }
         }
