@@ -63,13 +63,26 @@ import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+data class LiveSession(
+    val title: String,
+    val time: String,
+    val mentorName: String,
+    val isLive: Boolean
+)
+
+val liveSessions = listOf(
+    LiveSession("Bertanam Gandum", "09.30–12.30", "Vodka", true),
+    LiveSession("Penyemaian", "13.00–14.30", "Alice", true),
+    LiveSession("Pemupukan", "15.00–16.30", "Bob", false)
+)
+
 
 @Composable
 fun ContentScreen(navController: NavController) {
     val selectedItem = remember { mutableStateOf("Beranda") }
-
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.green)
+
 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
@@ -96,7 +109,7 @@ fun ContentScreen(navController: NavController) {
                 .fillMaxSize()
         ){
             Spacer(modifier = Modifier.height(16.dp))
-            CardLive()
+            CardLiveScrollable()
             Spacer(modifier = Modifier.height(16.dp))
             KategoriBertani()
             Spacer(modifier = Modifier.height(6.dp))
@@ -180,14 +193,36 @@ fun SearchBarBeranda(
 }
 
 @Composable
-fun CardLive() {
+fun CardLiveScrollable() {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 26.dp) // Tambahkan padding dari tepi layar
+    ) {
+        items(liveSessions) { session ->
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+            ) {
+                CardLive(session)
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun CardLive(session: LiveSession) {
     var showDialog by remember { mutableStateOf(false) }
     var isNotificationActive by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 34.dp),
+            .width(320.dp)
+            .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
@@ -198,7 +233,7 @@ fun CardLive() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Bertanam Gandum",
+                    text = session.title,
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -229,7 +264,7 @@ fun CardLive() {
                     modifier = Modifier.size(26.dp, 22.dp)
                 )
                 Text(
-                    text = "Sedang Berlangsung",
+                    text = if (session.isLive) "Sedang Berlangsung" else "Selesai",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     fontFamily = poppinsFontFamily,
@@ -246,7 +281,7 @@ fun CardLive() {
             ) {
                 Column {
                     Text(
-                        text = "waktu",
+                        text = "Waktu",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         fontFamily = poppinsFontFamily,
@@ -254,7 +289,7 @@ fun CardLive() {
                         modifier = Modifier.padding(bottom = 3.dp)
                     )
                     Text(
-                        text = "09.30–12.30",
+                        text = session.time,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         fontFamily = poppinsFontFamily,
@@ -271,7 +306,7 @@ fun CardLive() {
                         modifier = Modifier.padding(bottom = 3.dp)
                     )
                     Text(
-                        text = "Vodka",
+                        text = session.mentorName,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         fontFamily = poppinsFontFamily,
@@ -308,6 +343,7 @@ fun CardLive() {
         )
     }
 }
+
 
 @Composable
 fun KategoriBertani() {
@@ -510,7 +546,8 @@ private fun CardPelatihanBeranda(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(140.dp)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                        .align(Alignment.CenterHorizontally),
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.petani),
