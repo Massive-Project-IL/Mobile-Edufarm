@@ -85,7 +85,6 @@ fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
             fontSize = 16.sp,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            color = Color.Gray,
             modifier = Modifier
                 .align(Alignment.Start)
         )

@@ -1,6 +1,5 @@
 package com.example.edufarm
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -270,26 +269,7 @@ fun CardLiveMentor() {
                             .clickable { isNotificationActive = !isNotificationActive }
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(3.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.live),
-                        contentDescription = null,
-                        modifier = Modifier.size(width = 26.dp, height = 22.dp)
-                    )
-                    Text(
-                        text = "Sedang Berlangsung",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title)
-                    )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),

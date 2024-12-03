@@ -98,7 +98,7 @@ fun EdufarmNavHost(
             MateriDokumenScreen(navController = navController)
         }
 
-
+        // Akun
         composable(Routes.HALAMAN_AKUN) {
             ProfileScreen(navController = navController)
         }
@@ -111,6 +111,26 @@ fun EdufarmNavHost(
             UbahSandiScreen(navController = navController)
         }
 
+//        composable(Routes.HALAMAN_TENTANG_KAMI) {
+//            TentangKamiScreen(navController = navController)
+//        }
+//
+//        //LupaKataSandi
+//        composable(Routes.ATUR_ULANG_SANDI) {
+//            AturUlangSandiScreen(navController = navController)
+//        }
+//
+//        composable(Routes.LUPA_PASSWORD) {
+//            LupaPasswordScreen(navController = navController)
+//        }
+//
+//        composable(Routes.NOTIFIKASI_PASSWORD) {
+//            NotifikasiPasswordScreen(navController = navController)
+//        }
+//
+//        composable(Routes.VERIFIKASI_EMAIL) {
+//            VerifikasiEmailScreen(navController = navController)
+//        }
     }
 }
 

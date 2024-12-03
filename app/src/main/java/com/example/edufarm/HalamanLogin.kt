@@ -155,6 +155,7 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
                     }
                 )
 
+
                 Spacer(modifier = Modifier.height(21.dp))
 
                 // Password Field
@@ -204,6 +205,7 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
                                     innerTextField()
                                 }
 
+
                                 IconButton(
                                     onClick = { passwordVisible = !passwordVisible },
                                     modifier = Modifier.size(48.dp)
@@ -230,7 +232,25 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
                     }
                 )
 
-                Spacer(modifier = Modifier.height(37.dp))
+                Spacer(modifier = Modifier.height(5.dp))
+                // "Lupa Kata Sandi" Text
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End // Menempatkan teks di kanan bawah
+                ) {
+                    Text(
+                        text = "Lupa Kata Sandi?",
+                        color = colorResource(id = R.color.green_logo),
+                        fontSize = 12.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+//                        modifier = Modifier.clickable {
+//                            navController.navigate(Routes.HALAMAN_LUPA_SANDI) // Navigasi ke halaman reset password
+//                        }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // Login Button
                 Button(
