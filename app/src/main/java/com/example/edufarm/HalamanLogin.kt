@@ -244,9 +244,9 @@ fun LoginScreen(navController: NavController,modifier: Modifier = Modifier) {
                         fontSize = 12.sp,
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-//                        modifier = Modifier.clickable {
-//                            navController.navigate(Routes.HALAMAN_LUPA_SANDI) // Navigasi ke halaman reset password
-//                        }
+                        modifier = Modifier.clickable {
+                            navController.navigate(Routes.LUPA_PASSWORD)
+                        }
                     )
                 }
 
