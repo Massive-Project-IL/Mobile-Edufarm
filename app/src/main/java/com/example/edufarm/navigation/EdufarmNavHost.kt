@@ -133,9 +133,9 @@ fun EdufarmNavHost(
             NotifikasiPasswordScreen(navController = navController)
         }
 
-        composable(Routes.VERIFIKASI_EMAIL) {
-            VerifikasiEmailScreen(navController = navController)
-        }
+//        composable(Routes.VERIFIKASI_EMAIL) {
+//            VerifikasiEmailScreen(navController = navController)
+//        }
     }
 }
 
