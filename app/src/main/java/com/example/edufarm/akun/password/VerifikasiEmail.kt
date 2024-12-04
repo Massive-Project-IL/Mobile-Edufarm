@@ -138,65 +138,72 @@ fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Mod
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    (0 until kodeLength).forEach { index ->
-                        val isFocused = kodeVerifikasi.length == index
-                        BasicTextField(
-                            value = if (index < kodeVerifikasi.length) kodeVerifikasi[index].toString() else "",
-                            onValueChange = { value ->
-                                if (value.length <= 1 && value.all { it.isDigit() }) {
-                                    kodeVerifikasi = if (value.isEmpty() && index < kodeVerifikasi.length) {
-                                        kodeVerifikasi.dropLast(1)
-                                    } else {
-                                        kodeVerifikasi + value
-                                    }
-                                }
-                            },
-                            modifier = Modifier
-                                .size(45.dp)
-                                .background(Color.LightGray, RoundedCornerShape(8.dp))
-                                .border(
-                                    width = if (isFocused) 2.dp else 1.dp,
-                                    color = if (isFocused) colorResource(id = R.color.green_logo) else Color.Gray,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(8.dp),
-                            textStyle = TextStyle(
-                                color = Color.Black,
-                                fontSize = 18.sp,
-                                fontFamily = poppinsFontFamily,
-                                textAlign = TextAlign.Center
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next
-                            ),
-                            singleLine = true
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(90.dp))
-
-                // Login Button
-                Button(
-                    onClick = { navController.navigate(Routes.ATUR_ULANG_SANDI) },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(40.dp)
+                        .padding(horizontal = 16.dp)
                 ) {
-                    Text(
-                        text = "Konfirmasi",
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        fontFamily = poppinsFontFamily,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        (0 until kodeLength).forEach { index ->
+                            val isFocused = kodeVerifikasi.length == index
+                            BasicTextField(
+                                value = if (index < kodeVerifikasi.length) kodeVerifikasi[index].toString() else "",
+                                onValueChange = { value ->
+                                    if (value.length <= 1 && value.all { it.isDigit() }) {
+                                        kodeVerifikasi =
+                                            if (value.isEmpty() && index < kodeVerifikasi.length) {
+                                                kodeVerifikasi.dropLast(1)
+                                            } else {
+                                                kodeVerifikasi + value
+                                            }
+                                    }
+                                },
+                                modifier = Modifier
+                                    .size(45.dp)
+                                    .background(Color.LightGray, RoundedCornerShape(8.dp))
+                                    .border(
+                                        width = if (isFocused) 2.dp else 1.dp,
+                                        color = if (isFocused) colorResource(id = R.color.green_logo) else Color.Gray,
+                                        shape = RoundedCornerShape(8.dp)
+                                    )
+                                    .padding(8.dp),
+                                textStyle = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 18.sp,
+                                    fontFamily = poppinsFontFamily,
+                                    textAlign = TextAlign.Center
+                                ),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Next
+                                ),
+                                singleLine = true
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(90.dp))
+
+                    // Login Button
+                    Button(
+                        onClick = { navController.navigate(Routes.ATUR_ULANG_SANDI) },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp)
+                    ) {
+                        Text(
+                            text = "Konfirmasi",
+                            color = Color.White,
+                            fontSize = 15.sp,
+                            fontFamily = poppinsFontFamily,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }
