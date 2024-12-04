@@ -23,8 +23,13 @@ import com.example.edufarm.NotifikasiDaftarScreen
 import com.example.edufarm.PelatihanScreen
 import com.example.edufarm.SubMateriScreen
 import com.example.edufarm.akun.HalamanEditProfile
+import com.example.edufarm.akun.HalamanTentangKami
 import com.example.edufarm.akun.ProfileScreen
 import com.example.edufarm.akun.UbahSandiScreen
+import com.example.edufarm.akun.password.AturUlangSandiScreen
+import com.example.edufarm.akun.password.LupaPasswordScreen
+import com.example.edufarm.akun.password.NotifikasiPasswordScreen
+import com.example.edufarm.akun.password.VerifikasiEmailScreen
 
 @Composable
 fun EdufarmNavHost(
@@ -98,7 +103,7 @@ fun EdufarmNavHost(
             MateriDokumenScreen(navController = navController)
         }
 
-
+        // Akun
         composable(Routes.HALAMAN_AKUN) {
             ProfileScreen(navController = navController)
         }
@@ -111,6 +116,26 @@ fun EdufarmNavHost(
             UbahSandiScreen(navController = navController)
         }
 
+        composable(Routes.HALAMAN_TENTANG_KAMI) {
+            HalamanTentangKami(navController = navController)
+        }
+
+        //LupaKataSandi
+        composable(Routes.ATUR_ULANG_SANDI) {
+            AturUlangSandiScreen(navController = navController)
+        }
+
+        composable(Routes.LUPA_PASSWORD) {
+            LupaPasswordScreen(navController = navController)
+        }
+
+        composable(Routes.NOTIFIKASI_PASSWORD) {
+            NotifikasiPasswordScreen(navController = navController)
+        }
+
+        composable(Routes.VERIFIKASI_EMAIL) {
+            VerifikasiEmailScreen(navController = navController)
+        }
     }
 }
 

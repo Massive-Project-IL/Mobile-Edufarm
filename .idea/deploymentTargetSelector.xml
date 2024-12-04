@@ -13,10 +13,14 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
+<<<<<<< HEAD
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="HalamanEditProfilePreview">
+=======
+      <SelectionState runConfigName="ProfileScreenPreview">
+>>>>>>> 21e95187ac2c59c10256f0c69d5549a38d968557
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

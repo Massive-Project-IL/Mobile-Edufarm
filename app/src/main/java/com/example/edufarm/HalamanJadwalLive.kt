@@ -143,9 +143,18 @@ fun JadwalLiveScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "$selectedDay, 19 Okt 2024",
+                text = selectedDay,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = poppinsFontFamily,
+                modifier = Modifier
+                    .padding(start = 35.dp, end = 35.dp)
+            )
+            Text(
+                text = "19 Okt 2024",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = poppinsFontFamily,
                 modifier = Modifier
                     .padding(start = 35.dp, end = 35.dp, bottom = 14.dp)
             )
@@ -205,8 +214,6 @@ fun JadwalLiveScreen(navController: NavController) {
         }
     }
 }
-
-
 
 @Composable
 fun JadwalCard(
@@ -295,10 +302,6 @@ fun JadwalCard(
         }
     }
 }
-
-
-
-
 
 
 fun calculateDuration(timeRange: String): Int {
