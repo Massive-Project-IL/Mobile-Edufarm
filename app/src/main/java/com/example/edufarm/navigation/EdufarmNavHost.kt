@@ -23,6 +23,7 @@ import com.example.edufarm.NotifikasiDaftarScreen
 import com.example.edufarm.PelatihanScreen
 import com.example.edufarm.SubMateriScreen
 import com.example.edufarm.akun.HalamanEditProfile
+import com.example.edufarm.akun.HalamanTentangKami
 import com.example.edufarm.akun.ProfileScreen
 import com.example.edufarm.akun.UbahSandiScreen
 
@@ -111,9 +112,9 @@ fun EdufarmNavHost(
             UbahSandiScreen(navController = navController)
         }
 
-//        composable(Routes.HALAMAN_TENTANG_KAMI) {
-//            TentangKamiScreen(navController = navController)
-//        }
+        composable(Routes.HALAMAN_TENTANG_KAMI) {
+            HalamanTentangKami(navController = navController)
+        }
 //
 //        //LupaKataSandi
 //        composable(Routes.ATUR_ULANG_SANDI) {

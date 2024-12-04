@@ -174,7 +174,7 @@ fun ProfileScreen(
             ProfileRowItem(
                 iconId = R.drawable.ic_aboutus,
                 text = "Tentang Kami",
-                onClick = { }
+                onClick = { navController.navigate(Routes.HALAMAN_TENTANG_KAMI) }
             )
             Spacer(modifier = Modifier.height(12.dp))
 

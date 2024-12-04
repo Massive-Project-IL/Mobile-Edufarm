@@ -2,9 +2,7 @@ package com.example.edufarm
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -103,17 +100,19 @@ fun PelatihanScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 SearchBar(placeholder = "Cari Pelatihan")
-                Text(
-                    text = "Kategori",
-                    fontFamily = poppinsFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+//                Text(
+//                    text = "Kategori",
+//                    fontFamily = poppinsFontFamily,
+//                    fontWeight = FontWeight.SemiBold,
+//                    fontSize = 14.sp,
+//                    modifier = Modifier.padding(top = 8.dp)
+//                )
+//
+//                Spacer(modifier = Modifier.height(12.dp))
+////                KategoriChips() // Tidak diubah
+////                Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(12.dp))
-                KategoriChips() // Tidak diubah
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(28.dp))
 
                 if (errorMessage != null) {
                     Text(
@@ -136,47 +135,47 @@ fun PelatihanScreen(
 }
 
 
-@Composable
-fun KategoriChips() {
-    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai")
-    var selectedCategory by remember { mutableStateOf(categories[0]) }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(14.dp)
-    ) {
-        categories.forEach { category ->
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = if (category == selectedCategory) colorResource(R.color.green)
-                        else colorResource(R.color.white),
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .clickable { selectedCategory = category }
-                    .border(
-                        width = 1.dp,
-                        color = colorResource(R.color.green),
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .padding(horizontal = 16.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = category,
-                    color = if (category == selectedCategory) colorResource(R.color.white)
-                    else colorResource(R.color.gray_bookmark),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    lineHeight = 20.sp,
-                    letterSpacing = (-0.24).sp
-                )
-            }
-        }
-    }
-}
+//@Composable
+//fun KategoriChips() {
+//    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai")
+//    var selectedCategory by remember { mutableStateOf(categories[0]) }
+//
+//    Row(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .horizontalScroll(rememberScrollState()),
+//        horizontalArrangement = Arrangement.spacedBy(14.dp)
+//    ) {
+//        categories.forEach { category ->
+//            Box(
+//                modifier = Modifier
+//                    .background(
+//                        color = if (category == selectedCategory) colorResource(R.color.green)
+//                        else colorResource(R.color.white),
+//                        shape = RoundedCornerShape(6.dp)
+//                    )
+//                    .clickable { selectedCategory = category }
+//                    .border(
+//                        width = 1.dp,
+//                        color = colorResource(R.color.green),
+//                        shape = RoundedCornerShape(6.dp)
+//                    )
+//                    .padding(horizontal = 16.dp, vertical = 4.dp)
+//            ) {
+//                Text(
+//                    text = category,
+//                    color = if (category == selectedCategory) colorResource(R.color.white)
+//                    else colorResource(R.color.gray_bookmark),
+//                    fontSize = 10.sp,
+//                    fontWeight = FontWeight.Medium,
+//                    fontFamily = poppinsFontFamily,
+//                    lineHeight = 20.sp,
+//                    letterSpacing = (-0.24).sp
+//                )
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun CardPelatihanKategori(
@@ -190,7 +189,7 @@ fun CardPelatihanKategori(
             .fillMaxWidth()
             .height(260.dp),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
     ) {
         Column {
