@@ -253,10 +253,10 @@ fun convertDurationToString(duration: String): String {
     val minutes = timeParts[1].toInt() // Ambil bagian menit
 
     return when {
-        hours > 0 && minutes > 0 -> "$hours jam $minutes menit" // Jika ada jam dan menit
-        hours > 0 -> "$hours jam" // Jika hanya jam
-        minutes > 0 -> "$minutes menit" // Jika hanya menit
-        else -> "0 menit" // Jika tidak ada jam atau menit
+        hours > 0 && minutes > 0 -> "$hours jam $minutes menit"
+        hours > 0 -> "$hours jam"
+        minutes > 0 -> "$minutes menit"
+        else -> "0 menit"
     }
 }
 
