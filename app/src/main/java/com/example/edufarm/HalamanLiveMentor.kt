@@ -79,7 +79,6 @@ fun LiveMentorScreen(
             color = topBarColor,
             darkIcons = true
         )
-        // Panggil fungsi ViewModel untuk memuat data jadwal live
         viewModel.fetchJadwalLive()
     }
 
@@ -116,7 +115,7 @@ fun LiveMentorScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Jadwal Live Hari ini - Tanggal $todayDate", // Tampilkan tanggal hari ini
+                    text = "Jadwal Live Hari ini - Tanggal $todayDate",
                     fontSize = 12.sp,
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Medium,
