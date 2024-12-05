@@ -1,5 +1,7 @@
 package com.example.edufarm
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,25 +46,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.edufarm.data.lokal.DummyData
-import com.example.edufarm.data.model.Jadwal
+import com.example.edufarm.data.model.JadwalLive
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.JadwalLiveViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun JadwalLiveScreen(navController: NavController) {
-    val selectedItem = remember { mutableStateOf("Live Mentor") }
-    var selectedDay by remember { mutableStateOf("Senin") }
-    val jadwalList = DummyData.jadwalPerHari[selectedDay] ?: emptyList()
-    val daysOfWeek = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
-    var activeNotificationIds by remember { mutableStateOf(setOf<Int>()) } // Set ID aktif
+fun JadwalLiveScreen(navController: NavController, viewModel: JadwalLiveViewModel = viewModel()) {
+    val today = remember { LocalDate.now() }
+    var selectedDate by remember { mutableStateOf(today.dayOfMonth.toString().padStart(2, '0')) }
+    val currentMonth = today.month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+    val currentYear = today.year.toString()
+    val datesOfMonth = (1..today.lengthOfMonth()).map { it.toString().padStart(2, '0') }
+    val jadwalList by viewModel.jadwalLive.collectAsState()
+    var activeNotificationIds by remember { mutableStateOf(setOf<Int>()) }
 
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
@@ -71,11 +83,13 @@ fun JadwalLiveScreen(navController: NavController) {
             color = topBarColor,
             darkIcons = true
         )
+        // Memuat data jadwal live dari ViewModel
+        viewModel.fetchJadwalLive()
     }
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController, selectedItem)
+            BottomNavigationBar(navController, remember { mutableStateOf("Live Mentor") })
         }
     ) { paddingValues ->
         Column(
@@ -99,7 +113,7 @@ fun JadwalLiveScreen(navController: NavController) {
                     modifier = Modifier.padding(start = 35.dp, bottom = 16.dp)
                 ) {
                     Text(
-                        text = "Oktober 2024",
+                        text = "$currentMonth $currentYear",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
@@ -111,25 +125,25 @@ fun JadwalLiveScreen(navController: NavController) {
                             .horizontalScroll(rememberScrollState())
                             .fillMaxWidth()
                     ) {
-                        daysOfWeek.forEach { day ->
+                        datesOfMonth.forEach { date ->
                             Box(
                                 modifier = Modifier
                                     .padding(end = 12.dp)
-                                    .clickable { selectedDay = day }
+                                    .clickable { selectedDate = date }
                                     .border(
                                         width = 1.dp,
                                         color = colorResource(R.color.green_logo),
                                         shape = RoundedCornerShape(8.dp)
                                     )
                                     .background(
-                                        color = if (day == selectedDay) colorResource(R.color.green) else Color.White,
+                                        color = if (date == selectedDate) colorResource(R.color.green) else Color.White,
                                         shape = RoundedCornerShape(8.dp)
                                     )
                                     .padding(horizontal = 16.dp, vertical = 8.dp)
                             ) {
                                 Text(
-                                    text = day,
-                                    color = if (day == selectedDay) Color.White else Color.Black,
+                                    text = date,
+                                    color = if (date == selectedDate) Color.White else Color.Black,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
                                     fontFamily = poppinsFontFamily
@@ -143,23 +157,40 @@ fun JadwalLiveScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = selectedDay,
+                text = "Tanggal $selectedDate $currentMonth $currentYear",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = poppinsFontFamily,
-                modifier = Modifier
-                    .padding(start = 35.dp, end = 35.dp)
-            )
-            Text(
-                text = "19 Okt 2024",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = poppinsFontFamily,
-                modifier = Modifier
-                    .padding(start = 35.dp, end = 35.dp, bottom = 14.dp)
+                modifier = Modifier.padding(start = 35.dp, end = 35.dp)
             )
 
-            if (jadwalList.isEmpty()) {
+            // Filter jadwal sesuai tanggal yang dipilih
+            val filteredJadwalList = jadwalList.filter { jadwal ->
+                try {
+                    // Menggunakan SimpleDateFormat untuk parsing tanggal
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Pastikan parsing dalam zona waktu UTC
+                    val jadwalDate: Date = dateFormat.parse(jadwal.tanggal) ?: Date() // Fallback ke Date() jika null
+
+                    // Konversi ke zona waktu lokal
+                    val localDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                    localDateFormat.timeZone = TimeZone.getDefault() // Zona waktu lokal
+                    val localDate = localDateFormat.format(jadwalDate)
+
+                    // Gunakan Calendar untuk ekstraksi informasi tanggal
+                    val calendar = Calendar.getInstance()
+                    calendar.time = jadwalDate
+
+                    // Bandingkan tanggal, bulan, dan tahun
+                    calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0') == selectedDate &&
+                            calendar.get(Calendar.MONTH) + 1 == today.monthValue &&
+                            calendar.get(Calendar.YEAR) == today.year
+                } catch (e: Exception) {
+                    false // Abaikan item jika terjadi kesalahan parsing
+                }
+            }
+
+            if (filteredJadwalList.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -183,7 +214,7 @@ fun JadwalLiveScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
-                            text = "Yahh, Hari ini engga ada live mentor",
+                            text = "Yahh, Tidak ada live mentor untuk tanggal $selectedDate",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             color = colorResource(R.color.green_jadwal)
@@ -196,15 +227,15 @@ fun JadwalLiveScreen(navController: NavController) {
                         .fillMaxSize()
                         .padding(start = 35.dp, end = 35.dp)
                 ) {
-                    items(jadwalList) { jadwal ->
+                    items(filteredJadwalList) { jadwal ->
                         JadwalCard(
                             jadwal = jadwal,
-                            isNotificationActive = activeNotificationIds.contains(jadwal.id), // Cek apakah ID ada di Set
+                            isNotificationActive = activeNotificationIds.contains(jadwal.notifikasi_id),
                             onNotificationToggle = { isActive ->
                                 activeNotificationIds = if (isActive) {
-                                    activeNotificationIds + jadwal.id // Tambahkan ID
+                                    activeNotificationIds + jadwal.notifikasi_id
                                 } else {
-                                    activeNotificationIds - jadwal.id // Hapus ID
+                                    activeNotificationIds - jadwal.notifikasi_id
                                 }
                             }
                         )
@@ -215,9 +246,23 @@ fun JadwalLiveScreen(navController: NavController) {
     }
 }
 
+// Fungsi untuk mengonversi durasi dalam format HH:mm:ss menjadi jam dan menit
+fun convertDurationToString(duration: String): String {
+    val timeParts = duration.split(":") // Memisahkan jam, menit, detik
+    val hours = timeParts[0].toInt() // Ambil bagian jam
+    val minutes = timeParts[1].toInt() // Ambil bagian menit
+
+    return when {
+        hours > 0 && minutes > 0 -> "$hours jam $minutes menit" // Jika ada jam dan menit
+        hours > 0 -> "$hours jam" // Jika hanya jam
+        minutes > 0 -> "$minutes menit" // Jika hanya menit
+        else -> "0 menit" // Jika tidak ada jam atau menit
+    }
+}
+
 @Composable
 fun JadwalCard(
-    jadwal: Jadwal,
+    jadwal: JadwalLive,
     isNotificationActive: Boolean,
     onNotificationToggle: (Boolean) -> Unit
 ) {
@@ -244,7 +289,7 @@ fun JadwalCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = jadwal.title,
+                        text = jadwal.judul_notifikasi,
                         fontFamily = poppinsFontFamily,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -253,7 +298,7 @@ fun JadwalCard(
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = jadwal.mentor,
+                            text = jadwal.nama_mentor,
                             fontFamily = poppinsFontFamily,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp,
@@ -269,15 +314,20 @@ fun JadwalCard(
                                 )
                         )
                         Spacer(modifier = Modifier.width(4.dp))
+
+                        // Menampilkan durasi dalam format jam dan menit
+                        val formattedDuration = convertDurationToString(jadwal.durasi) // Mengonversi durasi
                         Text(
-                            text = "${calculateDuration(jadwal.timeRange)} jam",
+                            text = formattedDuration, // Menampilkan durasi dalam format yang sesuai
                             fontSize = 14.sp,
+                            fontFamily = poppinsFontFamily,
+                            fontWeight = FontWeight.Medium,
                             color = colorResource(R.color.green_logo)
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = jadwal.timeRange,
+                        text = "${jadwal.waktu_mulai} - ${jadwal.waktu_selesai}",
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -289,7 +339,7 @@ fun JadwalCard(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(12.dp)
-                .clickable { onNotificationToggle(!isNotificationActive) } // Toggle status
+                .clickable { onNotificationToggle(!isNotificationActive) }
         ) {
             Icon(
                 painter = painterResource(
@@ -303,27 +353,13 @@ fun JadwalCard(
     }
 }
 
-
-fun calculateDuration(timeRange: String): Int {
-    val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-    val times = timeRange.split(" - ")
-    return if (times.size == 2) {
-        val startTime = timeFormat.parse(times[0])
-        val endTime = timeFormat.parse(times[1])
-        val durationInMillis = endTime.time - startTime.time
-        (durationInMillis / (1000 * 60 * 60)).toInt()
-    } else {
-        0
-    }
-}
-
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
-fun JadwalLiveScreenPreview() {
+fun PreviewJadwalLiveScreen() {
     EdufarmTheme {
         JadwalLiveScreen(
-            navController = rememberNavController(),
+            navController = rememberNavController()
         )
     }
 }

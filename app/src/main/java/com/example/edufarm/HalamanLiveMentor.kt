@@ -1,5 +1,9 @@
 package com.example.edufarm
 
+
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,33 +46,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.data.model.JadwalLive
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.JadwalLiveViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LiveMentorScreen(
-    navController: NavController, modifier: Modifier = Modifier
+    navController: NavController,
+    viewModel: JadwalLiveViewModel = viewModel(),
+    modifier: Modifier = Modifier
 ) {
+    val todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd")) // Format tanggal "dd"
     val selectedItem = remember { mutableStateOf("Live Mentor") }
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
+    val jadwalList by viewModel.jadwalLive.collectAsState() // Mengambil data dari ViewModel
+    val errorMessage by viewModel.errorMessage.collectAsState() // Mengambil error message dari ViewModel
 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
             darkIcons = true
         )
+        // Panggil fungsi ViewModel untuk memuat data jadwal live
+        viewModel.fetchJadwalLive()
     }
+
     Scaffold(
         modifier = modifier,
-        bottomBar = { BottomNavigationBar(navController, selectedItem) }) { paddingValues ->
+        bottomBar = { BottomNavigationBar(navController, selectedItem) }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -88,15 +107,16 @@ fun LiveMentorScreen(
                     .padding(top = 8.dp)
                     .fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
-                    text = "Jadwal Live Hari ini",
+                    text = "Jadwal Live Hari ini - Tanggal $todayDate", // Tampilkan tanggal hari ini
                     fontSize = 12.sp,
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Medium,
@@ -128,106 +148,36 @@ fun LiveMentorScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            CardLiveMentor()
-            Spacer(modifier = Modifier.height(16.dp))
+            // Tampilkan error jika ada
+            if (errorMessage?.isNotEmpty() == true) {
+                Text(
+                    text = errorMessage!!,
+                    fontSize = 12.sp,
+                    fontFamily = poppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Red,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
 
-            LiveMentorDescription()
-
+            // Tampilkan gambar dan deskripsi jika tidak ada jadwal live mentor
+            if (jadwalList.isEmpty()) {
+                NoJadwalCard()
+                Spacer(modifier = Modifier.height(16.dp))
+            } else {
+                // Tampilkan jadwal live jika ada data
+                jadwalList.forEach { jadwal ->
+                    CardLiveMentor(jadwal = jadwal)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+            LiveMentorDescription(jadwalList)
         }
     }
 }
 
 @Composable
-fun LiveMentorDescription() {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-
-        Text(
-            text = "Yuk, Bertani Gandum Bareng! 🎉",
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp,
-            fontFamily = poppinsFontFamily,
-            color = Color.Black,
-            lineHeight = 20.sp,
-            letterSpacing = (-0.24).sp
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Live Mentor: Bertanam Gandum 🌾",
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            fontFamily = poppinsFontFamily,
-            color = Color.Black,
-            lineHeight = 20.sp,
-            letterSpacing = (-0.24).sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Belajar menanam gandum dari ahlinya! 🌱 Simak tips dan trik bertanam gandum yang benar, mulai dari pemilihan benih, pengolahan tanah, hingga perawatannya.",
-            fontWeight = FontWeight.Normal,
-            fontSize = 12.sp,
-            fontFamily = poppinsFontFamily,
-            color = Color.Black,
-            lineHeight = 20.sp,
-            letterSpacing = (-0.24).sp
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Yang akan kamu dapatkan:",
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp,
-            fontFamily = poppinsFontFamily,
-            color = Color.Black,
-            lineHeight = 20.sp,
-            letterSpacing = (-0.24).sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-
-        val benefits = listOf(
-            "Panduan praktis: Belajar langsung dari pakar pertanian berpengalaman.",
-            "Sharing pengalaman: Berdiskusi dan berbagi pengalaman dengan petani lainnya.",
-            "Tanya jawab: Ajukan pertanyaan tentang menanam gandum sepuasnya.",
-            "Motivasi dan inspirasi: Dapatkan semangat dan inspirasi untuk memulai bertani."
-        )
-
-        benefits.forEach { benefit ->
-            Text(
-                text = "- $benefit",
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp,
-                fontFamily = poppinsFontFamily,
-                color = Color.Black,
-                lineHeight = 20.sp,
-                letterSpacing = (-0.24).sp
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Gabung sekarang dan raih hasil panen yang maksimal! Jangan lewatkan kesempatan emas ini! 🎉",
-            fontWeight = FontWeight.Normal,
-            fontSize = 12.sp,
-            fontFamily = poppinsFontFamily,
-            color = Color.Black,
-            lineHeight = 20.sp,
-            letterSpacing = (-0.24).sp
-        )
-    }
-}
-
-@Composable
-fun CardLiveMentor() {
+fun CardLiveMentor(jadwal: JadwalLive) {
     var showDialog by remember { mutableStateOf(false) }
     var isNotificationActive by remember { mutableStateOf(false) }
 
@@ -252,7 +202,7 @@ fun CardLiveMentor() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Bertanam Gandum",
+                        text = jadwal.nama_kategori,
                         style = MaterialTheme.typography.titleLarge,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
@@ -269,6 +219,7 @@ fun CardLiveMentor() {
                             .clickable { isNotificationActive = !isNotificationActive }
                     )
                 }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row(
@@ -278,7 +229,7 @@ fun CardLiveMentor() {
                 ) {
                     Column {
                         Text(
-                            text = "waktu",
+                            text = "Waktu",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             fontFamily = poppinsFontFamily,
@@ -286,7 +237,7 @@ fun CardLiveMentor() {
                             modifier = Modifier.padding(bottom = 3.dp)
                         )
                         Text(
-                            text = "09.30–12.30",
+                            text = "${jadwal.waktu_mulai} – ${jadwal.waktu_selesai}",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             fontFamily = poppinsFontFamily,
@@ -303,7 +254,7 @@ fun CardLiveMentor() {
                             modifier = Modifier.padding(bottom = 3.dp)
                         )
                         Text(
-                            text = "Vodka",
+                            text = jadwal.nama_mentor,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             fontFamily = poppinsFontFamily,
@@ -336,19 +287,153 @@ fun CardLiveMentor() {
         ConfirmationDialog(
             message = "Apakah Kamu Mau Gabung Live?",
             onDismissRequest = { showDialog = false },
-            onConfirm = {
-                showDialog = false
-            },
-            onCancel = {
-                showDialog = false
-            }
+            onConfirm = { showDialog = false },
+            onCancel = { showDialog = false }
         )
     }
 }
 
+@Composable
+fun NoJadwalCard() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = colorResource(id = R.color.green),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(1.dp)
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
+            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(16.dp))
+            {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_calendar_empty),
+                        contentDescription = "Empty Calendar",
+                        modifier = Modifier.size(90.dp)
+                    )
+                    Text(
+                        text = "Yahh, Tidak ada live mentor untuk Hari ini",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colorResource(R.color.green_jadwal)
+                    )
+            }
+        }
+    }
+}
 
+@Composable
+fun LiveMentorDescription(jadwalList: List<JadwalLive>) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        // Kondisi jika tidak ada jadwal live mentor
+        if (jadwalList.isEmpty()) {
+            Text(
+                text = "Yahh , Hari ini engga ada live mentor. Kamu bisa coba pelajari materi yang sudah ada di bagian Pelatihan.\n\nSemangattt berlatih 🙌 🌾",
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                fontFamily = poppinsFontFamily,
+                color = Color.Black,
+                lineHeight = 20.sp,
+                letterSpacing = (-0.24).sp,
+                modifier = Modifier.padding(top = 20.dp)
+            )
+        } else {
+            // Tampilkan deskripsi jika ada jadwal live mentor
+            Text(
+                text = "Yuk, Bertani Gandum Bareng! 🎉",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                fontFamily = poppinsFontFamily,
+                color = Color.Black,
+                lineHeight = 20.sp,
+                letterSpacing = (-0.24).sp,
+                modifier = Modifier.padding(top = 10.dp)
+            )
 
+            Spacer(modifier = Modifier.height(16.dp))
 
+            Text(
+                text = "Live Mentor: Bertanam Gandum 🌾",
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp,
+                fontFamily = poppinsFontFamily,
+                color = Color.Black,
+                lineHeight = 20.sp,
+                letterSpacing = (-0.24).sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Belajar menanam gandum dari ahlinya! 🌱 Simak tips dan trik bertanam gandum yang benar, mulai dari pemilihan benih, pengolahan tanah, hingga perawatannya.",
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+                fontFamily = poppinsFontFamily,
+                color = Color.Black,
+                lineHeight = 20.sp,
+                letterSpacing = (-0.24).sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Yang akan kamu dapatkan:",
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
+                fontFamily = poppinsFontFamily,
+                color = Color.Black,
+                lineHeight = 20.sp,
+                letterSpacing = (-0.24).sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val benefits = listOf(
+                "Panduan praktis: Belajar langsung dari pakar pertanian berpengalaman.",
+                "Sharing pengalaman: Berdiskusi dan berbagi pengalaman dengan petani lainnya.",
+                "Tanya jawab: Ajukan pertanyaan tentang menanam gandum sepuasnya.",
+                "Motivasi dan inspirasi: Dapatkan semangat dan inspirasi untuk memulai bertani."
+            )
+
+            benefits.forEach { benefit ->
+                Text(
+                    text = "- $benefit",
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    fontFamily = poppinsFontFamily,
+                    color = Color.Black,
+                    lineHeight = 20.sp,
+                    letterSpacing = (-0.24).sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Gabung sekarang dan raih hasil panen yang maksimal! Jangan lewatkan kesempatan emas ini! 🎉",
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp,
+                fontFamily = poppinsFontFamily,
+                color = Color.Black,
+                lineHeight = 20.sp,
+                letterSpacing = (-0.24).sp
+            )
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewLiveMentorScreen() {
