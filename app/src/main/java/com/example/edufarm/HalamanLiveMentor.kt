@@ -335,7 +335,6 @@ fun LiveMentorDescription(jadwalList: List<JadwalLive>) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Kondisi jika tidak ada jadwal live mentor
         if (jadwalList.isEmpty()) {
             Text(
                 text = "Yahh , Hari ini engga ada live mentor. Kamu bisa coba pelajari materi yang sudah ada di bagian Pelatihan.\n\nSemangattt berlatih 🙌 🌾",
@@ -348,7 +347,6 @@ fun LiveMentorDescription(jadwalList: List<JadwalLive>) {
                 modifier = Modifier.padding(top = 20.dp)
             )
         } else {
-            // Tampilkan deskripsi jika ada jadwal live mentor
             Text(
                 text = "Yuk, Bertani Gandum Bareng! 🎉",
                 fontWeight = FontWeight.SemiBold,
