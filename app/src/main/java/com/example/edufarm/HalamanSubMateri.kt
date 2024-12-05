@@ -110,8 +110,8 @@ fun SubMateriScreen(
 
 @Composable
 fun MateriCard(
-    materi: Materi, // Menggunakan objek Materi untuk mengambil data
-    navController: NavController // Untuk navigasi ke halaman detail materi
+    materi: Materi,
+    navController: NavController
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -143,18 +143,16 @@ fun MateriCard(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(width = 120.dp, height = 115.dp)
-                        .clip(RoundedCornerShape(14.dp)) // Membulatkan gambar
+                        .clip(RoundedCornerShape(14.dp))
                 )
                 Spacer(modifier = Modifier.width(14.dp))
 
-                // Kolom untuk informasi materi
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Nama Materi
                     Text(
                         text = materi.nama_modul,
                         fontSize = 14.sp,
@@ -166,7 +164,6 @@ fun MateriCard(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Baris untuk tombol dan centang
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -174,7 +171,6 @@ fun MateriCard(
                     ) {
                         Button(
                             onClick = {
-                                // Navigasi ke halaman detail materi
                                 navController.navigate("halamanIsiMateri/${materi.modul_id}/${Uri.encode(materi.nama_modul)}")
                             },
                             shape = RoundedCornerShape(6.dp),
@@ -197,10 +193,6 @@ fun MateriCard(
         }
     }
 }
-
-
-
-
 
 @Preview(showBackground = true)
 @Composable
