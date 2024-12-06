@@ -36,6 +36,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+<<<<<<< HEAD
+import androidx.compose.runtime.collectAsState
+=======
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,13 +58,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+<<<<<<< HEAD
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
+import com.example.edufarm.data.model.Kategori
+=======
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+<<<<<<< HEAD
+import com.example.edufarm.viewModel.PelatihanViewModel
+=======
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 data class LiveSession(
@@ -78,7 +94,14 @@ val liveSessions = listOf(
 
 
 @Composable
+<<<<<<< HEAD
+fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanViewModel = viewModel()
+){
+    val pelatihanList by pelatihanViewModel.pelatihanList.collectAsState()
+    val errorMessage by pelatihanViewModel.errorMessage.collectAsState()
+=======
 fun ContentScreen(navController: NavController) {
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
     val selectedItem = remember { mutableStateOf("Beranda") }
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.green)
@@ -89,6 +112,10 @@ fun ContentScreen(navController: NavController) {
             color = topBarColor,
             darkIcons = true
         )
+<<<<<<< HEAD
+        pelatihanViewModel.fetchPelatihan()
+=======
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -118,8 +145,13 @@ fun ContentScreen(navController: NavController) {
             RekomendasiPelatihan(navController)
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn{
+<<<<<<< HEAD
+                items(pelatihanList) {pelatihan ->
+                    CardPelatihanBeranda(navController, pelatihan)
+=======
                 items(5) {
                     CardPelatihanBeranda(navController)
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -252,6 +284,8 @@ fun CardLive(session: LiveSession) {
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+<<<<<<< HEAD
+=======
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -272,6 +306,7 @@ fun CardLive(session: LiveSession) {
                 )
             }
 
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
@@ -523,7 +558,11 @@ fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavCo
 }
 
 @Composable
+<<<<<<< HEAD
+private fun CardPelatihanBeranda(navController: NavController, pelatihan: Kategori) {
+=======
 private fun CardPelatihanBeranda(navController: NavController) {
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
     var isBookmarked by remember { mutableStateOf(false) }
     val progressCurrent = 1
     val progressTotal = 6
@@ -550,7 +589,11 @@ private fun CardPelatihanBeranda(navController: NavController) {
                         .align(Alignment.CenterHorizontally),
                 ) {
                     Image(
+<<<<<<< HEAD
+                        painter = rememberImagePainter(pelatihan.gambar),
+=======
                         painter = painterResource(id = R.drawable.petani),
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                         contentDescription = "Deskripsi Gambar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -586,7 +629,11 @@ private fun CardPelatihanBeranda(navController: NavController) {
                         .padding(top = 8.dp)
                 ) {
                     Text(
+<<<<<<< HEAD
+                        text = pelatihan.nama_kategori,
+=======
                         text = "Pelatihan Menanam Kacang Tanah",
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = poppinsFontFamily,
@@ -594,7 +641,11 @@ private fun CardPelatihanBeranda(navController: NavController) {
                     )
 
                     Text(
+<<<<<<< HEAD
+                        text = pelatihan.penjelasan,
+=======
                         text = "Materi ini akan membahas cara menanam kacang tanah dari awal sampai akhir",
+>>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = poppinsFontFamily,
