@@ -62,7 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.edufarm.data.model.Kategori
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
@@ -126,7 +126,7 @@ fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanVie
             Spacer(modifier = Modifier.height(16.dp))
             KategoriBertani()
             Spacer(modifier = Modifier.height(6.dp))
-            SelectKategori(navController, pelatihanList)
+//            SelectKategori(navController, pelatihanList)
             Spacer(modifier = Modifier.height(16.dp))
             RekomendasiPelatihan(navController)
             Spacer(modifier = Modifier.height(16.dp))
@@ -351,23 +351,23 @@ fun KategoriBertani() {
     )
 }
 
-@Composable
-fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) {
-    LazyRow(
-        modifier = Modifier
-            .padding(horizontal = 36.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(pelatihanList) { pelatihan ->
-            KategoriItem(
-                navController = navController,
-                iconRes = pelatihan.icone,  // Mengirimkan nama gambar
-                title = pelatihan.nama_kategori // Nama kategori
-            )
-        }
-    }
-}
+//@Composable
+//fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) {
+//    LazyRow(
+//        modifier = Modifier
+//            .padding(horizontal = 36.dp)
+//            .fillMaxWidth(),
+//        horizontalArrangement = Arrangement.spacedBy(16.dp)
+//    ) {
+//        items(pelatihanList) { pelatihan ->
+//            KategoriItem(
+//                navController = navController,
+//                iconRes = pelatihan.icon,  // Mengirimkan nama gambar
+//                title = pelatihan.nama_kategori // Nama kategori
+//            )
+//        }
+//    }
+//}
 
 
 
@@ -546,7 +546,7 @@ private fun CardPelatihanBeranda(navController: NavController, pelatihan: Katego
                         .align(Alignment.CenterHorizontally),
                 ) {
                     Image(
-                        painter = rememberImagePainter(pelatihan.gambar),
+                        painter = rememberAsyncImagePainter(pelatihan.gambar),
                         contentDescription = "Deskripsi Gambar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -590,13 +590,13 @@ private fun CardPelatihanBeranda(navController: NavController, pelatihan: Katego
                     )
 
                     Text(
-                        text = pelatihan.penjelasan,
+                        text = "Materi ini akan membahas cara menanam ${pelatihan.nama_kategori} dari awal sampai akhir",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = poppinsFontFamily,
                         lineHeight = 13.sp,
                         color = colorResource(id = R.color.gray_bookmark),
-                        modifier = Modifier.padding(bottom = 8.dp).padding(horizontal = 10.dp),
+                        modifier = Modifier.padding(bottom = 8.dp),
                         maxLines = 2, // Maksimum dua baris
                         overflow = TextOverflow.Ellipsis // Gunakan ellipsis bila teks lebih panjang dari batas baris
                     )

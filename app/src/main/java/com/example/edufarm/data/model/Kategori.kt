@@ -11,7 +11,7 @@ data class Kategori(
     val nama_kategori: String,
     val penjelasan: String,
     val gambar: String,
-    val icone: String?,
+    val icon: String?,
     val tanggal_dibuat: String,
     val email_mentor:String?
 )
