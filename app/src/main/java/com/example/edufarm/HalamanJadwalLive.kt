@@ -157,7 +157,7 @@ fun JadwalLiveScreen(navController: NavController, viewModel: JadwalLiveViewMode
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Tanggal $selectedDate $currentMonth $currentYear",
+                text = "$selectedDate $currentMonth $currentYear",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = poppinsFontFamily,
@@ -271,6 +271,7 @@ fun JadwalCard(
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
+        // Card utama
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
@@ -288,20 +289,22 @@ fun JadwalCard(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
+                    // Judul
                     Text(
                         text = jadwal.judul_notifikasi,
                         fontFamily = poppinsFontFamily,
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(4.dp))
+                    // Nama Mentor dan Durasi
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = jadwal.nama_mentor,
                             fontFamily = poppinsFontFamily,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.width(6.dp))
@@ -315,17 +318,18 @@ fun JadwalCard(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
 
-                        // Menampilkan durasi dalam format jam dan menit
-                        val formattedDuration = convertDurationToString(jadwal.durasi) // Mengonversi durasi
+                        // Durasi
+                        val formattedDuration = convertDurationToString(jadwal.durasi)
                         Text(
-                            text = formattedDuration, // Menampilkan durasi dalam format yang sesuai
-                            fontSize = 14.sp,
+                            text = formattedDuration,
+                            fontSize = 12.sp,
                             fontFamily = poppinsFontFamily,
                             fontWeight = FontWeight.Medium,
                             color = colorResource(R.color.green_logo)
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
+                    // Waktu Mulai dan Selesai
                     Text(
                         text = "${jadwal.waktu_mulai} - ${jadwal.waktu_selesai}",
                         fontSize = 14.sp,
@@ -335,11 +339,11 @@ fun JadwalCard(
             }
         }
 
+        // Ikon notifikasi
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(12.dp)
-                .clickable { onNotificationToggle(!isNotificationActive) }
         ) {
             Icon(
                 painter = painterResource(
@@ -347,11 +351,14 @@ fun JadwalCard(
                 ),
                 contentDescription = "Notification",
                 tint = colorResource(R.color.green_logo),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { onNotificationToggle(!isNotificationActive) }
             )
         }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)

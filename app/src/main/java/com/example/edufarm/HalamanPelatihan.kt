@@ -134,49 +134,6 @@ fun PelatihanScreen(
     }
 }
 
-
-//@Composable
-//fun KategoriChips() {
-//    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai")
-//    var selectedCategory by remember { mutableStateOf(categories[0]) }
-//
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .horizontalScroll(rememberScrollState()),
-//        horizontalArrangement = Arrangement.spacedBy(14.dp)
-//    ) {
-//        categories.forEach { category ->
-//            Box(
-//                modifier = Modifier
-//                    .background(
-//                        color = if (category == selectedCategory) colorResource(R.color.green)
-//                        else colorResource(R.color.white),
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-//                    .clickable { selectedCategory = category }
-//                    .border(
-//                        width = 1.dp,
-//                        color = colorResource(R.color.green),
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-//                    .padding(horizontal = 16.dp, vertical = 4.dp)
-//            ) {
-//                Text(
-//                    text = category,
-//                    color = if (category == selectedCategory) colorResource(R.color.white)
-//                    else colorResource(R.color.gray_bookmark),
-//                    fontSize = 10.sp,
-//                    fontWeight = FontWeight.Medium,
-//                    fontFamily = poppinsFontFamily,
-//                    lineHeight = 20.sp,
-//                    letterSpacing = (-0.24).sp
-//                )
-//            }
-//        }
-//    }
-//}
-
 @Composable
 fun CardPelatihanKategori(
     navController: NavController,
@@ -201,7 +158,7 @@ fun CardPelatihanKategori(
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = pelatihan.gambar ?: "https://example.com/default_image.jpg", // Gambar fallback jika gambar null
+                        model = pelatihan.gambar ?: "https://example.com/default_image.jpg",
                         placeholder = painterResource(R.drawable.petani), // Gambar placeholder
                         error = painterResource(R.drawable.petani) // Gambar error jika gagal memuat gambar
                     ),
@@ -250,7 +207,7 @@ fun CardPelatihanKategori(
                 )
 
                 Text(
-                    text = pelatihan.penjelasan, // Mengambil penjelasan kategori dari backend
+                    text = "Materi ini akan membahas cara menanam ${pelatihan.nama_kategori} dari awal sampai akhir", // Mengambil penjelasan kategori dari backend
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = poppinsFontFamily,
@@ -292,8 +249,6 @@ fun CardPelatihanKategori(
 }
 
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewPelatihanScreen() {
@@ -305,3 +260,45 @@ fun PreviewPelatihanScreen() {
         }
     }
 }
+
+//@Composable
+//fun KategoriChips() {
+//    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai")
+//    var selectedCategory by remember { mutableStateOf(categories[0]) }
+//
+//    Row(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .horizontalScroll(rememberScrollState()),
+//        horizontalArrangement = Arrangement.spacedBy(14.dp)
+//    ) {
+//        categories.forEach { category ->
+//            Box(
+//                modifier = Modifier
+//                    .background(
+//                        color = if (category == selectedCategory) colorResource(R.color.green)
+//                        else colorResource(R.color.white),
+//                        shape = RoundedCornerShape(6.dp)
+//                    )
+//                    .clickable { selectedCategory = category }
+//                    .border(
+//                        width = 1.dp,
+//                        color = colorResource(R.color.green),
+//                        shape = RoundedCornerShape(6.dp)
+//                    )
+//                    .padding(horizontal = 16.dp, vertical = 4.dp)
+//            ) {
+//                Text(
+//                    text = category,
+//                    color = if (category == selectedCategory) colorResource(R.color.white)
+//                    else colorResource(R.color.gray_bookmark),
+//                    fontSize = 10.sp,
+//                    fontWeight = FontWeight.Medium,
+//                    fontFamily = poppinsFontFamily,
+//                    lineHeight = 20.sp,
+//                    letterSpacing = (-0.24).sp
+//                )
+//            }
+//        }
+//    }
+//}

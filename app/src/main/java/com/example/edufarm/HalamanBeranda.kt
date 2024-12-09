@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -36,10 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-<<<<<<< HEAD
 import androidx.compose.runtime.collectAsState
-=======
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,34 +48,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-<<<<<<< HEAD
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.edufarm.data.model.Kategori
-=======
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
-<<<<<<< HEAD
 import com.example.edufarm.viewModel.PelatihanViewModel
-=======
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 data class LiveSession(
@@ -94,14 +87,10 @@ val liveSessions = listOf(
 
 
 @Composable
-<<<<<<< HEAD
 fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanViewModel = viewModel()
 ){
     val pelatihanList by pelatihanViewModel.pelatihanList.collectAsState()
     val errorMessage by pelatihanViewModel.errorMessage.collectAsState()
-=======
-fun ContentScreen(navController: NavController) {
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
     val selectedItem = remember { mutableStateOf("Beranda") }
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.green)
@@ -112,10 +101,7 @@ fun ContentScreen(navController: NavController) {
             color = topBarColor,
             darkIcons = true
         )
-<<<<<<< HEAD
         pelatihanViewModel.fetchPelatihan()
-=======
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -140,18 +126,13 @@ fun ContentScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
             KategoriBertani()
             Spacer(modifier = Modifier.height(6.dp))
-            SelectKategori(navController)
+            SelectKategori(navController, pelatihanList)
             Spacer(modifier = Modifier.height(16.dp))
             RekomendasiPelatihan(navController)
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn{
-<<<<<<< HEAD
                 items(pelatihanList) {pelatihan ->
                     CardPelatihanBeranda(navController, pelatihan)
-=======
-                items(5) {
-                    CardPelatihanBeranda(navController)
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -284,29 +265,6 @@ fun CardLive(session: LiveSession) {
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-<<<<<<< HEAD
-=======
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.live),
-                    contentDescription = null,
-                    modifier = Modifier.size(26.dp, 22.dp)
-                )
-                Text(
-                    text = if (session.isLive) "Sedang Berlangsung" else "Selesai",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = poppinsFontFamily,
-                    color = colorResource(id = R.color.green_title)
-                )
-            }
-
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
@@ -394,38 +352,29 @@ fun KategoriBertani() {
 }
 
 @Composable
-fun SelectKategori(navController: NavController) {
+fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) {
     LazyRow(
         modifier = Modifier
             .padding(horizontal = 36.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(listOf(
-            Pair(R.drawable.kacang_tanah, "Kacang Tanah"),
-            Pair(R.drawable.kacang_polong, "Kacang Polong"),
-            Pair(R.drawable.padi, "Padi"),
-            Pair(R.drawable.jagung, "Jagung"),
-            Pair(R.drawable.baru_2, "Gandum"),
-            Pair(R.drawable.kacang_tanah, "Kacang Tanah"),
-            Pair(R.drawable.kacang_polong, "Kacang Polong"),
-            Pair(R.drawable.padi, "Padi"),
-            Pair(R.drawable.jagung, "Jagung"),
-            Pair(R.drawable.baru_2, "Gandum")
-        )) { item ->
+        items(pelatihanList) { pelatihan ->
             KategoriItem(
-                navController,
-                iconRes = item.first,
-                title = item.second
+                navController = navController,
+                iconRes = pelatihan.icone,  // Mengirimkan nama gambar
+                title = pelatihan.nama_kategori // Nama kategori
             )
         }
     }
 }
 
+
+
 @Composable
 fun KategoriItem(
     navController: NavController,
-    iconRes: Int,
+    iconRes: String?,  // Menerima String nama gambar
     title: String,
 ) {
     Column(
@@ -444,11 +393,22 @@ fun KategoriItem(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Image(
-                    painter = painterResource(id = iconRes),
-                    contentDescription = null,
-                    modifier = Modifier.size(29.dp)
-                )
+                // Jika iconRes adalah nama file gambar, kita cari ID-nya
+                val context = LocalContext.current
+                val iconResId = iconRes?.let {
+                    context.resources.getIdentifier(it, "drawable", context.packageName)
+                }
+
+                iconResId?.let {
+                    Image(
+                        painter = painterResource(id = it),
+                        contentDescription = null,
+                        modifier = Modifier.size(29.dp)
+                    )
+                } ?: run {
+                    // Menangani kasus ketika tidak ada gambar
+                    Icon(Icons.Filled.Error, contentDescription = null)
+                }
             }
         }
 
@@ -464,6 +424,7 @@ fun KategoriItem(
         )
     }
 }
+
 
 
 @Composable
@@ -558,11 +519,7 @@ fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavCo
 }
 
 @Composable
-<<<<<<< HEAD
 private fun CardPelatihanBeranda(navController: NavController, pelatihan: Kategori) {
-=======
-private fun CardPelatihanBeranda(navController: NavController) {
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
     var isBookmarked by remember { mutableStateOf(false) }
     val progressCurrent = 1
     val progressTotal = 6
@@ -589,11 +546,7 @@ private fun CardPelatihanBeranda(navController: NavController) {
                         .align(Alignment.CenterHorizontally),
                 ) {
                     Image(
-<<<<<<< HEAD
                         painter = rememberImagePainter(pelatihan.gambar),
-=======
-                        painter = painterResource(id = R.drawable.petani),
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                         contentDescription = "Deskripsi Gambar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -629,11 +582,7 @@ private fun CardPelatihanBeranda(navController: NavController) {
                         .padding(top = 8.dp)
                 ) {
                     Text(
-<<<<<<< HEAD
                         text = pelatihan.nama_kategori,
-=======
-                        text = "Pelatihan Menanam Kacang Tanah",
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = poppinsFontFamily,
@@ -641,18 +590,17 @@ private fun CardPelatihanBeranda(navController: NavController) {
                     )
 
                     Text(
-<<<<<<< HEAD
                         text = pelatihan.penjelasan,
-=======
-                        text = "Materi ini akan membahas cara menanam kacang tanah dari awal sampai akhir",
->>>>>>> a78e8009735e20d99cbbd3495858062c0a80e98b
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = poppinsFontFamily,
                         lineHeight = 13.sp,
                         color = colorResource(id = R.color.gray_bookmark),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp).padding(horizontal = 10.dp),
+                        maxLines = 2, // Maksimum dua baris
+                        overflow = TextOverflow.Ellipsis // Gunakan ellipsis bila teks lebih panjang dari batas baris
                     )
+
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -677,14 +625,14 @@ private fun CardPelatihanBeranda(navController: NavController) {
                             )
                         }
                         Text(
-                                text = "Progres Materi",
-                                fontSize = 11.sp,
-                                fontFamily = poppinsFontFamily,
-                                fontWeight = FontWeight.W400,
-                                color = Color.Black,
-                                textAlign = TextAlign.End,
-                                modifier = Modifier
-                                    .offset(x = 15.dp)
+                            text = "Progres Materi",
+                            fontSize = 11.sp,
+                            fontFamily = poppinsFontFamily,
+                            fontWeight = FontWeight.W400,
+                            color = Color.Black,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .offset(x = 15.dp)
                         )
 
                         Box(
