@@ -1,6 +1,6 @@
 package com.example.edufarm
 
-import androidx.compose.foundation.Image
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,11 +20,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,31 +37,65 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.data.api.ApiClient
+import com.example.edufarm.data.repository.AuthRepository
+import com.example.edufarm.factory.RegisterViewModelFactory
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-
+import com.example.edufarm.viewModel.RegisterState
+import com.example.edufarm.viewModel.RegisterViewModel
 
 @Composable
-fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
-    val systemUiController = rememberSystemUiController()
-    val topBarColor = colorResource(id = R.color.background)
+fun DaftarScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val repository = AuthRepository(ApiClient.apiService)
+    val factory = RegisterViewModelFactory(repository)
+    val viewModel: RegisterViewModel = viewModel(factory = factory)
 
-    LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = topBarColor,
-            darkIcons = true
-        )
+    // Input field states
+    val namaText = remember { mutableStateOf("") }
+    val emailText = remember { mutableStateOf("") }
+    val passwordText = remember { mutableStateOf("") }
+    val telponText = remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    // Global error state
+    val errorMessages = remember { mutableStateOf(listOf<String>()) }
+
+    // RegisterState from ViewModel
+    val registerState by viewModel.registerState.collectAsState()
+
+    fun validateForm(): Boolean {
+        val errors = mutableListOf<String>()
+
+        if (namaText.value.isEmpty()) {
+            errors.add("Nama lengkap harus diisi.")
+        }
+        if (emailText.value.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(emailText.value).matches()) {
+            errors.add("Email harus valid.")
+        }
+        if (passwordText.value.isEmpty() || passwordText.value.length < 8) {
+            errors.add("Password minimal 8 karakter.")
+        }
+        if (telponText.value.isEmpty() || !telponText.value.all { it.isDigit() } || telponText.value.length < 10) {
+            errors.add("Nomor HP harus berupa angka minimal 10 digit.")
+        }
+
+        errorMessages.value = errors
+        return errors.isEmpty()
     }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -81,39 +116,74 @@ fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Lengkapi data dirimu",
+            text = "Lengkapi data diri kamu",
             fontSize = 16.sp,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Medium,
-            modifier = Modifier
-                .align(Alignment.Start)
+            modifier = Modifier.align(Alignment.Start)
         )
 
         Spacer(modifier = Modifier.height(28.dp))
 
+        // Tampilkan pesan error di atas form
+        if (errorMessages.value.isNotEmpty()) {
+            ErrorMessages(errors = errorMessages.value)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         // Nama Lengkap Field
-        InputField(placeholder = "Nama Lengkap")
+        InputField(
+            text = namaText.value,
+            onTextChange = { namaText.value = it },
+            placeholder = "Nama Lengkap",
+            isError = errorMessages.value.contains("Nama lengkap harus diisi.")
+        )
 
         Spacer(modifier = Modifier.height(25.dp))
 
         // Alamat Email Field
-        InputField(placeholder = "Alamat Email")
+        InputField(
+            text = emailText.value,
+            onTextChange = { emailText.value = it },
+            placeholder = "Alamat Email",
+            isError = errorMessages.value.contains("Email harus valid.")
+        )
 
         Spacer(modifier = Modifier.height(25.dp))
 
-        // Password Field with Eye Icon
-        PasswordField()
+        // Password Field
+        PasswordField(
+            text = passwordText.value,
+            onTextChange = { passwordText.value = it },
+            passwordVisible = passwordVisible,
+            onPasswordVisibilityChange = { passwordVisible = it },
+            isError = errorMessages.value.contains("Password minimal 8 karakter.")
+        )
 
         Spacer(modifier = Modifier.height(25.dp))
 
         // No HP Field
-        InputField(placeholder = "No. Hp")
+        InputField(
+            text = telponText.value,
+            onTextChange = { telponText.value = it },
+            placeholder = "No. Hp",
+            isError = errorMessages.value.contains("Nomor HP harus berupa angka minimal 10 digit.")
+        )
 
         Spacer(modifier = Modifier.height(25.dp))
 
         // Daftar Button
         Button(
-            onClick = { navController.navigate(Routes.HALAMAN_NOTIFIKASI_DAFTAR) },
+            onClick = {
+                if (validateForm()) {
+                    viewModel.registerUser(
+                        email = emailText.value,
+                        password = passwordText.value,
+                        nama = namaText.value,
+                        telpon = telponText.value
+                    )
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
             modifier = Modifier
                 .fillMaxWidth()
@@ -150,87 +220,84 @@ fun DaftarScreen(navController: NavController,modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Bold,
                 color = colorResource(id = R.color.green_logo),
                 modifier = Modifier.clickable {
-                    navController.navigate(Routes.HALAMAN_LOGIN) // Navigate to Daftar
+                    navController.navigate(Routes.HALAMAN_LOGIN)
                 }
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Or Separator
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(modifier = Modifier
-                .weight(1f)
-                .height(1.dp)
-                .background(Color.Gray))
-            Text(
-                text = " atau daftar dengan ",
-                modifier = Modifier.padding(horizontal = 8.dp),
-                fontSize = 11.sp,
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.Medium,
-                color = Color.Gray
-            )
-            Box(modifier = Modifier
-                .weight(1f)
-                .height(1.dp)
-                .background(Color.Gray))
+        // Handle Register State
+        when (registerState) {
+            is RegisterState.Loading -> CircularProgressIndicator()
+            is RegisterState.Success -> {
+                navController.navigate(Routes.HALAMAN_NOTIFIKASI_DAFTAR)
+            }
+            is RegisterState.Error -> {
+                errorMessages.value = listOf((registerState as RegisterState.Error).message)
+            }
+            else -> Unit
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
 
-        // Social Media Login
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+
+@Composable
+fun ErrorMessages(errors: List<String>) {
+    if (errors.isNotEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+                .background(Color.Red.copy(alpha = 0.2f), RoundedCornerShape(10.dp)) // Background merah transparan dengan rounded corner
+                .padding(16.dp)
         ) {
-            IconButton(onClick = { /* handle Google login */ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.google_logo),
-                    contentDescription = "Google",
-                    modifier = Modifier.size(22.dp)
-                )
+            Column {
+                errors.forEach { error ->
+                    Text(
+                        text = error,
+                        color = Color.Red, // Warna teks merah
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 4.dp) // Padding antar pesan error
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun InputField(placeholder: String) {
-    val emailText = remember { mutableStateOf("") }
-
+fun InputField(
+    text: String,
+    onTextChange: (String) -> Unit,
+    placeholder: String,
+    isError: Boolean = false
+) {
     BasicTextField(
-        value = emailText.value,
-        onValueChange = { emailText.value = it},
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Email, // Menampilkan keyboard tipe email
-            imeAction = ImeAction.Next // Tombol Next untuk pindah ke field berikutnya
-        ),
+        value = text,
+        onValueChange = onTextChange,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(1.dp, colorResource(id = R.color.green_logo), RoundedCornerShape(15.dp))
+            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp)) // Garis luar merah jika error, hijau jika valid
+            .background(if (isError) Color(0x1AFF0000) else Color.Transparent) // Background merah jika error
             .padding(horizontal = 21.dp),
-
         decorationBox = { innerTextField ->
             Box(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                if (emailText.value.isEmpty()) {
+                if (text.isEmpty()) {
                     Text(
                         text = placeholder,
                         color = Color.Gray,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily,
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
+                        fontFamily = poppinsFontFamily
                     )
-
                 }
                 innerTextField()
             }
@@ -239,77 +306,53 @@ fun InputField(placeholder: String) {
 }
 
 @Composable
-fun PasswordField() {
-    val passwordText = remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-
+fun PasswordField(
+    text: String,
+    onTextChange: (String) -> Unit,
+    passwordVisible: Boolean,
+    onPasswordVisibilityChange: (Boolean) -> Unit,
+    isError: Boolean = false
+) {
     BasicTextField(
-        value = passwordText.value,
-        onValueChange = {passwordText.value = it},
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password, // Menampilkan keyboard tipe password
-            imeAction = ImeAction.Done // Tombol Done untuk menyelesaikan input
-        ),
-        visualTransformation = if (!passwordVisible) {
-            PasswordVisualTransformation()
-        } else {
-            VisualTransformation.None
-        },
+        value = text,
+        onValueChange = onTextChange,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(1.dp, colorResource(id = R.color.green_logo), RoundedCornerShape(15.dp))
+            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp)) // Garis luar merah jika error, hijau jika valid
+            .background(if (isError) Color(0x1AFF0000) else Color.Transparent) // Background merah jika error
             .padding(horizontal = 21.dp),
-
         decorationBox = { innerTextField ->
             Box(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                if (text.isEmpty()) {
+                    Text(
+                        text = "Masukkan Password",
+                        color = Color.Gray,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = poppinsFontFamily
+                    )
+                }
+                innerTextField()
+                IconButton(
+                    onClick = { onPasswordVisibilityChange(!passwordVisible) },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .align(Alignment.CenterEnd)
+                        .size(36.dp)
                 ) {
-                    Box(
-                        modifier = Modifier.weight(1f),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        if (passwordText.value.isEmpty()) {  // Tampilkan placeholder jika teks kosong
-                            Text(
-                                "Masukan Password",
-                                color = Color.Gray,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                fontFamily = poppinsFontFamily
-                            )
-                        }
-                        innerTextField()
-                    }
-
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible },
-                        modifier = Modifier.size(48.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                id = if (passwordVisible) {
-                                    R.drawable.mdi_eye_outline
-                                } else {
-                                    R.drawable.mdi_hide_outline
-                                }
-                            ),
-                            contentDescription = if (passwordVisible) {
-                                "Hide Password"
-                            } else {
-                                "Show Password"
-                            },
-                            tint = Color.Gray,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(
+                            id = if (passwordVisible) R.drawable.mdi_eye_outline else R.drawable.mdi_hide_outline
+                        ),
+                        contentDescription = null,
+                        tint = Color.Gray,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
         }

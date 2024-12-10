@@ -72,7 +72,7 @@ fun NotifikasiPasswordScreen(navController: NavController, modifier: Modifier = 
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Yeayy!!, Kata sandi berhasil diubah",
+                text = "Yeayy!!, Kata sandi berhasil diubah!!",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = poppinsFontFamily,

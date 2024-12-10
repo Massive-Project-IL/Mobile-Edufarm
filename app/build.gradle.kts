@@ -80,6 +80,8 @@ dependencies {
     implementation ("androidx.camera:camera-lifecycle:1.4.0")
     implementation ("androidx.camera:camera-view:1.4.0")
 
+    // Data Store
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
 
 }

@@ -1,8 +1,13 @@
 package com.example.edufarm.navigation
 
+import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,7 +35,12 @@ import com.example.edufarm.akun.password.AturUlangSandiScreen
 import com.example.edufarm.akun.password.LupaPasswordScreen
 import com.example.edufarm.akun.password.NotifikasiPasswordScreen
 import com.example.edufarm.akun.password.VerifikasiEmailScreen
+import com.example.edufarm.data.api.ApiClient
+import com.example.edufarm.data.repository.PenggunaRepository
+import com.example.edufarm.factory.PenggunaViewModelFactory
+import com.example.edufarm.viewModel.PenggunaViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EdufarmNavHost(
     navController: NavHostController,
@@ -49,6 +59,10 @@ fun EdufarmNavHost(
             LoginScreen(navController)
         }
 
+        composable(Routes.HALAMAN_BERANDA) {
+            ContentScreen(navController)
+        }
+
         composable(Routes.HALAMAN_DAFTAR) {
             DaftarScreen(navController)
         }
@@ -57,9 +71,6 @@ fun EdufarmNavHost(
             NotifikasiDaftarScreen(navController)
         }
 
-        composable(Routes.HALAMAN_BERANDA) {
-            ContentScreen(navController)
-        }
 
         composable(Routes.HALAMAN_LIVE_MENTOR) {
             LiveMentorScreen(navController)
@@ -109,8 +120,19 @@ fun EdufarmNavHost(
         }
 
         composable(Routes.HALAMAN_EDIT_PROFILE) {
-            HalamanEditProfile(navController = navController)
+            val penggunaViewModel: PenggunaViewModel = viewModel(
+                factory = PenggunaViewModelFactory(
+                    repository = PenggunaRepository(apiService = ApiClient.apiService),
+                    application = LocalContext.current.applicationContext as Application
+                )
+            )
+
+            HalamanEditProfile(
+                navController = navController,
+                penggunaViewModel = penggunaViewModel
+            )
         }
+
 
         composable(Routes.HALAMAN_UBAH_SANDI) {
             UbahSandiScreen(navController = navController)
@@ -139,6 +161,7 @@ fun EdufarmNavHost(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewEdufarmNavHost() {

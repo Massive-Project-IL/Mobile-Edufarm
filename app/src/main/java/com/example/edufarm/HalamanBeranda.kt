@@ -1,5 +1,6 @@
 package com.example.edufarm
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -63,12 +64,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.example.edufarm.data.model.JadwalLive
 import com.example.edufarm.data.model.Kategori
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.JadwalLiveViewModel
 import com.example.edufarm.viewModel.PelatihanViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -94,7 +98,8 @@ fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanVie
     val selectedItem = remember { mutableStateOf("Beranda") }
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.green)
-
+    val jadwalLiveViewModel: JadwalLiveViewModel = viewModel()
+    val jadwalLive by jadwalLiveViewModel.jadwalLive.collectAsState()
 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
@@ -102,6 +107,7 @@ fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanVie
             darkIcons = true
         )
         pelatihanViewModel.fetchPelatihan()
+        jadwalLiveViewModel.fetchJadwalLive()
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -122,11 +128,11 @@ fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanVie
                 .fillMaxSize()
         ){
             Spacer(modifier = Modifier.height(16.dp))
-            CardLiveScrollable()
+            CardLiveScrollable(jadwalLive)
             Spacer(modifier = Modifier.height(16.dp))
             KategoriBertani()
             Spacer(modifier = Modifier.height(6.dp))
-//            SelectKategori(navController, pelatihanList)
+            SelectKategori(navController, pelatihanList)
             Spacer(modifier = Modifier.height(16.dp))
             RekomendasiPelatihan(navController)
             Spacer(modifier = Modifier.height(16.dp))
@@ -206,14 +212,14 @@ fun SearchBarBeranda(
 }
 
 @Composable
-fun CardLiveScrollable() {
+fun CardLiveScrollable(jadwalLive: List<JadwalLive>) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 26.dp) // Tambahkan padding dari tepi layar
     ) {
-        items(liveSessions) { session ->
+        items(jadwalLive) { session ->
             Box(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -225,12 +231,11 @@ fun CardLiveScrollable() {
 }
 
 
-
-
 @Composable
-fun CardLive(session: LiveSession) {
+fun CardLive(session: JadwalLive) {
     var showDialog by remember { mutableStateOf(false) }
     var isNotificationActive by remember { mutableStateOf(false) }
+    val dateOnly = session.tanggal.substring(0, 10)
 
     Card(
         modifier = Modifier
@@ -246,25 +251,15 @@ fun CardLive(session: LiveSession) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = session.title,
+                    text = session.judul_notifikasi,
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.green_title)
-                )
-                Icon(
-                    painter = painterResource(
-                        id = if (isNotificationActive) R.drawable.notifikasi_aktif else R.drawable.notifikasi_default
-                    ),
-                    contentDescription = "Notifikasi",
-                    tint = colorResource(id = R.color.green_title),
-                    modifier = Modifier
-                        .size(26.dp)
-                        .clickable { isNotificationActive = !isNotificationActive }
+                    color = colorResource(id = R.color.green_title),
+                    maxLines = 2,  // Membatasi tampilan teks hanya satu baris
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
@@ -282,7 +277,7 @@ fun CardLive(session: LiveSession) {
                         modifier = Modifier.padding(bottom = 3.dp)
                     )
                     Text(
-                        text = session.time,
+                        text = dateOnly,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         fontFamily = poppinsFontFamily,
@@ -299,7 +294,7 @@ fun CardLive(session: LiveSession) {
                         modifier = Modifier.padding(bottom = 3.dp)
                     )
                     Text(
-                        text = session.mentorName,
+                        text = session.nama_mentor,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         fontFamily = poppinsFontFamily,
@@ -351,23 +346,24 @@ fun KategoriBertani() {
     )
 }
 
-//@Composable
-//fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) {
-//    LazyRow(
-//        modifier = Modifier
-//            .padding(horizontal = 36.dp)
-//            .fillMaxWidth(),
-//        horizontalArrangement = Arrangement.spacedBy(16.dp)
-//    ) {
-//        items(pelatihanList) { pelatihan ->
-//            KategoriItem(
-//                navController = navController,
-//                iconRes = pelatihan.icon,  // Mengirimkan nama gambar
-//                title = pelatihan.nama_kategori // Nama kategori
-//            )
-//        }
-//    }
-//}
+@Composable
+fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) {
+    LazyRow(
+        modifier = Modifier
+            .padding(horizontal = 36.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(pelatihanList) { pelatihan ->
+            KategoriItem(
+                navController = navController,
+                iconRes = null,
+                title = pelatihan.nama_kategori
+            )
+        }
+    }
+}
+
 
 
 
@@ -546,7 +542,18 @@ private fun CardPelatihanBeranda(navController: NavController, pelatihan: Katego
                         .align(Alignment.CenterHorizontally),
                 ) {
                     Image(
-                        painter = rememberAsyncImagePainter(pelatihan.gambar),
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(LocalContext.current).data(data = pelatihan.gambar)
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    listener(onError = { _, result ->
+                                        Log.e(
+                                            "Image Load Error",
+                                            "Failed to load image",
+                                            result.throwable
+                                        )
+                                    })
+                                }).build()
+                        ),
                         contentDescription = "Deskripsi Gambar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -590,13 +597,13 @@ private fun CardPelatihanBeranda(navController: NavController, pelatihan: Katego
                     )
 
                     Text(
-                        text = "Materi ini akan membahas cara menanam ${pelatihan.nama_kategori} dari awal sampai akhir",
+                        text = pelatihan.penjelasan,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = poppinsFontFamily,
                         lineHeight = 13.sp,
                         color = colorResource(id = R.color.gray_bookmark),
-                        modifier = Modifier.padding(bottom = 8.dp),
+                        modifier = Modifier.padding(bottom = 8.dp).padding(horizontal = 10.dp),
                         maxLines = 2, // Maksimum dua baris
                         overflow = TextOverflow.Ellipsis // Gunakan ellipsis bila teks lebih panjang dari batas baris
                     )
