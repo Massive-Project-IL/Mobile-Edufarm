@@ -29,6 +29,8 @@ import com.example.edufarm.PelatihanScreen
 import com.example.edufarm.SubMateriScreen
 import com.example.edufarm.akun.HalamanEditProfile
 import com.example.edufarm.akun.HalamanTentangKami
+import com.example.edufarm.akun.NotifikasiProfileScreen
+import com.example.edufarm.akun.NotifikasiSandiScreen
 import com.example.edufarm.akun.ProfileScreen
 import com.example.edufarm.akun.UbahSandiScreen
 import com.example.edufarm.akun.password.AturUlangSandiScreen
@@ -91,7 +93,7 @@ fun EdufarmNavHost(
         composable(
             route = Routes.HALAMAN_SUB_MATERI,
             arguments = listOf(
-                navArgument("kategoriId") { type = NavType.IntType } // Pastikan kategoriId didefinisikan di sini
+                navArgument("kategoriId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
             val kategoriId = backStackEntry.arguments?.getInt("kategoriId") ?: 0
@@ -133,10 +135,29 @@ fun EdufarmNavHost(
             )
         }
 
+        composable(Routes.NOTIFIKASI_PROFILE) {
+            NotifikasiProfileScreen(navController = navController)
+        }
+
+        composable(Routes.NOTIFIKASI_SANDI) {
+            NotifikasiSandiScreen(navController = navController)
+        }
+
 
         composable(Routes.HALAMAN_UBAH_SANDI) {
-            UbahSandiScreen(navController = navController)
+            val penggunaViewModel: PenggunaViewModel = viewModel(
+                factory = PenggunaViewModelFactory(
+                    repository = PenggunaRepository(apiService = ApiClient.apiService),
+                    application = LocalContext.current.applicationContext as Application
+                )
+            )
+
+            UbahSandiScreen(
+                navController = navController,
+                penggunaViewModel = penggunaViewModel
+            )
         }
+
 
         composable(Routes.HALAMAN_TENTANG_KAMI) {
             HalamanTentangKami(navController = navController)

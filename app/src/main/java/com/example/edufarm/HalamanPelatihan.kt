@@ -1,5 +1,6 @@
 package com.example.edufarm
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,7 +60,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun PelatihanScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    pelatihanViewModel: PelatihanViewModel = viewModel() // Tambahkan ViewModel
+    pelatihanViewModel: PelatihanViewModel = viewModel()
 ) {
     val pelatihanList by pelatihanViewModel.pelatihanList.collectAsState()
     val errorMessage by pelatihanViewModel.errorMessage.collectAsState()
@@ -67,12 +68,13 @@ fun PelatihanScreen(
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
+
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
             darkIcons = true
         )
-        pelatihanViewModel.fetchPelatihan() // Memuat data saat screen dibuka
+        pelatihanViewModel.fetchPelatihan()
     }
 
     Scaffold(
@@ -100,18 +102,6 @@ fun PelatihanScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 SearchBar(placeholder = "Cari Pelatihan")
-//                Text(
-//                    text = "Kategori",
-//                    fontFamily = poppinsFontFamily,
-//                    fontWeight = FontWeight.SemiBold,
-//                    fontSize = 14.sp,
-//                    modifier = Modifier.padding(top = 8.dp)
-//                )
-//
-//                Spacer(modifier = Modifier.height(12.dp))
-////                KategoriChips() // Tidak diubah
-////                Spacer(modifier = Modifier.height(16.dp))
-
                 Spacer(modifier = Modifier.height(28.dp))
 
                 if (errorMessage != null) {
@@ -123,6 +113,7 @@ fun PelatihanScreen(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()
                     ) {
+
                         items(pelatihanList) { pelatihan ->
                             CardPelatihanKategori(navController, pelatihan)
                             Spacer(modifier = Modifier.height(16.dp))
@@ -137,8 +128,9 @@ fun PelatihanScreen(
 @Composable
 fun CardPelatihanKategori(
     navController: NavController,
-    pelatihan: Kategori // Menambahkan parameter untuk mengambil data kategori dari backend
+    pelatihan: Kategori
 ) {
+    Log.e("CardPelatihanKategori", "Gambar URL: ${pelatihan.gambar}")
     var isBookmarked by remember { mutableStateOf(false) }
 
     Card(
@@ -148,7 +140,9 @@ fun CardPelatihanKategori(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
-    ) {
+    )
+    {
+        Log.e("CardPelatihanKategori", "Gambar: ${pelatihan.gambar}")
         Column {
             Box(
                 modifier = Modifier
@@ -158,9 +152,9 @@ fun CardPelatihanKategori(
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = pelatihan.gambar ?: "https://example.com/default_image.jpg",
-                        placeholder = painterResource(R.drawable.petani), // Gambar placeholder
-                        error = painterResource(R.drawable.petani) // Gambar error jika gagal memuat gambar
+                        model = pelatihan.gambar,
+                        placeholder = painterResource(R.drawable.petani),
+                        error = painterResource(R.drawable.petani)
                     ),
                     contentDescription = "Deskripsi Gambar",
                     contentScale = ContentScale.Crop,
@@ -193,13 +187,12 @@ fun CardPelatihanKategori(
                 }
             }
 
-            // Menampilkan teks dan tombol berdasarkan data dari backend
             Column(modifier = Modifier
                 .padding(horizontal = 15.dp)
                 .padding(top = 8.dp)
             ) {
                 Text(
-                    text = pelatihan.nama_kategori, // Mengambil nama kategori dari backend
+                    text = pelatihan.nama_kategori,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFontFamily,
@@ -207,7 +200,7 @@ fun CardPelatihanKategori(
                 )
 
                 Text(
-                    text = "Materi ini akan membahas cara menanam ${pelatihan.nama_kategori} dari awal sampai akhir", // Mengambil penjelasan kategori dari backend
+                    text = "Materi ini akan membahas cara menanam ${pelatihan.nama_kategori} dari awal sampai akhir",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = poppinsFontFamily,

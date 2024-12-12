@@ -1,4 +1,4 @@
-package com.example.edufarm.akun.password
+package com.example.edufarm.akun
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,7 +37,7 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun NotifikasiPasswordScreen(navController: NavController) {
+fun NotifikasiProfileScreen(navController: NavController) {
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
@@ -49,7 +49,6 @@ fun NotifikasiPasswordScreen(navController: NavController) {
         )
     }
 
-    // Menggunakan Box untuk mengatur background penuh
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -78,7 +77,7 @@ fun NotifikasiPasswordScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Yeayy!!, Kata sandi kamu sudah diperbarui!",
+                    text = "Yeayy!!, Data Profile Kamu Sudah Diperbarui!!",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFontFamily,
@@ -98,7 +97,7 @@ fun NotifikasiPasswordScreen(navController: NavController) {
                         .height(40.dp)
                 ) {
                     Text(
-                        text = "Kembali Ke Halaman Login",
+                        text = "Kembali Ke Halaman Akun",
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = poppinsFontFamily,
@@ -110,12 +109,11 @@ fun NotifikasiPasswordScreen(navController: NavController) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun NotifikasiPasswordScreenPreview() {
+fun NotifikasiProfileScreenPreview() {
     EdufarmTheme {
-        NotifikasiPasswordScreen(
+        NotifikasiProfileScreen(
             navController = rememberNavController()
         )
     }

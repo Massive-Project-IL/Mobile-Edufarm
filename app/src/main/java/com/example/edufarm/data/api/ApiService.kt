@@ -5,6 +5,8 @@ import com.example.edufarm.data.model.ApiLiveResponse
 import com.example.edufarm.data.model.ApiMateriResponse
 import com.example.edufarm.data.model.LoginRequest
 import com.example.edufarm.data.model.LoginResponse
+import com.example.edufarm.data.model.PasswordResponse
+import com.example.edufarm.data.model.PasswordUpdateRequest
 import com.example.edufarm.data.model.Pengguna
 import com.example.edufarm.data.model.ProfileResponse
 import com.example.edufarm.data.model.RegisterRequest
@@ -29,34 +31,26 @@ interface ApiService {
     @POST("api/v1/mobilepengguna/daftar")
     suspend fun registerUser(@Body registerRequest: RegisterRequest): Response<RegisterResponse>
 
-
     // Pengguna endpoint
     @GET("api/v1/mobilepengguna")
     suspend fun getPengguna(
         @Header("Authorization") authorization: String
     ): Response<ProfileResponse>
 
+    // Update Pengguna endpoint
     @PUT("api/v1/mobilepengguna/profile")
     suspend fun editProfile(
         @Header("Authorization") authorization: String,
         @Body updatedProfile: Pengguna
     ): Response<ProfileResponse>
 
-    // Uncomment jika nanti ingin menambahkan fungsionalitas lainnya
-    /*
-    //
-
-    // Ubah password endpoint
+    // Update Pengguna Password endpoint
     @PUT("api/v1/mobilepengguna/password")
     suspend fun updatePassword(
         @Header("Authorization") token: String,
-        @Body passwordRequest: PasswordRequest
-    ): Response<PasswordResponse>
+        @Body passwordUpdateRequest: PasswordUpdateRequest
+    ): PasswordResponse
 
-    // Login menggunakan Google
-    @GET("api/v1/mobilepengguna/auth/google")
-    suspend fun loginWithGoogle(@Query("token") googleToken: String): Response<LoginResponse>
-    */
 
     // Kategori
     @GET("api/v1/mobilekategori")
@@ -69,6 +63,6 @@ interface ApiService {
     ): Response<ApiMateriResponse>
 
     // Jadwal Live
-    @GET("api/v1/mobilenotifikasi") // Endpoint API Anda
+    @GET("api/v1/mobilenotifikasi")
     suspend fun getJadwalLive(): Response<ApiLiveResponse>
 }

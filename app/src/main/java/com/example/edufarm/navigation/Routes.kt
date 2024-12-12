@@ -24,6 +24,8 @@ object Routes {
     const val HALAMAN_UBAH_SANDI = "halamanUbahSandi"
     const val HALAMAN_EDIT_PROFILE = "halamanEditProfile"
     const val HALAMAN_TENTANG_KAMI = "halamanTentangKami"
+    const val NOTIFIKASI_PROFILE= "halamanNotifikasiProfile"
+    const val NOTIFIKASI_SANDI= "halamanNotifikasiSandi"
 
     //Lupa Kata Sandi
     const val ATUR_ULANG_SANDI = "halamanAturUlangSandi"

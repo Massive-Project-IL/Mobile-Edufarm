@@ -1,6 +1,9 @@
 package com.example.edufarm.data.repository
 
+import android.util.Log
 import com.example.edufarm.data.api.ApiService
+import com.example.edufarm.data.model.PasswordResponse
+import com.example.edufarm.data.model.PasswordUpdateRequest
 import com.example.edufarm.data.model.Pengguna
 
 class PenggunaRepository(private val apiService: ApiService) {
@@ -10,9 +13,8 @@ class PenggunaRepository(private val apiService: ApiService) {
         val response = apiService.getPengguna(authorization)
         if (response.isSuccessful) {
             val profileResponse = response.body()
-            val penggunaList = profileResponse?.data.orEmpty() // Default ke list kosong
-            if (penggunaList.isNotEmpty()) {
-                val pengguna = penggunaList.first()
+            val pengguna = profileResponse?.data
+            if (pengguna != null) {
                 return pengguna.copy(
                     foto_profile = pengguna.foto_profile?.takeIf { it != "null" }
                 )
@@ -25,19 +27,25 @@ class PenggunaRepository(private val apiService: ApiService) {
     }
 
     // Fungsi untuk mengedit data pengguna
-    suspend fun editPengguna(authorization: String, updatedProfile: Pengguna): Pengguna {
+    suspend fun editPengguna(authorization: String, updatedProfile: Pengguna): String {
         val response = apiService.editProfile(authorization, updatedProfile)
         if (response.isSuccessful) {
             val profileResponse = response.body()
-            val penggunaList = profileResponse?.data.orEmpty()
-            if (penggunaList.isNotEmpty()) {
-                return penggunaList.first()
-            } else {
-                throw Exception("Data pengguna kosong setelah update")
-            }
+            return profileResponse?.msg ?: "Profil berhasil diperbarui."
         } else {
             throw Exception("Gagal mengupdate data pengguna: ${response.message()} (code: ${response.code()})")
         }
     }
+
+    suspend fun updatePassword(token: String, passwordUpdateRequest: PasswordUpdateRequest): PasswordResponse {
+        Log.d("UpdatePassword", "Header Authorization: $token")
+        Log.d("UpdatePassword", "Body Request: $passwordUpdateRequest")
+        return apiService.updatePassword(token, passwordUpdateRequest)
+    }
+
 }
+
+
+
+
 

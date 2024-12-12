@@ -1,5 +1,6 @@
 package com.example.edufarm.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edufarm.data.api.ApiClient
@@ -20,7 +21,11 @@ class PelatihanViewModel : ViewModel() {
             try {
                 val response = ApiClient.apiService.getKategori()
                 if (response.isSuccessful && response.body()?.success == true) {
-                    _pelatihanList.value = response.body()?.data ?: emptyList()
+                    val kategoriList = response.body()?.data ?: emptyList()
+                    kategoriList.forEach { kategori ->
+                        Log.d("FetchPelatihan", "Gambar URL: ${kategori.gambar}")
+                    }
+                    _pelatihanList.value = kategoriList
                 } else {
                     _errorMessage.value = "Gagal memuat data pelatihan."
                 }

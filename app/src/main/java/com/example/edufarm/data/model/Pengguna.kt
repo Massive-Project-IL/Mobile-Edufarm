@@ -2,7 +2,7 @@ package com.example.edufarm.data.model
 
 data class ProfileResponse(
     val msg: String,
-    val data: List<Pengguna>
+    val data: Pengguna
 )
 
 data class Pengguna(

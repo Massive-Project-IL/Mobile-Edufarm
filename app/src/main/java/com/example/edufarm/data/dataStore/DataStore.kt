@@ -25,7 +25,6 @@ suspend fun getToken(context: Context, email: String): String? {
         .firstOrNull()
 }
 
-
 suspend fun clearToken(context: Context, email: String) {
     context.dataStore.edit { preferences ->
         preferences.remove(stringPreferencesKey("auth_token_$email"))

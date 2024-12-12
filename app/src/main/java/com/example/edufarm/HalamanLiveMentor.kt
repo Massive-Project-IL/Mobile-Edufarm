@@ -77,44 +77,34 @@ fun LiveMentorScreen(
     viewModel: JadwalLiveViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
-    // Format tanggal "dd" untuk menampilkan tanggal hari ini
     val todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd"))
-
-    // State untuk memilih item menu
     val selectedItem = remember { mutableStateOf("Live Mentor") }
-
-    // State untuk menyimpan ID jadwal yang dipilih
     val selectedJadwalId = remember { mutableStateOf<Int?>(null) }
 
-    // Mengatur warna status bar
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
-    // Mendapatkan data jadwal dan pesan error dari ViewModel
     val jadwalList by viewModel.jadwalLive.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    // Menetapkan warna status bar setelah komponen dipasang
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(color = topBarColor, darkIcons = true)
-        viewModel.fetchJadwalLive() // Mengambil data jadwal live
+        viewModel.fetchJadwalLive()
     }
 
     val filteredJadwalList = jadwalList.filter { jadwal ->
-        val jadwalDate = convertUtcToLocalDateTime(jadwal.tanggal).toLocalDate()  // Konversi UTC ke tanggal lokal
-        val currentDate = LocalDate.parse(getCurrentDate()) // Mengonversi currentDate menjadi LocalDate
+        val jadwalDate = convertUtcToLocalDateTime(jadwal.tanggal).toLocalDate()
+        val currentDate = LocalDate.parse(getCurrentDate())
 
         Log.d("LiveMentorScreen", "Comparing: jadwalDate = $jadwalDate, currentDate = $currentDate")
 
-        jadwalDate == currentDate // Membandingkan tanggal jadwal dengan tanggal saat ini
+        jadwalDate == currentDate
     }
 
-    // Jika belum ada jadwal yang dipilih, pilih ID jadwal pertama
     if (selectedJadwalId.value == null && filteredJadwalList.isNotEmpty()) {
         selectedJadwalId.value = filteredJadwalList.first().notifikasi_id
     }
 
-    // Scaffold untuk layout
     Scaffold(
         modifier = modifier,
         bottomBar = { BottomNavigationBar(navController, selectedItem) }
@@ -127,7 +117,6 @@ fun LiveMentorScreen(
                 .padding(start = 35.dp, end = 35.dp, top = 5.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Judul Live Mentor
             Text(
                 text = "Live Mentor",
                 fontSize = 18.sp,
@@ -143,7 +132,6 @@ fun LiveMentorScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Teks untuk jadwal live hari ini
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -194,25 +182,21 @@ fun LiveMentorScreen(
                 )
             }
 
-            // Tampilkan gambar dan deskripsi jika tidak ada jadwal live mentor
             if (filteredJadwalList.isEmpty()) {
-                NoJadwalCard() // Komponen yang menampilkan card jika tidak ada jadwal
+                NoJadwalCard()
                 Spacer(modifier = Modifier.height(16.dp))
             } else {
-                // LazyRow untuk menampilkan card secara horizontal
                 LazyRow(
                     contentPadding = PaddingValues(bottom = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(filteredJadwalList) { jadwal ->
                         CardLiveMentor(jadwal = jadwal, onCardClick = {
-                            selectedJadwalId.value = jadwal.notifikasi_id // Set ID jadwal yang dipilih
+                            selectedJadwalId.value = jadwal.notifikasi_id
                         })
                     }
                 }
             }
-
-            // Menampilkan deskripsi dan data berdasarkan ID yang dipilih
             LiveMentorDescription(
                 jadwalList = filteredJadwalList,
                 selectedJadwalId = selectedJadwalId.value
@@ -222,28 +206,26 @@ fun LiveMentorScreen(
 }
 
 
-// Fungsi untuk mengonversi UTC ke LocalDateTime sesuai zona waktu Jakarta
 @RequiresApi(Build.VERSION_CODES.O)
-fun convertUtcToLocalDateTime(utcDate: String): LocalDateTime {
-    val utcDateTime = ZonedDateTime.parse(utcDate)  // Parsing string UTC ke ZonedDateTime
-    val localDateTime = utcDateTime.withZoneSameInstant(ZoneId.of("Asia/Jakarta")).toLocalDateTime()  // Konversi ke waktu lokal
+private fun convertUtcToLocalDateTime(utcDate: String): LocalDateTime {
+    val utcDateTime = ZonedDateTime.parse(utcDate)
+    val localDateTime = utcDateTime.withZoneSameInstant(ZoneId.of("Asia/Jakarta")).toLocalDateTime()
     return localDateTime
 }
 
-// Fungsi untuk mendapatkan tanggal hari ini
 @RequiresApi(Build.VERSION_CODES.O)
-fun getCurrentDate(): String {
-    return LocalDate.now().toString() // Mengambil tanggal hari ini dalam format YYYY-MM-DD
+private fun getCurrentDate(): String {
+    return LocalDate.now().toString()
 }
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
+private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     var isNotificationActive by remember { mutableStateOf(false) }
 
-    // Mengonversi waktu dan menghilangkan detik
+
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     val formattedStartTime = LocalTime.parse(jadwal.waktu_mulai).format(timeFormatter)
     val formattedEndTime = LocalTime.parse(jadwal.waktu_selesai).format(timeFormatter)
@@ -251,7 +233,7 @@ fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .padding(8.dp)
-            .width(300.dp)
+            .width(320.dp)
             .border(
                 BorderStroke(1.dp, colorResource(id = R.color.green_logo)),
                 RoundedCornerShape(16.dp)
@@ -261,7 +243,7 @@ fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(2.dp)
-                .clickable { onCardClick(jadwal.notifikasi_id) }, // Menambahkan onClick untuk card
+                .clickable { onCardClick(jadwal.notifikasi_id) },
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif)) // Gunakan warna berbeda untuk card
@@ -277,16 +259,6 @@ fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.green_title)
-                    )
-                    Icon(
-                        painter = painterResource(
-                            if (isNotificationActive) R.drawable.notifikasi_default else R.drawable.notifikasi_aktif
-                        ),
-                        contentDescription = "Notifikasi",
-                        tint = colorResource(id = R.color.green_title),
-                        modifier = Modifier
-                            .size(26.dp)
-                            .clickable { isNotificationActive = !isNotificationActive }
                     )
                 }
 
@@ -307,7 +279,7 @@ fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                             modifier = Modifier.padding(bottom = 3.dp)
                         )
                         Text(
-                            text = "$formattedStartTime – $formattedEndTime", // Menampilkan jam dan menit
+                            text = "$formattedStartTime – $formattedEndTime",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             fontFamily = poppinsFontFamily,
@@ -363,9 +335,8 @@ fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
     }
 }
 
-
 @Composable
-fun NoJadwalCard() {
+private fun NoJadwalCard() {
     Box(
         modifier = Modifier
             .border(
@@ -518,9 +489,6 @@ fun LiveMentorDescription(
         }
     }
 }
-
-
-
 
 
 @RequiresApi(Build.VERSION_CODES.O)

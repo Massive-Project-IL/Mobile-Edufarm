@@ -1,6 +1,8 @@
 package com.example.edufarm
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -75,31 +77,30 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 import com.example.edufarm.viewModel.JadwalLiveViewModel
 import com.example.edufarm.viewModel.PelatihanViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-
-data class LiveSession(
-    val title: String,
-    val time: String,
-    val mentorName: String,
-    val isLive: Boolean
-)
-
-val liveSessions = listOf(
-    LiveSession("Bertanam Gandum", "09.30–12.30", "Vodka", true),
-    LiveSession("Penyemaian", "13.00–14.30", "Alice", true),
-    LiveSession("Pemupukan", "15.00–16.30", "Bob", false)
-)
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanViewModel = viewModel()
-){
+fun ContentScreen(
+    navController: NavController,
+    pelatihanViewModel: PelatihanViewModel = viewModel(),
+    jadwalViewModel: JadwalLiveViewModel = viewModel()
+) {
     val pelatihanList by pelatihanViewModel.pelatihanList.collectAsState()
-    val errorMessage by pelatihanViewModel.errorMessage.collectAsState()
     val selectedItem = remember { mutableStateOf("Beranda") }
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.green)
-    val jadwalLiveViewModel: JadwalLiveViewModel = viewModel()
-    val jadwalLive by jadwalLiveViewModel.jadwalLive.collectAsState()
+    val jadwalLive by jadwalViewModel.jadwalLive.collectAsState()
+
+    val currentDate = getCurrentDates() // Ambil tanggal hari ini
+    val filteredJadwalLive = jadwalLive.filter { session ->
+        val sessionDate = convertUtcToLocalDateTimes(session.tanggal).toLocalDate().toString()
+        sessionDate == currentDate
+    }
 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
@@ -107,7 +108,7 @@ fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanVie
             darkIcons = true
         )
         pelatihanViewModel.fetchPelatihan()
-        jadwalLiveViewModel.fetchJadwalLive()
+        jadwalViewModel.fetchJadwalLive()
     }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -126,9 +127,9 @@ fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanVie
                 .padding(paddingValues)
                 .background(color = colorResource(R.color.background))
                 .fillMaxSize()
-        ){
+        ) {
             Spacer(modifier = Modifier.height(16.dp))
-            CardLiveScrollable(jadwalLive)
+            CardLiveScrollable(filteredJadwalLive, navController) // Kirim jadwal yang sudah difilter
             Spacer(modifier = Modifier.height(16.dp))
             KategoriBertani()
             Spacer(modifier = Modifier.height(6.dp))
@@ -136,14 +137,26 @@ fun ContentScreen(navController: NavController, pelatihanViewModel: PelatihanVie
             Spacer(modifier = Modifier.height(16.dp))
             RekomendasiPelatihan(navController)
             Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn{
-                items(pelatihanList) {pelatihan ->
+            LazyColumn {
+                items(pelatihanList) { pelatihan ->
                     CardPelatihanBeranda(navController, pelatihan)
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun convertUtcToLocalDateTimes(utcDate: String): LocalDateTime {
+    val utcDateTime = ZonedDateTime.parse(utcDate)
+    val localDateTime = utcDateTime.withZoneSameInstant(ZoneId.of("Asia/Jakarta")).toLocalDateTime()
+    return localDateTime
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun getCurrentDates(): String {
+    return LocalDate.now().toString()
 }
 
 @Composable
@@ -212,7 +225,7 @@ fun SearchBarBeranda(
 }
 
 @Composable
-fun CardLiveScrollable(jadwalLive: List<JadwalLive>) {
+fun CardLiveScrollable(jadwalLive: List<JadwalLive>, navController: NavController) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
@@ -224,27 +237,32 @@ fun CardLiveScrollable(jadwalLive: List<JadwalLive>) {
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
             ) {
-                CardLive(session)
+                // Gunakan navController yang diteruskan
+                CardLive(session, navController)
             }
         }
     }
 }
 
 
+
 @Composable
-fun CardLive(session: JadwalLive) {
+private fun CardLive(session: JadwalLive, navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
-    var isNotificationActive by remember { mutableStateOf(false) }
     val dateOnly = session.tanggal.substring(0, 10)
 
     Card(
         modifier = Modifier
             .width(320.dp)
+            .clickable {
+                navController.navigate(Routes.HALAMAN_LIVE_MENTOR)
+            }
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
-    ) {
+    )
+ {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -256,7 +274,7 @@ fun CardLive(session: JadwalLive) {
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = colorResource(id = R.color.green_title),
-                    maxLines = 2,  // Membatasi tampilan teks hanya satu baris
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
             }
@@ -357,20 +375,17 @@ fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) 
         items(pelatihanList) { pelatihan ->
             KategoriItem(
                 navController = navController,
-                iconRes = null,
+                iconUrl = pelatihan.icon,
                 title = pelatihan.nama_kategori
             )
         }
     }
 }
 
-
-
-
 @Composable
 fun KategoriItem(
     navController: NavController,
-    iconRes: String?,  // Menerima String nama gambar
+    iconUrl: String?,
     title: String,
 ) {
     Column(
@@ -389,20 +404,29 @@ fun KategoriItem(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Jika iconRes adalah nama file gambar, kita cari ID-nya
-                val context = LocalContext.current
-                val iconResId = iconRes?.let {
-                    context.resources.getIdentifier(it, "drawable", context.packageName)
-                }
-
-                iconResId?.let {
+                // Menggunakan rememberAsyncImagePainter untuk memuat gambar dari URL
+                iconUrl?.let { url ->
                     Image(
-                        painter = painterResource(id = it),
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(LocalContext.current).data(data = url)
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    listener(onError = { _, result ->
+                                        Log.e(
+                                            "Image Load Error",
+                                            "Failed to load image",
+                                            result.throwable
+                                        )
+                                    })
+                                }).build()
+                        ),
                         contentDescription = null,
-                        modifier = Modifier.size(29.dp)
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(29.dp)
+                            .clip(RoundedCornerShape(8.dp))
                     )
                 } ?: run {
-                    // Menangani kasus ketika tidak ada gambar
+                    // Menangani kasus ketika URL tidak valid atau null
                     Icon(Icons.Filled.Error, contentDescription = null)
                 }
             }
@@ -420,7 +444,6 @@ fun KategoriItem(
         )
     }
 }
-
 
 
 @Composable
@@ -486,7 +509,7 @@ fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavCo
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                IconButton(onClick = {navController.navigate(Routes.HALAMAN_BOOKMARK)}) {
+                IconButton(onClick = { navController.navigate(Routes.HALAMAN_BOOKMARK) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.bookmark_putih),
                         contentDescription = "Bookmark",
@@ -504,8 +527,9 @@ fun InfoCard(hai: String, title: String, deskripsi: String, navController: NavCo
                 color = colorResource(id = R.color.background),
                 modifier = Modifier.offset(y = (-6).dp)
             )
-            SearchBarBeranda(placeholder = "Cari Pelatihan"
-            ){ query -> //untuk logika pencarian nya ni
+            SearchBarBeranda(
+                placeholder = "Cari Pelatihan"
+            ) { query -> //untuk logika pencarian nya ni
 
                 println("query dari info card: $query")
             }
@@ -597,15 +621,16 @@ private fun CardPelatihanBeranda(navController: NavController, pelatihan: Katego
                     )
 
                     Text(
-                        text = pelatihan.penjelasan,
+                        text = "Materi ini akan membahas cara menanam ${pelatihan.nama_kategori} dari awal sampai akhir",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = poppinsFontFamily,
                         lineHeight = 13.sp,
                         color = colorResource(id = R.color.gray_bookmark),
-                        modifier = Modifier.padding(bottom = 8.dp).padding(horizontal = 10.dp),
-                        maxLines = 2, // Maksimum dua baris
-                        overflow = TextOverflow.Ellipsis // Gunakan ellipsis bila teks lebih panjang dari batas baris
+                        modifier = Modifier
+                            .padding(bottom = 8.dp),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
 
 
@@ -671,6 +696,7 @@ private fun CardPelatihanBeranda(navController: NavController, pelatihan: Katego
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun HalamanBerandaPreview() {

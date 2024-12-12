@@ -3,6 +3,7 @@ package com.example.edufarm
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,10 +37,11 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
-fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun NotifikasiDaftarScreen(navController: NavController) {
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
+    // Mengatur warna status bar
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
@@ -47,57 +49,62 @@ fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Mo
         )
     }
 
-// Bagian ini tetap di dalam Column utama
-    Column(
-        modifier = modifier
+    // Menggunakan Box untuk mengatur background penuh
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .background(colorResource(id = R.color.background)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center // Memastikan semua konten di dalam Column terpusat secara vertikal
+            .background(colorResource(id = R.color.background)) // Latar belakang penuh layar
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ilustrasi),
-            contentDescription = "Edu Farm Logo",
-            modifier = Modifier
-                .size(330.dp)
-                .padding(top = 26.dp)
-                .fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(19.dp))
-
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), // Padding diterapkan hanya pada konten
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            verticalArrangement = Arrangement.Center // Konten dipusatkan secara vertikal
         ) {
-            Text(
-                text = "Yeayy!!, Daftar Sukses",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = poppinsFontFamily,
-                color = colorResource(id = R.color.black),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+            Image(
+                painter = painterResource(id = R.drawable.ilustrasi),
+                contentDescription = "Edu Farm Logo",
+                modifier = Modifier
+                    .size(330.dp)
+                    .padding(top = 26.dp)
+                    .fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(34.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = { navController.navigate(Routes.HALAMAN_LOGIN) },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                modifier = Modifier
-                    .width(310.dp)
-                    .height(40.dp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Selanjutnya",
-                    color = Color.White,
+                    text = "Yeayy!!, Daftar Sukses",
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppinsFontFamily,
-                    fontSize = 16.sp,
+                    color = colorResource(id = R.color.black),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = { navController.navigate(Routes.HALAMAN_LOGIN) },
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                    modifier = Modifier
+                        .width(310.dp)
+                        .height(40.dp)
+                ) {
+                    Text(
+                        text = "Kembali Ke Halaman Login",
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = poppinsFontFamily,
+                        fontSize = 16.sp,
+                    )
+                }
             }
         }
     }
@@ -108,8 +115,7 @@ fun NotifikasiDaftarScreen(navController: NavController, modifier: Modifier = Mo
 fun NotifikasiDaftarScreenPreview() {
     EdufarmTheme {
         NotifikasiDaftarScreen(
-            navController = rememberNavController(),
-            modifier = Modifier
+            navController = rememberNavController()
         )
     }
 }

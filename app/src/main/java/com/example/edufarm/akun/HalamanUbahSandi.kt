@@ -17,12 +17,14 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,26 +39,37 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.ErrorMessages
 import com.example.edufarm.R
+import com.example.edufarm.data.model.PasswordUpdateRequest
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.components.TopBar
-import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.PenggunaViewModel
+import com.example.edufarm.viewModel.UpdatePasswordState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun UbahSandiScreen(navController: NavController) {
+fun UbahSandiScreen(
+    navController: NavController,
+    penggunaViewModel: PenggunaViewModel
+) {
     val selectedItem = remember { mutableStateOf("Akun") }
     var showDialog by remember { mutableStateOf(false) }
+    var oldPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    val updatePasswordState by penggunaViewModel.updatePasswordState.collectAsState()
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
+    val errorMessages = remember { mutableStateOf(listOf<String>()) } // To display errors locally
 
+    // Set status bar color
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
@@ -82,6 +95,13 @@ fun UbahSandiScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(41.dp))
 
+            // Display error messages
+            if (errorMessages.value.isNotEmpty()) {
+                ErrorMessages(errors = errorMessages.value)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            // Input for Old Password
             Text(
                 text = "Kata Sandi Lama",
                 fontSize = 15.sp,
@@ -91,10 +111,11 @@ fun UbahSandiScreen(navController: NavController) {
                 fontFamily = poppinsFontFamily,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            SandiField()
+            SandiField(value = oldPassword, onValueChange = { oldPassword = it })
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Input for New Password
             Text(
                 text = "Kata Sandi Baru",
                 fontSize = 14.sp,
@@ -103,10 +124,11 @@ fun UbahSandiScreen(navController: NavController) {
                 fontFamily = poppinsFontFamily,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            SandiField()
+            SandiField(value = newPassword, onValueChange = { newPassword = it })
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Input for Confirm Password
             Text(
                 text = "Konfirmasi Kata Sandi Baru",
                 fontSize = 14.sp,
@@ -115,12 +137,24 @@ fun UbahSandiScreen(navController: NavController) {
                 fontFamily = poppinsFontFamily,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            SandiField()
+            SandiField(value = confirmPassword, onValueChange = { confirmPassword = it })
 
             Spacer(modifier = Modifier.height(60.dp))
 
+            // Save Changes Button
             Button(
-                onClick = { showDialog = true },
+                onClick = {
+                    // Validate input locally
+                    val errors = mutableListOf<String>()
+                    if (oldPassword.isEmpty()) errors.add("Kata sandi lama harus diisi.")
+                    if (newPassword.length < 8) errors.add("Kata sandi baru harus minimal 8 karakter.")
+                    if (newPassword != confirmPassword) errors.add("Konfirmasi kata sandi tidak sesuai.")
+                    if (errors.isNotEmpty()) {
+                        errorMessages.value = errors // Display errors
+                    } else {
+                        showDialog = true // Show confirmation dialog
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
@@ -136,16 +170,41 @@ fun UbahSandiScreen(navController: NavController) {
                     fontFamily = poppinsFontFamily
                 )
             }
+
+            // Handle Update Password State from ViewModel
+            when (updatePasswordState) {
+                is UpdatePasswordState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
+                is UpdatePasswordState.Success -> {
+                    LaunchedEffect(Unit) {
+                        navController.navigate(Routes.NOTIFIKASI_SANDI) {
+                            popUpTo(Routes.HALAMAN_UBAH_SANDI) { inclusive = true }
+                        }
+                    }
+                }
+                is UpdatePasswordState.Error -> {
+                    errorMessages.value = listOf((updatePasswordState as UpdatePasswordState.Error).message)
+                }
+                else -> {}
+            }
         }
 
-
+        // Confirmation Dialog
         if (showDialog) {
             ConfirmationDialog(
                 message = "Apakah Kamu Yakin Ingin Mengubahnya?",
                 onDismissRequest = { showDialog = false },
                 onConfirm = {
                     showDialog = false
-                    // Lakukan aksi simpan perubahan di sini
+                    penggunaViewModel.updatePassword(
+                        PasswordUpdateRequest(
+                            email_user = penggunaViewModel.getEmailUser().orEmpty(), // Get email from ViewModel
+                            oldPassword = oldPassword,
+                            newPassword = newPassword,
+                            confirmPassword = confirmPassword
+                        )
+                    )
                 },
                 onCancel = { showDialog = false }
             )
@@ -153,15 +212,13 @@ fun UbahSandiScreen(navController: NavController) {
     }
 }
 
-
 @Composable
-private fun SandiField() {
-    val passwordText = remember { mutableStateOf("") }
+private fun SandiField(value: String, onValueChange: (String) -> Unit) {
     var passwordVisible by remember { mutableStateOf(false) }
 
     BasicTextField(
-        value = passwordText.value,
-        onValueChange = {passwordText.value = it},
+        value = value,
+        onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Done
@@ -194,7 +251,7 @@ private fun SandiField() {
                         modifier = Modifier.weight(1f),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        if (passwordText.value.isEmpty()) {
+                        if (value.isEmpty()) {
                             Text(
                                 "Masukan Kata Sandi",
                                 color = Color.Gray,
@@ -234,11 +291,14 @@ private fun SandiField() {
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMateriVideoScreen() {
-    EdufarmTheme {
-        UbahSandiScreen(navController = rememberNavController())
-    }
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewUbahSandiScreen() {
+//    EdufarmTheme {
+//        UbahSandiScreen(navController = rememberNavController(),
+//            penggunaViewModel = PenggunaViewModel()
+//        )
+//    }
+//}
 

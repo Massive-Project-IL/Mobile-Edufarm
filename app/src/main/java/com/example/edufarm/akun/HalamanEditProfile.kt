@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.edufarm.R
 import com.example.edufarm.data.model.Pengguna
+import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
 import com.example.edufarm.ui.components.TopBar
@@ -97,7 +98,39 @@ fun HalamanEditProfile(
         }
     }
 
-
+    LaunchedEffect(editState) {
+        when (editState) {
+            is EditProfileState.Success -> {
+                val pengguna = (editState as EditProfileState.Success).pengguna
+                if (pengguna != null) {
+                    successMessage = "Profil berhasil diperbarui!"
+                    errorMessage = null
+                    // Navigasi ke halaman notifikasi profile
+                    navController.navigate(Routes.NOTIFIKASI_PROFILE) {
+                        popUpTo(Routes.HALAMAN_EDIT_PROFILE) { inclusive = true }
+                    }
+                } else {
+                    errorMessage = "Profil berhasil diperbarui, tetapi data pengguna tidak diperbarui dari server."
+                    successMessage = null
+                }
+            }
+            is EditProfileState.SuccessMessage -> {
+                successMessage = (editState as EditProfileState.SuccessMessage).message
+                errorMessage = null
+                // Navigasi ke halaman notifikasi profile
+                navController.navigate(Routes.NOTIFIKASI_PROFILE) {
+                    popUpTo(Routes.HALAMAN_EDIT_PROFILE) { inclusive = true }
+                }
+            }
+            is EditProfileState.Error -> {
+                errorMessage = (editState as EditProfileState.Error).message
+                successMessage = null
+            }
+            else -> {
+                Log.d("EditProfile", "State tidak dikenali")
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -221,28 +254,8 @@ fun HalamanEditProfile(
             )
         }
     }
-
-    // Handle Edit State (Loading, Success, Error)
-    when (editState) {
-        is EditProfileState.Success -> {
-            val pengguna = (editState as EditProfileState.Success).pengguna
-            if (pengguna != null) {
-                successMessage = "Profil berhasil diperbarui!"
-                errorMessage = null
-            } else {
-                errorMessage = "Data pengguna kosong setelah update"
-                successMessage = null
-            }
-        }
-        is EditProfileState.Error -> {
-            errorMessage = (editState as EditProfileState.Error).message
-            successMessage = null
-        }
-        else -> {
-            Log.d("EditProfile", "State tidak dikenali")
-        }
-    }
 }
+
 
 // Header Section
 @Composable

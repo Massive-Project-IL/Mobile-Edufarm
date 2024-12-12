@@ -176,14 +176,12 @@ fun ProfileContent(
             contentAlignment = Alignment.Center
         ) {
             if (profile.foto_profile?.contains("null") == true) {
-                // Gunakan gambar default
                 Image(
                     painter = painterResource(id = R.drawable.default_image),
                     contentDescription = "Default Profile",
                     modifier = Modifier.size(110.dp)
                 )
             } else {
-                // Tampilkan gambar dari URL
                 Image(
                     painter = rememberAsyncImagePainter(model = profile.foto_profile),
                     contentDescription = "Foto Profil",
@@ -293,8 +291,6 @@ fun ProfileContent(
         }
     }
 }
-
-
 
 
 @Composable
