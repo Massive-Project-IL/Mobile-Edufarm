@@ -6,6 +6,6 @@ data class LoginRequest(
 )
 
 data class LoginResponse(
-    val msg: String,    // Untuk key "msg"
-    val token: String   // Untuk key "token"
+    val msg: String,
+    val token: String
 )

@@ -82,7 +82,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContentScreen(
@@ -96,7 +95,7 @@ fun ContentScreen(
     val topBarColor = colorResource(id = R.color.green)
     val jadwalLive by jadwalViewModel.jadwalLive.collectAsState()
 
-    val currentDate = getCurrentDates() // Ambil tanggal hari ini
+    val currentDate = getCurrentDates()
     val filteredJadwalLive = jadwalLive.filter { session ->
         val sessionDate = convertUtcToLocalDateTimes(session.tanggal).toLocalDate().toString()
         sessionDate == currentDate
@@ -226,25 +225,69 @@ fun SearchBarBeranda(
 
 @Composable
 fun CardLiveScrollable(jadwalLive: List<JadwalLive>, navController: NavController) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 26.dp) // Tambahkan padding dari tepi layar
-    ) {
-        items(jadwalLive) { session ->
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-            ) {
-                // Gunakan navController yang diteruskan
-                CardLive(session, navController)
+    if (jadwalLive.isEmpty()) {
+        NoJadwalCard()
+    } else {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 26.dp)
+        ) {
+            items(jadwalLive) { session ->
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                ) {
+                    CardLive(session, navController)
+                }
             }
         }
     }
 }
 
-
+@Composable
+private fun NoJadwalCard() {
+    Card(
+        modifier = Modifier
+            .padding(vertical = 8.dp, horizontal = 35.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_calendar_empty),
+                contentDescription = "Empty Calendar",
+                modifier = Modifier.size(100.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Yahh, Tidak ada live mentor untuk Hari ini",
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.green_title),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Tetap semangat belajar, ya!",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = poppinsFontFamily,
+                color = colorResource(id = R.color.green_title),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
 
 @Composable
 private fun CardLive(session: JadwalLive, navController: NavController) {
@@ -349,7 +392,6 @@ private fun CardLive(session: JadwalLive, navController: NavController) {
         )
     }
 }
-
 
 @Composable
 fun KategoriBertani() {
