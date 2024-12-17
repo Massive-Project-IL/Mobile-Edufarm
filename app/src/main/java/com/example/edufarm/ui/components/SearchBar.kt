@@ -69,7 +69,7 @@ fun SearchBar(
                 value = searchQuery,
                 onValueChange = {
                     searchQuery = it
-                    onSearchQueryChanged(it.text) // Kirim query pencarian
+                    onSearchQueryChanged(it.text)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,

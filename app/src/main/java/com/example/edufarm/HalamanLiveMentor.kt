@@ -305,7 +305,7 @@ private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                         )
                     }
                     Button(
-                        onClick = { showDialog = true }, // Show confirmation dialog first
+                        onClick = { showDialog = true },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
@@ -328,7 +328,6 @@ private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                             onDismissRequest = { showDialog = false },
                             onConfirm = {
                                 showDialog = false
-                                // Open Zoom Link
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(jadwal.link_zoom))
                                 context.startActivity(intent)
                             },
@@ -402,7 +401,6 @@ fun LiveMentorDescription(
                 modifier = Modifier.padding(top = 20.dp)
             )
         } else {
-            // Tampilkan kategori
             Text(
                 text = "Yuk, Bertani ${selectedJadwal.nama_kategori} Bareng! 🎉",
                 fontWeight = FontWeight.SemiBold,
@@ -416,7 +414,6 @@ fun LiveMentorDescription(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Menampilkan judul notifikasi
             Text(
                 text = "Live Mentor: ${selectedJadwal.judul_notifikasi}",
                 fontWeight = FontWeight.Medium,
@@ -429,7 +426,6 @@ fun LiveMentorDescription(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Menampilkan deskripsi dari jadwal
             Text(
                 text = selectedJadwal.deskripsi,
                 fontWeight = FontWeight.Normal,
@@ -442,7 +438,6 @@ fun LiveMentorDescription(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Menampilkan poin-poin yang akan didapat
             Text(
                 text = "Yang akan kamu dapatkan:",
                 fontWeight = FontWeight.Bold,
@@ -455,16 +450,14 @@ fun LiveMentorDescription(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Memecah string "poin" menjadi list dan menampilkan setiap poin
             val benefits = selectedJadwal.poin.split("\n")
-
             benefits.forEach { benefit ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.FiberManualRecord, // Ikon bullet
+                        imageVector = Icons.Default.FiberManualRecord,
                         contentDescription = "Bullet Point",
                         tint = Color.Black,
-                        modifier = Modifier.size(8.dp) // Ukuran ikon bullet
+                        modifier = Modifier.size(8.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -481,8 +474,6 @@ fun LiveMentorDescription(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-
-            // Menampilkan pesan ajakan
             Text(
                 text = "Gabung sekarang dan raih hasil panen yang maksimal! Jangan lewatkan kesempatan emas ini! 🎉",
                 fontWeight = FontWeight.Normal,

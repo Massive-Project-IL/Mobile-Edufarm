@@ -68,9 +68,9 @@ fun SocialMediaLogin(viewModel: LoginViewModel, navController: NavController) {
     val secureNonce = UUID.randomUUID().toString()
 
     val googleIdOption = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(false) // Set ke false untuk semua akun
+        .setFilterByAuthorizedAccounts(false)
         .setServerClientId("28052020880-tl32hke1qhjb9men27jb1m8ph87dgpi1.apps.googleusercontent.com") // Web Client ID
-        .setNonce(secureNonce) // Secure nonce
+        .setNonce(secureNonce)
         .build()
 
     val request = GetCredentialRequest.Builder()

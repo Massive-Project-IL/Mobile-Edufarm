@@ -57,7 +57,6 @@ class PenggunaViewModel(
         }
     }
 
-
     fun getNamaPengguna(onResult: (String) -> Unit) {
         viewModelScope.launch {
             try {

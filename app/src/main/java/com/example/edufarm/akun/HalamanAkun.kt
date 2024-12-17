@@ -166,7 +166,6 @@ fun ProfileContent(
         )
         Spacer(modifier = Modifier.height(25.dp))
 
-        // Foto Profil
         Box(
             modifier = Modifier
                 .size(110.dp)
@@ -176,14 +175,21 @@ fun ProfileContent(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            if (profile.foto_profile?.contains("null") == true) {
-                Image(
-                    painter = painterResource(id = R.drawable.default_image),
-                    contentDescription = "Default Profile",
+            if (profile.foto_profile.isNullOrBlank()) {
+                Box(
                     modifier = Modifier
                         .size(110.dp)
-                        .clip(CircleShape)
-                )
+                        .background(color = Color(0xFF92D5B6), shape = CircleShape), // Background Hijau
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.default_image),
+                        contentDescription = "Default Profile",
+                        modifier = Modifier
+                            .size(110.dp)
+                            .clip(CircleShape)
+                    )
+                }
             } else {
                 Image(
                     painter = rememberAsyncImagePainter(model = profile.foto_profile),
@@ -194,6 +200,7 @@ fun ProfileContent(
                         .clip(CircleShape)
                 )
             }
+
         }
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -305,7 +312,6 @@ fun ProfileContent(
     }
 }
 
-
 @Composable
 fun ProfileRowItem(iconId: Int, text: String, onClick: () -> Unit) {
     Row(
@@ -409,11 +415,10 @@ private fun ConfirmationKeluar(
                     Button(
                         onClick = {
                             onConfirm()
-                            // Hapus sesi (token) pengguna
                             CoroutineScope(Dispatchers.IO).launch {
-                                val email = getCurrentUserEmail(context) // Ambil email pengguna aktif
+                                val email = getCurrentUserEmail(context)
                                 if (!email.isNullOrEmpty()) {
-                                    clearToken(context, email) // Hapus token berdasarkan email
+                                    clearToken(context, email)
                                     Log.d("ClearToken", "Token untuk $email berhasil dihapus.")
                                 } else {
                                     Log.e("ClearToken", "Email pengguna aktif tidak ditemukan.")
@@ -445,8 +450,6 @@ private fun ConfirmationKeluar(
         dismissButton = {}
     )
 }
-
-
 
 @Preview(showBackground = true)
 @Composable

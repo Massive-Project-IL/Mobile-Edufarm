@@ -41,26 +41,23 @@ fun NotifikasiSandiScreen(navController: NavController) {
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
-    // Mengatur warna status bar
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
             darkIcons = true
         )
     }
-
-    // Menggunakan Box untuk mengatur background penuh
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.background)) // Latar belakang penuh layar
+            .background(colorResource(id = R.color.background))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp), // Padding diterapkan hanya pada konten
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center // Konten dipusatkan secara vertikal
+            verticalArrangement = Arrangement.Center
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ilustrasi),
@@ -72,7 +69,6 @@ fun NotifikasiSandiScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
@@ -88,7 +84,6 @@ fun NotifikasiSandiScreen(navController: NavController) {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Button(
                     onClick = { navController.navigate(Routes.HALAMAN_AKUN) },
                     shape = RoundedCornerShape(10.dp),

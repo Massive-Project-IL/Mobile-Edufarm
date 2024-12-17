@@ -8,7 +8,7 @@ import com.example.edufarm.viewModel.PenggunaViewModel
 
 class PenggunaViewModelFactory(
     private val repository: PenggunaRepository,
-    private val application: Application // Pass Application di sini
+    private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

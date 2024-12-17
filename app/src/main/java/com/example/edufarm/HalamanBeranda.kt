@@ -585,6 +585,7 @@ fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) 
             KategoriItem(
                 navController = navController,
                 iconUrl = pelatihan.icon,
+                kategori = pelatihan,
                 title = pelatihan.nama_kategori
             )
         }
@@ -594,13 +595,14 @@ fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) 
 @Composable
 fun KategoriItem(
     navController: NavController,
+    kategori: Kategori,
     iconUrl: String?,
     title: String,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .clickable { navController.navigate(Routes.HALAMAN_PELATIHAN) }
+            .clickable {   navController.navigate("halamanSubMateri/${kategori.kategori_id}") }
     ) {
         Card(
             shape = RoundedCornerShape(15.dp),

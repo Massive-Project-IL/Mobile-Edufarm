@@ -52,7 +52,10 @@ class FullScreenWebChromeClient(private val activity: Activity) : WebChromeClien
         customView = view
         customViewCallback = callback
         originalOrientation = activity.requestedOrientation
-        (activity.window.decorView as FrameLayout).addView(customView, FrameLayout.LayoutParams(-1, -1))
+        (activity.window.decorView as FrameLayout).addView(
+            customView,
+            FrameLayout.LayoutParams(-1, -1)
+        )
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
     }
 
@@ -189,12 +192,14 @@ fun processVideoUrl(rawVideoUrl: String): String {
         rawVideoUrl.startsWith("http://10.0.2.2:3000/uploads/materi/videos/") -> {
             rawVideoUrl.removePrefix("http://10.0.2.2:3000/uploads/materi/videos/")
         }
+
         rawVideoUrl.startsWith("https://drive.google.com/file/d/") -> {
             val fileId = rawVideoUrl
                 .substringAfter("https://drive.google.com/file/d/")
                 .substringBefore("/")
             "https://drive.google.com/file/d/$fileId/preview"
         }
+
         else -> rawVideoUrl
     }
 }

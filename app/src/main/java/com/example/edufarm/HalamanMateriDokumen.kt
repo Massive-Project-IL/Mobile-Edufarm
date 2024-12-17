@@ -42,7 +42,6 @@ import com.example.edufarm.ui.theme.poppinsFontFamily
 import com.example.edufarm.viewModel.MateriViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-
 @Composable
 fun MateriDokumenScreen(navController: NavController, kategoriId: Int, modulId: Int) {
     val listState = rememberLazyListState()
@@ -146,7 +145,10 @@ fun MateriDokumenScreen(navController: NavController, kategoriId: Int, modulId: 
                     onConfirm = {
                         showDialog = false
                         currentMateri.file?.let { fileUrl ->
-                            val driveUrl = "https://drive.google.com/uc?export=download&id=" + extractDriveFileId(fileUrl)
+                            val driveUrl =
+                                "https://drive.google.com/uc?export=download&id=" + extractDriveFileId(
+                                    fileUrl
+                                )
                             downloadFile(context, driveUrl)
 
                             Log.d("fileId", "fileId: $driveUrl")
@@ -191,9 +193,6 @@ fun extractDriveFileId(url: String): String {
     val cleanedUrl = url.substringAfter("http://localhost:3000/uploads/materi/pdf/")
     return cleanedUrl.substringAfter("https://drive.google.com/file/d/").substringBefore('/')
 }
-
-
-
 
 
 @Preview(showBackground = true)

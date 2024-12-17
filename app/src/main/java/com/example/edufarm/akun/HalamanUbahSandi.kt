@@ -67,7 +67,7 @@ fun UbahSandiScreen(
     val updatePasswordState by penggunaViewModel.updatePasswordState.collectAsState()
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
-    val errorMessages = remember { mutableStateOf(listOf<String>()) } // To display errors locally
+    val errorMessages = remember { mutableStateOf(listOf<String>()) }
 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
@@ -192,7 +192,7 @@ fun UbahSandiScreen(
                     showDialog = false
                     penggunaViewModel.updatePassword(
                         PasswordUpdateRequest(
-                            email_user = penggunaViewModel.getEmailUser().orEmpty(), // Get email from ViewModel
+                            email_user = penggunaViewModel.getEmailUser().orEmpty(),
                             oldPassword = oldPassword,
                             newPassword = newPassword,
                             confirmPassword = confirmPassword

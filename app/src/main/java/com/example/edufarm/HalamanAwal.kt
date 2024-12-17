@@ -52,13 +52,10 @@ fun EduFarmScreen(navController: NavController) {
             color = topBarColor,
             darkIcons = true
         )
-        // Bounce animation on logo
         bounceAnim.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
         )
-
-        // Simultaneous alpha and scale animation
         alphaAnim.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
@@ -71,11 +68,7 @@ fun EduFarmScreen(navController: NavController) {
             targetValue = 0f,
             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
         )
-
-        // Delay for splash screen
         kotlinx.coroutines.delay(2000)
-
-        // Navigate to login screen
         navController.navigate(Routes.HALAMAN_LOGIN) {
             popUpTo(Routes.HALAMAN_SPLASH) { inclusive = true }
         }
@@ -140,9 +133,6 @@ fun EduFarmScreen(navController: NavController) {
         )
     }
 }
-
-
-
 
 
 @Preview(showBackground = true)

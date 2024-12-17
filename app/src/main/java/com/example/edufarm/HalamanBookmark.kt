@@ -90,7 +90,7 @@ fun BookmarkScreen(
             darkIcons = true
         )
         pelatihanViewModel.fetchPelatihan()
-        bookmarkViewModel.getBookmarks() // Ambil data bookmark
+        bookmarkViewModel.getBookmarks()
     }
     Column(
         modifier = Modifier
@@ -172,7 +172,6 @@ private fun CardPelatihanBookmark(
                             // Toggle bookmark
                             bookmarkViewModel.toggleBookmark(bookmark.kategori_id)
 
-                            // Perbarui data bookmark di layar
                             bookmarkViewModel.getBookmarks()
                         },
                     contentAlignment = Alignment.Center
@@ -218,7 +217,7 @@ private fun CardPelatihanBookmark(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
-                        onClick = {navController.navigate("halamanSubMateri/${bookmark.kategori_id}") },
+                        onClick = { navController.navigate("halamanSubMateri/${bookmark.kategori_id}") },
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
@@ -301,22 +300,3 @@ fun PreviewBookmarkScreen() {
         )
     }
 }
-
-//@Composable
-//fun CategoryChips(modifier: Modifier = Modifier) {
-//    val categories = listOf("Kacang Tanah", "Kacang Polong", "Jagung", "Gandum", "Kedelai", "Padi")
-//    var selectedCategory by remember { mutableStateOf<String?>(null) }
-//
-//    LazyRow(
-//        modifier = modifier.fillMaxWidth(),
-//        horizontalArrangement = Arrangement.spacedBy(14.dp)
-//    ) {
-//        items(categories) { category ->
-//            CategoryChip(
-//                category = category,
-//                isSelected = category == selectedCategory,
-//                onClick = { selectedCategory = category }
-//            )
-//        }
-//    }
-//}

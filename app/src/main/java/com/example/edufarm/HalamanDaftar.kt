@@ -77,8 +77,6 @@ fun DaftarScreen(
             LocalContext.current.applicationContext as Application
         )
     )
-
-    // Input field states
     val namaText = remember { mutableStateOf("") }
     val emailText = remember { mutableStateOf("") }
     val passwordText = remember { mutableStateOf("") }
@@ -271,8 +269,8 @@ private fun PasswordField(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp)) // Garis luar merah jika error, hijau jika valid
-            .background(if (isError) Color(0x1AFF0000) else Color.Transparent) // Background merah jika error
+            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp))
+            .background(if (isError) Color(0x1AFF0000) else Color.Transparent)
             .padding(horizontal = 21.dp),
         decorationBox = { innerTextField ->
             Box(

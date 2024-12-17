@@ -29,7 +29,8 @@ class LupaPasswordViewModel(private val repository: AuthRepository) : ViewModel(
             try {
                 val response = repository.requestOtp(email)
                 if (response.isSuccessful) {
-                    _otpState.value = LupaPasswordState.Success(response.body()?.msg ?: "Kode OTP telah dikirim")
+                    _otpState.value =
+                        LupaPasswordState.Success(response.body()?.msg ?: "Kode OTP telah dikirim")
                 } else {
                     _otpState.value = LupaPasswordState.Error("Gagal: ${response.message()}")
                 }
@@ -46,7 +47,8 @@ class LupaPasswordViewModel(private val repository: AuthRepository) : ViewModel(
             try {
                 val response = repository.verifikasiOtp(email, otp)
                 if (response.isSuccessful) {
-                    _resetState.value = LupaPasswordState.Success(response.body()?.msg ?: "OTP valid")
+                    _resetState.value =
+                        LupaPasswordState.Success(response.body()?.msg ?: "OTP valid")
                 } else {
                     _resetState.value = LupaPasswordState.Error("Gagal: ${response.message()}")
                 }
@@ -57,13 +59,21 @@ class LupaPasswordViewModel(private val repository: AuthRepository) : ViewModel(
     }
 
     // Fungsi untuk reset password menggunakan OTP
-    fun resetPassword(email: String, otp: String, passwordBaru: String, konfirmasiPassword: String) {
+    fun resetPassword(
+        email: String,
+        otp: String,
+        passwordBaru: String,
+        konfirmasiPassword: String
+    ) {
         viewModelScope.launch {
             _resetState.value = LupaPasswordState.Loading
             try {
-                val response = repository.resetPassword(email, otp, passwordBaru, konfirmasiPassword)
+                val response =
+                    repository.resetPassword(email, otp, passwordBaru, konfirmasiPassword)
                 if (response.isSuccessful) {
-                    _resetState.value = LupaPasswordState.Success(response.body()?.msg ?: "Password berhasil direset")
+                    _resetState.value = LupaPasswordState.Success(
+                        response.body()?.msg ?: "Password berhasil direset"
+                    )
                 } else {
                     _resetState.value = LupaPasswordState.Error("Gagal: ${response.message()}")
                 }

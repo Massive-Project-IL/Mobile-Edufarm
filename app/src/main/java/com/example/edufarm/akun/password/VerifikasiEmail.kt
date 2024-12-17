@@ -75,9 +75,7 @@ fun VerifikasiEmailScreen(
     val focusRequesters = List(kodeLength) { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    // Masking email untuk privasi
     val maskedEmail = email.replaceBefore("@", "****")
-
     val errors = remember { mutableStateListOf<String>() }
 
     val systemUiController = rememberSystemUiController()
@@ -95,11 +93,10 @@ fun VerifikasiEmailScreen(
         when (resetState) {
             is LupaPasswordState.Success -> {
                 successMessage.value = (resetState as LupaPasswordState.Success).message
-                // Navigasi ke halaman Atur Ulang Sandi dengan membawa email dan OTP
                 navController.navigate("halamanAturUlangSandi?email=${email}&otp=${kodeVerifikasi}")
             }
             is LupaPasswordState.Error -> {
-                errors.clear() // Bersihkan error sebelumnya
+                errors.clear()
                 errors.add("Kode OTP yang kamu masukkan salah. Silakan periksa kembali.")
             }
             else -> {}
@@ -124,7 +121,6 @@ fun VerifikasiEmailScreen(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -185,7 +181,6 @@ fun VerifikasiEmailScreen(
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))
-                // Input Kode OTP
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -204,12 +199,9 @@ fun VerifikasiEmailScreen(
                                     if (value.length <= 1 && value.all { it.isDigit() }) {
                                         kodeVerifikasi = kodeVerifikasi
                                             .take(index) + value + kodeVerifikasi.drop(index + 1)
-
-                                        // Pindahkan fokus ke kotak berikutnya
                                         if (value.isNotEmpty() && index < kodeLength - 1) {
                                             focusRequesters[index + 1].requestFocus()
                                         } else if (index == kodeLength - 1) {
-                                            // Jika sudah di kotak terakhir, tutup keyboard
                                             focusManager.clearFocus()
                                         }
                                     }
@@ -238,8 +230,6 @@ fun VerifikasiEmailScreen(
                             )
                         }
                     }
-
-                    // Pesan Error
                     if (errorMessage.value.isNotEmpty()) {
                         Text(
                             text = errorMessage.value,
@@ -251,8 +241,6 @@ fun VerifikasiEmailScreen(
                     }
 
                     Spacer(modifier = Modifier.height(90.dp))
-
-                    // Tombol Konfirmasi
                     Button(
                         onClick = {
                             if (kodeVerifikasi.length == kodeLength) {

@@ -154,7 +154,6 @@ fun CardPelatihanKategori(
     pelatihan: Kategori,
     bookmarkViewModel: BookmarkViewModel
 ) {
-    // Status bookmark didapat dari ViewModel
     val isBookmarkedMap by bookmarkViewModel.isBookmarkedMap.collectAsState()
     val isBookmarked = isBookmarkedMap[pelatihan.kategori_id] ?: false
 

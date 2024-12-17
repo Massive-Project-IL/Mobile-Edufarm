@@ -83,7 +83,6 @@ fun JadwalLiveScreen(navController: NavController, viewModel: JadwalLiveViewMode
             color = topBarColor,
             darkIcons = true
         )
-        // Memuat data jadwal live dari ViewModel
         viewModel.fetchJadwalLive()
     }
 
@@ -164,23 +163,17 @@ fun JadwalLiveScreen(navController: NavController, viewModel: JadwalLiveViewMode
                 modifier = Modifier.padding(start = 35.dp, end = 35.dp)
             )
 
-            // Filter jadwal sesuai tanggal yang dipilih
             val filteredJadwalList = jadwalList.filter { jadwal ->
                 try {
-                    // Menggunakan SimpleDateFormat untuk parsing tanggal
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                    dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Pastikan parsing dalam zona waktu UTC
-                    val jadwalDate: Date = dateFormat.parse(jadwal.tanggal) ?: Date() // Fallback ke Date() jika null
-
-                    // Konversi ke zona waktu lokal
+                    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+                    val jadwalDate: Date = dateFormat.parse(jadwal.tanggal) ?: Date()
                     val localDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                    localDateFormat.timeZone = TimeZone.getDefault() // Zona waktu lokal
+                    localDateFormat.timeZone = TimeZone.getDefault()
 
-                    // Gunakan Calendar untuk ekstraksi informasi tanggal
                     val calendar = Calendar.getInstance()
                     calendar.time = jadwalDate
 
-                    // Bandingkan tanggal, bulan, dan tahun
                     calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0') == selectedDate &&
                             calendar.get(Calendar.MONTH) + 1 == today.monthValue &&
                             calendar.get(Calendar.YEAR) == today.year
@@ -248,8 +241,8 @@ fun JadwalLiveScreen(navController: NavController, viewModel: JadwalLiveViewMode
 // Fungsi untuk mengonversi durasi dalam format HH:mm:ss menjadi jam dan menit
 fun convertDurationToString(duration: String): String {
     val timeParts = duration.split(":") // Memisahkan jam, menit, detik
-    val hours = timeParts[0].toInt() // Ambil bagian jam
-    val minutes = timeParts[1].toInt() // Ambil bagian menit
+    val hours = timeParts[0].toInt()
+    val minutes = timeParts[1].toInt()
 
     return when {
         hours > 0 && minutes > 0 -> "$hours jam $minutes menit"
@@ -270,7 +263,6 @@ fun JadwalCard(
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        // Card utama
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
@@ -288,7 +280,6 @@ fun JadwalCard(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    // Judul
                     Text(
                         text = jadwal.judul_notifikasi,
                         fontFamily = poppinsFontFamily,
@@ -297,7 +288,6 @@ fun JadwalCard(
                         color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    // Nama Mentor dan Durasi
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = jadwal.nama_mentor,
@@ -316,8 +306,6 @@ fun JadwalCard(
                                 )
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-
-                        // Durasi
                         val formattedDuration = convertDurationToString(jadwal.durasi)
                         Text(
                             text = formattedDuration,
@@ -328,7 +316,6 @@ fun JadwalCard(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    // Waktu Mulai dan Selesai
                     Text(
                         text = "${jadwal.waktu_mulai} - ${jadwal.waktu_selesai}",
                         fontSize = 14.sp,
@@ -337,8 +324,6 @@ fun JadwalCard(
                 }
             }
         }
-
-        // Ikon notifikasi
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)

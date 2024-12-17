@@ -91,7 +91,6 @@ fun LupaPasswordScreen(
         }
     }
 
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -109,7 +108,6 @@ fun LupaPasswordScreen(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,7 +147,6 @@ fun LupaPasswordScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    // Teks deskripsi
                     Text(
                         text = "Untuk mengatur ulang kata sandi, masukkan E-mail kamu yang sudah terdaftar akun EduFarm kamu",
                         fontFamily = poppinsFontFamily,
@@ -229,13 +226,11 @@ fun LupaPasswordScreen(
 
                     Spacer(modifier = Modifier.height(90.dp))
 
-                    // Tombol Kirim Kode Verifikasi
                     Button(
                         onClick = {
                             if (emailText.value.isNotEmpty()) {
                                 errorMessage.value = ""
                                 successMessage.value = ""
-
                                 // Panggil ViewModel untuk mengirim OTP
                                 viewModel.kirimOtp(emailText.value)
                             } else {

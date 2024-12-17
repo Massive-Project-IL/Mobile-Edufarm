@@ -97,9 +97,11 @@ fun AturUlangSandiScreen(
                 successMessage.value = (resetPasswordState as LupaPasswordState.Success).message
                 navController.navigate(Routes.NOTIFIKASI_PASSWORD)
             }
+
             is LupaPasswordState.Error -> {
                 errorMessage.value = (resetPasswordState as LupaPasswordState.Error).message
             }
+
             else -> {}
         }
     }
@@ -140,7 +142,6 @@ fun AturUlangSandiScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
-                    // Teks Edu Farm
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -183,7 +184,6 @@ fun AturUlangSandiScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
-                    // Kata Sandi Baru
                     Text(
                         text = "Kata Sandi Baru",
                         fontFamily = poppinsFontFamily,
@@ -362,7 +362,7 @@ fun AturUlangSandiScreen(
 
                     Button(
                         onClick = {
-                            errors.clear() // Bersihkan error sebelumnya
+                            errors.clear()
 
                             if (katasandibaruText.value.isEmpty()) {
                                 errors.add("Kata sandi baru tidak boleh kosong.")

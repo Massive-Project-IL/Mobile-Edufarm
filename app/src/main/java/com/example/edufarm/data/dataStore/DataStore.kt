@@ -28,7 +28,6 @@
         return token
     }
 
-
     suspend fun clearToken(context: Context, email: String) {
         context.dataStore.edit { preferences ->
             preferences.remove(stringPreferencesKey("auth_token_$email"))
@@ -52,7 +51,6 @@
         Log.d("DataStore", "Email Pengguna Aktif: $email")
         return email
     }
-
 
     // Bookmark
     suspend fun saveBookmarkStatus(context: Context, isBookmarkedMap: Map<Int, Boolean>) {

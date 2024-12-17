@@ -154,8 +154,6 @@ fun HalamanEditProfile(
 
 
     var pengguna by remember { mutableStateOf<Pengguna?>(null) }
-
-    // Set status bar color
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
@@ -176,7 +174,6 @@ fun HalamanEditProfile(
         }
     }
 
-
     LaunchedEffect(editState) {
         when (editState) {
             is EditProfileState.Success -> {
@@ -184,7 +181,6 @@ fun HalamanEditProfile(
                 if (updatedPengguna != null) {
                     successMessage = "Profil berhasil diperbarui!"
                     errorMessage = null
-                    // Navigasi ke halaman notifikasi profile
                     navController.navigate(Routes.NOTIFIKASI_PROFILE) {
                         popUpTo(Routes.HALAMAN_EDIT_PROFILE) { inclusive = true }
                     }
@@ -198,7 +194,6 @@ fun HalamanEditProfile(
             is EditProfileState.SuccessMessage -> {
                 successMessage = (editState as EditProfileState.SuccessMessage).message
                 errorMessage = null
-                // Navigasi ke halaman notifikasi profile
                 navController.navigate(Routes.NOTIFIKASI_PROFILE) {
                     popUpTo(Routes.HALAMAN_EDIT_PROFILE) { inclusive = true }
                 }
@@ -208,13 +203,11 @@ fun HalamanEditProfile(
                 errorMessage = (editState as EditProfileState.Error).message
                 successMessage = null
             }
-
             else -> {
                 Log.d("EditProfile", "State tidak dikenali")
             }
         }
     }
-
 
     Scaffold(
         modifier = modifier,
@@ -244,20 +237,16 @@ fun HalamanEditProfile(
                     showBottomNav = !value
                 }
             )
-
-            // Input Fields Section
             InputFieldsSection(
                 name = name,
                 onNameChange = { name = it },
-                email = email,
-                onEmailChange = { email = it },
+//                email = email,
+//                onEmailChange = { email = it },
                 phoneNumber = phoneNumber,
                 onPhoneChange = { phoneNumber = it }
             )
 
             Spacer(modifier = Modifier.height(60.dp))
-
-            // Save Changes Button
             Button(
                 onClick = { showDialog = true },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
@@ -286,7 +275,7 @@ fun HalamanEditProfile(
                         namaUser = name.ifBlank { null } ?: "",
                         emailUser = email.ifBlank { null } ?: "",
                         telponUser = phoneNumber.ifBlank { null } ?: "",
-                        fotoUri = imageUri, // URI dari gambar kamera/galeri
+                        fotoUri = imageUri,
                         context = context
                     )
                 },
@@ -294,7 +283,6 @@ fun HalamanEditProfile(
             )
         }
 
-        // Popup untuk memilih kamera atau galeri
         if (showPopup) {
             PhotoEditPopup(
                 onClose = {
@@ -336,14 +324,12 @@ fun ProfilePictureSection(
         Box(contentAlignment = Alignment.BottomEnd) {
             Box(
                 modifier = Modifier
-                    .size(110.dp) // Ukuran lingkaran
+                    .size(110.dp)
                     .background(Color.White, CircleShape)
                     .padding(2.dp)
             ) {
-                // Menampilkan gambar profil
                 when {
                     imageUri != null -> {
-                        // Gambar lokal (kamera/galeri)
                         Image(
                             painter = rememberAsyncImagePainter(model = imageUri),
                             contentDescription = "Profile Picture",
@@ -355,7 +341,6 @@ fun ProfilePictureSection(
                     }
 
                     !serverImageUrl.isNullOrEmpty() -> {
-                        // Gambar dari server
                         Image(
                             painter = rememberAsyncImagePainter(model = serverImageUrl),
                             contentDescription = "Profile Picture",
@@ -367,20 +352,18 @@ fun ProfilePictureSection(
                     }
 
                     else -> {
-                        // Gambar default jika tidak ada gambar
                         Image(
                             painter = painterResource(id = R.drawable.default_image),
                             contentDescription = "Default Profile Picture",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(CircleShape)
+                                .background(color = Color(0xFF92D5B6), shape = CircleShape)
                         )
                     }
                 }
             }
 
-            // Camera Icon untuk memilih foto
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -448,7 +431,6 @@ fun PhotoEditPopup(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Tombol Kamera
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -522,13 +504,12 @@ fun HeaderSection(navController: NavController) {
     }
 }
 
-// Input Fields Section
 @Composable
 fun InputFieldsSection(
     name: String,
     onNameChange: (String) -> Unit,
-    email: String,
-    onEmailChange: (String) -> Unit,
+//    email: String,
+//    onEmailChange: (String) -> Unit,
     phoneNumber: String,
     onPhoneChange: (String) -> Unit
 ) {
@@ -539,8 +520,8 @@ fun InputFieldsSection(
     ) {
         InputField(label = "Nama", value = name, onValueChange = onNameChange)
         Spacer(modifier = Modifier.height(16.dp))
-        InputField(label = "Email", value = email, onValueChange = onEmailChange)
-        Spacer(modifier = Modifier.height(16.dp))
+//        InputField(label = "Email", value = email, onValueChange = onEmailChange)
+//        Spacer(modifier = Modifier.height(16.dp))
         InputField(label = "Nomor Telepon", value = phoneNumber, onValueChange = onPhoneChange)
     }
 }

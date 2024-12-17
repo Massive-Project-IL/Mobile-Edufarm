@@ -138,7 +138,9 @@ fun LoginScreen(navController: NavController) {
                     onClick = {
                         val errors = mutableListOf<String>()
 
-                        if (emailText.value.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(emailText.value).matches()) {
+                        if (emailText.value.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(emailText.value)
+                                .matches()
+                        ) {
                             errors.add("Masukkan email yang valid")
                         }
                         if (passwordText.value.isBlank()) {
@@ -162,11 +164,11 @@ fun LoginScreen(navController: NavController) {
                 SocialMediaLogin(viewModel, navController)
 
                 Spacer(modifier = Modifier.height(20.dp))
-                // Handle login state
                 when (loginState) {
                     is LoginState.Loading -> {
                         CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                     }
+
                     is LoginState.Success -> {
                         val token = (loginState as LoginState.Success).token
                         LaunchedEffect(token) {
@@ -176,10 +178,12 @@ fun LoginScreen(navController: NavController) {
                             }
                         }
                     }
+
                     is LoginState.Error -> {
                         val errorMessage = (loginState as LoginState.Error).message
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                     }
+
                     else -> {}
                 }
             }
@@ -228,7 +232,11 @@ private fun InputField(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp))
+            .border(
+                1.dp,
+                if (isError) Color.Red else colorResource(id = R.color.green),
+                RoundedCornerShape(15.dp)
+            )
             .background(if (isError) Color(0x1AFF0000) else Color.Transparent)
             .padding(horizontal = 21.dp),
         decorationBox = { innerTextField ->
@@ -338,6 +346,7 @@ fun SignUpRow(navController: NavController) {
 fun LoginScreenPreview() {
     EdufarmTheme {
         LoginScreen(
-            navController = rememberNavController())
+            navController = rememberNavController()
+        )
     }
 }

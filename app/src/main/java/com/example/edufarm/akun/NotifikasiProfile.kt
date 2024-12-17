@@ -41,7 +41,6 @@ fun NotifikasiProfileScreen(navController: NavController) {
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
-    // Mengatur warna status bar
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
@@ -52,14 +51,14 @@ fun NotifikasiProfileScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.background)) // Latar belakang penuh layar
+            .background(colorResource(id = R.color.background))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp), // Padding diterapkan hanya pada konten
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center // Konten dipusatkan secara vertikal
+            verticalArrangement = Arrangement.Center 
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ilustrasi),
