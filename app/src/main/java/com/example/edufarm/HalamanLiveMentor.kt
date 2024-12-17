@@ -1,5 +1,7 @@
 package com.example.edufarm
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -45,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -183,7 +186,7 @@ fun LiveMentorScreen(
             }
 
             if (filteredJadwalList.isEmpty()) {
-                NoJadwalCard()
+                NoJadwalCardLive()
                 Spacer(modifier = Modifier.height(16.dp))
             } else {
                 LazyRow(
@@ -223,8 +226,7 @@ private fun getCurrentDate(): String {
 @Composable
 private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
-    var isNotificationActive by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
 
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     val formattedStartTime = LocalTime.parse(jadwal.waktu_mulai).format(timeFormatter)
@@ -235,7 +237,7 @@ private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
             .padding(8.dp)
             .width(320.dp)
             .border(
-                BorderStroke(1.dp, colorResource(id = R.color.green_logo)),
+                BorderStroke(1.dp, colorResource(id = R.color.green_jadwal)),
                 RoundedCornerShape(16.dp)
             )
     ) {
@@ -246,7 +248,7 @@ private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                 .clickable { onCardClick(jadwal.notifikasi_id) },
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
-            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif)) // Gunakan warna berbeda untuk card
+            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
@@ -261,7 +263,6 @@ private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                         color = colorResource(id = R.color.green_title)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row(
@@ -304,7 +305,7 @@ private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                         )
                     }
                     Button(
-                        onClick = { showDialog = true },
+                        onClick = { showDialog = true }, // Show confirmation dialog first
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
@@ -320,34 +321,40 @@ private fun CardLiveMentor(jadwal: JadwalLive, onCardClick: (Int) -> Unit) {
                             fontFamily = poppinsFontFamily
                         )
                     }
+
+                    if (showDialog) {
+                        ConfirmationDialog(
+                            message = "Apakah Kamu Mau Gabung Live?",
+                            onDismissRequest = { showDialog = false },
+                            onConfirm = {
+                                showDialog = false
+                                // Open Zoom Link
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(jadwal.link_zoom))
+                                context.startActivity(intent)
+                            },
+                            onCancel = { showDialog = false }
+                        )
+                    }
                 }
             }
         }
     }
-
-    if (showDialog) {
-        ConfirmationDialog(
-            message = "Apakah Kamu Mau Gabung Live?",
-            onDismissRequest = { showDialog = false },
-            onConfirm = { showDialog = false },
-            onCancel = { showDialog = false }
-        )
-    }
 }
 
 @Composable
-private fun NoJadwalCard() {
+private fun NoJadwalCardLive() {
     Box(
         modifier = Modifier
             .border(
                 BorderStroke(1.dp, colorResource(id = R.color.green_logo)),
                 RoundedCornerShape(16.dp)
             )
+            .background(colorResource(id = R.color.card_notif))
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.Center),  // Menempatkan Card di tengah
+                .align(Alignment.Center),
             shape = RoundedCornerShape(16.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
             colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
@@ -355,8 +362,8 @@ private fun NoJadwalCard() {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxSize()  // Memastikan Column mengisi seluruh ruang di dalam Card
-                    .padding(16.dp)  // Menambahkan padding di dalam Column
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_calendar_empty),

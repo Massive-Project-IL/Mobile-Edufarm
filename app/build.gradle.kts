@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.edufarm"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.edufarm"
@@ -82,6 +82,13 @@ dependencies {
 
     // Data Store
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation ("com.google.android.exoplayer:exoplayer:2.18.2")
 
+    // Google
+    implementation("androidx.credentials:credentials:1.5.0-alpha05")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0-alpha05")
+
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.0.0")
+    implementation ("com.google.android.gms:play-services-auth:21.3.0")
 
 }

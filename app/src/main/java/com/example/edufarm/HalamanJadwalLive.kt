@@ -175,7 +175,6 @@ fun JadwalLiveScreen(navController: NavController, viewModel: JadwalLiveViewMode
                     // Konversi ke zona waktu lokal
                     val localDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     localDateFormat.timeZone = TimeZone.getDefault() // Zona waktu lokal
-                    val localDate = localDateFormat.format(jadwalDate)
 
                     // Gunakan Calendar untuk ekstraksi informasi tanggal
                     val calendar = Calendar.getInstance()
@@ -186,7 +185,7 @@ fun JadwalLiveScreen(navController: NavController, viewModel: JadwalLiveViewMode
                             calendar.get(Calendar.MONTH) + 1 == today.monthValue &&
                             calendar.get(Calendar.YEAR) == today.year
                 } catch (e: Exception) {
-                    false // Abaikan item jika terjadi kesalahan parsing
+                    false
                 }
             }
 

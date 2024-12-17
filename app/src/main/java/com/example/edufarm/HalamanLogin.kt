@@ -57,6 +57,9 @@ import com.example.edufarm.data.dataStore.saveToken
 import com.example.edufarm.data.repository.AuthRepository
 import com.example.edufarm.factory.LoginViewModelFactory
 import com.example.edufarm.navigation.Routes
+import com.example.edufarm.ui.components.ErrorMessages
+import com.example.edufarm.ui.components.OrSeparator
+import com.example.edufarm.ui.components.SocialMediaLogin
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
 import com.example.edufarm.viewModel.LoginState
@@ -74,8 +77,8 @@ fun LoginScreen(navController: NavController) {
     val passwordText = remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val loginState by viewModel.loginState.collectAsState()
+    val errorMessages = remember { mutableStateOf(listOf<String>()) }
 
-    // UI
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,7 +86,6 @@ fun LoginScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Edu Farm Logo",
@@ -93,8 +95,6 @@ fun LoginScreen(navController: NavController) {
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
-        // Input Box
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,20 +104,21 @@ fun LoginScreen(navController: NavController) {
                 .padding(16.dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Title
                 TitleRow()
 
-                // Email Input
+                if (errorMessages.value.isNotEmpty()) {
+                    ErrorMessages(errors = errorMessages.value)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
                 InputField(
                     text = emailText.value,
                     onTextChange = { emailText.value = it },
                     placeholder = "Masukan Email",
-                    keyboardType = KeyboardType.Email
+                    keyboardType = KeyboardType.Email,
+                    isError = errorMessages.value.contains("Masukkan email yang valid")
                 )
 
                 Spacer(modifier = Modifier.height(21.dp))
-
-                // Password Input
                 InputField(
                     text = passwordText.value,
                     onTextChange = { passwordText.value = it },
@@ -125,56 +126,51 @@ fun LoginScreen(navController: NavController) {
                     keyboardType = KeyboardType.Password,
                     isPassword = true,
                     passwordVisible = passwordVisible,
-                    onPasswordVisibilityChange = { passwordVisible = it }
+                    onPasswordVisibilityChange = { passwordVisible = it },
+                    isError = errorMessages.value.contains("Masukkan password")
                 )
 
                 Spacer(modifier = Modifier.height(5.dp))
-
-                // Forgot Password
                 ForgotPasswordText(navController)
 
                 Spacer(modifier = Modifier.height(20.dp))
-
-                // Login Button
                 LoginButton(
                     onClick = {
+                        val errors = mutableListOf<String>()
+
                         if (emailText.value.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(emailText.value).matches()) {
-                            Toast.makeText(context, "Masukkan email yang valid", Toast.LENGTH_SHORT).show()
-                            return@LoginButton
+                            errors.add("Masukkan email yang valid")
                         }
                         if (passwordText.value.isBlank()) {
-                            Toast.makeText(context, "Masukkan password", Toast.LENGTH_SHORT).show()
-                            return@LoginButton
+                            errors.add("Masukkan password")
                         }
-                        viewModel.login(emailText.value, passwordText.value)
+                        if (errors.isNotEmpty()) {
+                            errorMessages.value = errors
+                        } else {
+                            // Panggil login biasa dengan email dan password
+                            viewModel.login(emailText.value, passwordText.value)
+                        }
                     }
                 )
-
                 Spacer(modifier = Modifier.height(15.dp))
-
-                // Sign-up Link
                 SignUpRow(navController)
 
                 Spacer(modifier = Modifier.height(26.dp))
-
-                // Or Separator
-                OrSeparator()
+                OrSeparator(text = "atau masuk dengan")
 
                 Spacer(modifier = Modifier.height(19.dp))
-
-                // Social Media Login
-                SocialMediaLogin()
+                SocialMediaLogin(viewModel, navController)
 
                 Spacer(modifier = Modifier.height(20.dp))
-
+                // Handle login state
                 when (loginState) {
                     is LoginState.Loading -> {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                     }
                     is LoginState.Success -> {
                         val token = (loginState as LoginState.Success).token
                         LaunchedEffect(token) {
-                            saveToken(context, emailText.value, token) // Gunakan email input
+                            saveToken(context, emailText.value, token)
                             navController.navigate(Routes.HALAMAN_BERANDA) {
                                 popUpTo(Routes.HALAMAN_LOGIN) { inclusive = true }
                             }
@@ -182,12 +178,7 @@ fun LoginScreen(navController: NavController) {
                     }
                     is LoginState.Error -> {
                         val errorMessage = (loginState as LoginState.Error).message
-                        Text(
-                            text = errorMessage,
-                            color = Color.Red,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(top = 16.dp)
-                        )
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                     else -> {}
                 }
@@ -195,8 +186,6 @@ fun LoginScreen(navController: NavController) {
         }
     }
 }
-
-
 
 @Composable
 fun TitleRow() {
@@ -221,12 +210,13 @@ fun TitleRow() {
 }
 
 @Composable
-fun InputField(
+private fun InputField(
     text: String,
     onTextChange: (String) -> Unit,
     placeholder: String,
     keyboardType: KeyboardType,
     isPassword: Boolean = false,
+    isError: Boolean = false,
     passwordVisible: Boolean = false,
     onPasswordVisibilityChange: (Boolean) -> Unit = {}
 ) {
@@ -238,7 +228,8 @@ fun InputField(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(1.dp, colorResource(id = R.color.green_logo), RoundedCornerShape(15.dp))
+            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp))
+            .background(if (isError) Color(0x1AFF0000) else Color.Transparent)
             .padding(horizontal = 21.dp),
         decorationBox = { innerTextField ->
             Box(
@@ -260,7 +251,7 @@ fun InputField(
                         onClick = { onPasswordVisibilityChange(!passwordVisible) },
                         modifier = Modifier
                             .align(Alignment.CenterEnd)
-                            .size(36.dp) // Menambahkan ukuran eksplisit untuk ikon
+                            .size(36.dp)
                     ) {
                         Icon(
                             painter = painterResource(
@@ -268,7 +259,7 @@ fun InputField(
                             ),
                             contentDescription = null,
                             tint = Color.Gray,
-                            modifier = Modifier.size(24.dp) // Ukuran ikon mata
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
@@ -277,10 +268,8 @@ fun InputField(
     )
 }
 
-
-
 @Composable
-fun ForgotPasswordText(navController: NavController) {
+private fun ForgotPasswordText(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
@@ -317,7 +306,6 @@ fun LoginButton(onClick: () -> Unit) {
     }
 }
 
-
 @Composable
 fun SignUpRow(navController: NavController) {
     Row(
@@ -341,43 +329,6 @@ fun SignUpRow(navController: NavController) {
             modifier = Modifier.clickable {
                 navController.navigate(Routes.HALAMAN_DAFTAR)
             }
-        )
-    }
-}
-
-@Composable
-fun OrSeparator() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(1.dp)
-                .background(Color.Gray)
-        )
-        Text(
-            text = " atau masuk dengan ",
-            modifier = Modifier.padding(horizontal = 8.dp),
-            fontSize = 14.sp,
-            fontFamily = poppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            color = Color.Gray
-        )
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(1.dp)
-                .background(Color.Gray)
-        )
-    }
-}
-
-@Composable
-fun SocialMediaLogin() {
-    IconButton(onClick = { /* Handle Google login */ }) {
-        Image(
-            painter = painterResource(id = R.drawable.google_logo),
-            contentDescription = "Google",
-            modifier = Modifier.size(22.dp)
         )
     }
 }

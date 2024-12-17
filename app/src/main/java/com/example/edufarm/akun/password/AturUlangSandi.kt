@@ -1,6 +1,5 @@
 package com.example.edufarm.akun.password
 
-import com.example.edufarm.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +24,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,20 +45,42 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.edufarm.R
+import com.example.edufarm.data.api.ApiClient
+import com.example.edufarm.data.repository.AuthRepository
+import com.example.edufarm.factory.LupaPasswordViewModelFactory
 import com.example.edufarm.navigation.Routes
+import com.example.edufarm.ui.components.ErrorMessages
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.LupaPasswordState
+import com.example.edufarm.viewModel.LupaPasswordViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modifier) {
-
+fun AturUlangSandiScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    email: String,
+    otp: String
+) {
     val katasandibaruText = remember { mutableStateOf("") }
     var katasandibaruVisible by remember { mutableStateOf(false) }
     val konfirmasiKatasandibaruText = remember { mutableStateOf("") }
     var konfirmasiKatasandibaruVisible by remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf("") }
+    val successMessage = remember { mutableStateOf("") }
+    val errors = remember { mutableStateListOf<String>() }
+    val viewModel: LupaPasswordViewModel = viewModel(
+        factory = LupaPasswordViewModelFactory(
+            AuthRepository(ApiClient.apiService)
+        )
+    )
+    val resetPasswordState by viewModel.resetState.collectAsState()
+
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
@@ -68,6 +91,18 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
         )
     }
 
+    LaunchedEffect(resetPasswordState) {
+        when (resetPasswordState) {
+            is LupaPasswordState.Success -> {
+                successMessage.value = (resetPasswordState as LupaPasswordState.Success).message
+                navController.navigate(Routes.NOTIFIKASI_PASSWORD)
+            }
+            is LupaPasswordState.Error -> {
+                errorMessage.value = (resetPasswordState as LupaPasswordState.Error).message
+            }
+            else -> {}
+        }
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -87,7 +122,6 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
 
         Spacer(modifier = Modifier.height(24.dp))
 
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -100,7 +134,6 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Row untuk Edu Farm dan deskripsi
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
@@ -128,26 +161,29 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                             color = colorResource(id = R.color.green_logo)
                         )
                     }
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text(
                         text = "Atur ulang kata sandi dengan memasukkan kata sandi yang baru",
                         fontFamily = poppinsFontFamily,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally),
                         textAlign = TextAlign.Center
                     )
                 }
+
                 Spacer(modifier = Modifier.height(40.dp))
+
+                ErrorMessages(errors = errors)
+                Spacer(modifier = Modifier.height(16.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
+                    // Kata Sandi Baru
                     Text(
                         text = "Kata Sandi Baru",
                         fontFamily = poppinsFontFamily,
@@ -156,13 +192,15 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                         color = Color.Black,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     BasicTextField(
                         value = katasandibaruText.value,
                         onValueChange = { katasandibaruText.value = it },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done 
+                            imeAction = ImeAction.Done
                         ),
                         visualTransformation = if (!katasandibaruVisible) {
                             PasswordVisualTransformation()
@@ -178,18 +216,15 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                                 RoundedCornerShape(15.dp)
                             )
                             .padding(horizontal = 21.dp),
-
                         decorationBox = { innerTextField ->
                             Box(
-                                modifier = Modifier
-                                    .fillMaxSize(),
+                                modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Box(
                                         modifier = Modifier.weight(1f),
@@ -206,7 +241,6 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                                         }
                                         innerTextField()
                                     }
-
 
                                     IconButton(
                                         onClick = { katasandibaruVisible = !katasandibaruVisible },
@@ -233,7 +267,10 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                             }
                         }
                     )
+
                     Spacer(modifier = Modifier.height(10.dp))
+
+                    // Konfirmasi Kata Sandi Baru
                     Text(
                         text = "Konfirmasi Kata Sandi Baru",
                         fontFamily = poppinsFontFamily,
@@ -242,7 +279,9 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                         color = Color.Black,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     BasicTextField(
                         value = konfirmasiKatasandibaruText.value,
                         onValueChange = { konfirmasiKatasandibaruText.value = it },
@@ -264,24 +303,21 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                                 RoundedCornerShape(15.dp)
                             )
                             .padding(horizontal = 21.dp),
-
                         decorationBox = { innerTextField ->
                             Box(
-                                modifier = Modifier
-                                    .fillMaxSize(),
+                                modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Box(
                                         modifier = Modifier.weight(1f),
                                         contentAlignment = Alignment.CenterStart
                                     ) {
-                                        if (konfirmasiKatasandibaruText.value.isEmpty()) {  // Tampilkan placeholder jika teks kosong
+                                        if (konfirmasiKatasandibaruText.value.isEmpty()) {
                                             Text(
                                                 "Masukan Kata Sandi",
                                                 color = Color.Gray,
@@ -293,9 +329,11 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                                         innerTextField()
                                     }
 
-
                                     IconButton(
-                                        onClick = { konfirmasiKatasandibaruVisible = !konfirmasiKatasandibaruVisible },
+                                        onClick = {
+                                            konfirmasiKatasandibaruVisible =
+                                                !konfirmasiKatasandibaruVisible
+                                        },
                                         modifier = Modifier.size(48.dp)
                                     ) {
                                         Icon(
@@ -320,11 +358,31 @@ fun AturUlangSandiScreen(navController: NavController,modifier: Modifier = Modif
                         }
                     )
 
-
                     Spacer(modifier = Modifier.height(60.dp))
 
                     Button(
-                        onClick = { navController.navigate(Routes.NOTIFIKASI_PASSWORD) },
+                        onClick = {
+                            errors.clear() // Bersihkan error sebelumnya
+
+                            if (katasandibaruText.value.isEmpty()) {
+                                errors.add("Kata sandi baru tidak boleh kosong.")
+                            }
+                            if (konfirmasiKatasandibaruText.value.isEmpty()) {
+                                errors.add("Konfirmasi kata sandi baru tidak boleh kosong.")
+                            }
+                            if (katasandibaruText.value != konfirmasiKatasandibaruText.value) {
+                                errors.add("Kata sandi baru dan konfirmasi kata sandi tidak cocok.")
+                            }
+
+                            if (errors.isEmpty()) {
+                                viewModel.resetPassword(
+                                    email = email,
+                                    otp = otp,
+                                    passwordBaru = katasandibaruText.value,
+                                    konfirmasiPassword = konfirmasiKatasandibaruText.value
+                                )
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -350,6 +408,9 @@ fun AturUlangSandiScreenPreview() {
     EdufarmTheme {
         AturUlangSandiScreen(
             navController = rememberNavController(),
-            modifier = Modifier)
+            modifier = Modifier,
+            email = "",
+            otp = ""
+        )
     }
 }

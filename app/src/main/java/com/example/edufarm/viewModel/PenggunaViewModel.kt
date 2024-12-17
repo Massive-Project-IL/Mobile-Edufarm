@@ -1,6 +1,8 @@
 package com.example.edufarm.viewModel
 
 import android.app.Application
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,8 +40,7 @@ class PenggunaViewModel(
             try {
                 val email = getCurrentUserEmail(getApplication<Application>().applicationContext)
                 if (email.isNullOrEmpty()) {
-                    _penggunaState.value =
-                        ProfileState.Error("Email pengguna aktif tidak ditemukan")
+                    _penggunaState.value = ProfileState.Error("Email pengguna aktif tidak ditemukan")
                     return@launch
                 }
 
@@ -51,32 +52,29 @@ class PenggunaViewModel(
                     _penggunaState.value = ProfileState.Error("Token tidak ditemukan untuk $email")
                 }
             } catch (e: Exception) {
-                Log.e("PenggunaViewModel", "Kesalahan saat memuat data pengguna: ${e.message}", e)
                 _penggunaState.value = ProfileState.Error("Kesalahan: ${e.message}")
             }
         }
     }
 
-    fun editPengguna(updatedProfile: Pengguna) {
+
+    fun getNamaPengguna(onResult: (String) -> Unit) {
         viewModelScope.launch {
-            _editPenggunaState.value = EditProfileState.Loading
             try {
                 val email = getCurrentUserEmail(getApplication<Application>().applicationContext)
-                if (email.isNullOrEmpty()) {
-                    _editPenggunaState.value =
-                        EditProfileState.Error("Email pengguna aktif tidak ditemukan")
-                    return@launch
-                }
-
-                val token = getToken(getApplication<Application>().applicationContext, email)
-                if (!token.isNullOrEmpty()) {
-                    val successMessage = repository.editPengguna("Bearer $token", updatedProfile)
-                    _editPenggunaState.value = EditProfileState.SuccessMessage(successMessage)
+                if (!email.isNullOrEmpty()) {
+                    val token = getToken(getApplication<Application>().applicationContext, email)
+                    if (!token.isNullOrEmpty()) {
+                        val pengguna = repository.getPengguna("Bearer $token")
+                        pengguna.nama_user?.let { onResult(it) }
+                    } else {
+                        onResult("Nama tidak ditemukan")
+                    }
                 } else {
-                    _editPenggunaState.value = EditProfileState.Error("Token tidak ditemukan")
+                    onResult("Email tidak ditemukan")
                 }
             } catch (e: Exception) {
-                _editPenggunaState.value = EditProfileState.Error("Kesalahan: ${e.message}")
+                onResult("Error: ${e.message}")
             }
         }
     }
@@ -142,6 +140,48 @@ class PenggunaViewModel(
     fun getEmailUser(): String? {
         return runBlocking {
             getCurrentUserEmail(getApplication<Application>().applicationContext)
+        }
+    }
+
+    fun editPengguna(
+        namaUser: String,
+        emailUser: String,
+        telponUser: String,
+        fotoUri: Uri?,
+        context: Context
+    ) {
+        viewModelScope.launch {
+            _editPenggunaState.value = EditProfileState.Loading
+            try {
+                val email = getCurrentUserEmail(context)
+                if (email.isNullOrEmpty()) {
+                    _editPenggunaState.value = EditProfileState.Error("Email pengguna aktif tidak ditemukan")
+                    return@launch
+                }
+
+                val token = getToken(context, email)
+                if (token.isNullOrEmpty()) {
+                    _editPenggunaState.value = EditProfileState.Error("Token tidak ditemukan")
+                    return@launch
+                }
+
+                val response = repository.updateProfile(
+                    token = token,
+                    namaUser = namaUser,
+                    emailUser = emailUser,
+                    telponUser = telponUser,
+                    fotoUri = fotoUri,
+                    context = context
+                )
+
+                if (response.isSuccessful) {
+                    _editPenggunaState.value = EditProfileState.SuccessMessage(response.body()?.msg ?: "Profil berhasil diperbarui")
+                } else {
+                    _editPenggunaState.value = EditProfileState.Error("Gagal memperbarui profil: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                _editPenggunaState.value = EditProfileState.Error("Kesalahan: ${e.message}")
+            }
         }
     }
 }

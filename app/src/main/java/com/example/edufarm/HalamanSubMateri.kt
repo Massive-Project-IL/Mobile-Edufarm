@@ -1,6 +1,5 @@
 package com.example.edufarm
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,12 +60,19 @@ fun SubMateriScreen(
     kategoriId: Int,
     viewModel: MateriViewModel = viewModel()
 ) {
+    val materiList by viewModel.materiList.collectAsState()
     val listOfMateri by viewModel.materiList.collectAsState()
-    val filteredMateri = listOfMateri.filter { it.kategori_id == kategoriId } // Filter modul berdasarkan kategoriId
+    val filteredMateri = listOfMateri.filter { it.kategori_id == kategoriId }
     val errorMessage by viewModel.errorMessage.collectAsState()
 
+    // Query untuk pencarian
+    var searchQuery by remember { mutableStateOf("") }
+
+    materiList.filter {
+        it.nama_modul.contains(searchQuery, ignoreCase = true)
+    }
+
     LaunchedEffect(kategoriId) {
-        // Pastikan memuat data sesuai kategoriId
         viewModel.fetchMateriByCategory(kategoriId)
     }
 
@@ -78,7 +87,12 @@ fun SubMateriScreen(
             title = "Materi"
         )
         Spacer(modifier = Modifier.height(8.dp))
-        SearchBar(placeholder = "Cari Pelatihan")
+        SearchBar(
+            placeholder = "Cari Pelatihan",
+            onSearchQueryChanged = { query ->
+                searchQuery = query
+            }
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
@@ -99,7 +113,7 @@ fun SubMateriScreen(
         }
 
         LazyColumn {
-            items(filteredMateri) { materi -> // Menggunakan filteredMateri yang sudah difilter
+            items(filteredMateri) { materi ->
                 MateriCard(materi = materi, navController)
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -129,14 +143,14 @@ fun MateriCard(
                     .height(115.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                // Menentukan gambar untuk materi
                 val gambar = if (materi.gambar.isNullOrEmpty()) {
-                    // Gambar fallback jika materi.gambar null atau kosong
                     painterResource(id = R.drawable.petani)
                 } else {
-                    rememberAsyncImagePainter(materi.gambar)
+                    rememberAsyncImagePainter(
+                        model = materi.gambar,
+                        placeholder = painterResource(R.drawable.petani),
+                    )
                 }
-
                 Image(
                     painter = gambar,
                     contentDescription = "Image for ${materi.nama_modul}",
@@ -146,7 +160,6 @@ fun MateriCard(
                         .clip(RoundedCornerShape(14.dp))
                 )
                 Spacer(modifier = Modifier.width(14.dp))
-
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -163,7 +176,6 @@ fun MateriCard(
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
-
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -171,8 +183,22 @@ fun MateriCard(
                     ) {
                         Button(
                             onClick = {
-                                navController.navigate("halamanIsiMateri/${materi.modul_id}/${Uri.encode(materi.nama_modul)}")
+                                when {
+                                    !materi.file.isNullOrEmpty() -> {
+                                        navController.navigate("HALAMAN_MATERI_DOKUMEN/${materi.kategori_id}/${materi.modul_id}")
+                                    }
+                                    !materi.text_module.isNullOrEmpty() -> {
+                                        navController.navigate("HALAMAN_ISI_MATERI/${materi.kategori_id}/${materi.modul_id}")
+                                    }
+                                    !materi.video.isNullOrEmpty() -> {
+                                        navController.navigate("HALAMAN_MATERI_VIDEO/${materi.kategori_id}/${materi.modul_id}")
+                                    }
+                                    else -> {
+                                        navController.navigate("HALAMAN_ISI_MATERI/${materi.kategori_id}/${materi.modul_id}")
+                                    }
+                                }
                             },
+
                             shape = RoundedCornerShape(6.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
                             contentPadding = PaddingValues(horizontal = 3.dp, vertical = 0.dp),

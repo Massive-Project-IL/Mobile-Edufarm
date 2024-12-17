@@ -1,26 +1,39 @@
 package com.example.edufarm.akun
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -39,15 +52,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.edufarm.R
 import com.example.edufarm.data.model.Pengguna
+import com.example.edufarm.data.utils.copyUriToFile
+import com.example.edufarm.data.utils.saveBitmapToFile
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
@@ -78,6 +98,62 @@ fun HalamanEditProfile(
 
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.green)
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val context = LocalContext.current
+
+    // Periksa izin kamera
+    var hasCameraPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    // Launcher untuk meminta izin kamera
+    val requestCameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        hasCameraPermission = isGranted
+        if (!isGranted) {
+            Toast.makeText(context, "Izin kamera ditolak", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Launcher untuk kamera
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap: Bitmap? ->
+        if (bitmap != null) {
+            val savedUri = saveBitmapToFile(context, bitmap)
+            if (savedUri != null) {
+                imageUri = savedUri
+                Log.d("EditProfile", "Bitmap saved to: $savedUri")
+            } else {
+                Toast.makeText(context, "Gagal menyimpan gambar", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // Launcher untuk galeri
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            val savedUri = copyUriToFile(context, uri)
+            if (savedUri != null) {
+                imageUri = savedUri
+                Log.d("EditProfile", "File disalin ke: $savedUri")
+            } else {
+                Toast.makeText(context, "Gagal menyimpan gambar dari galeri", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    var pengguna by remember { mutableStateOf<Pengguna?>(null) }
 
     // Set status bar color
     LaunchedEffect(Unit) {
@@ -85,24 +161,27 @@ fun HalamanEditProfile(
             color = topBarColor,
             darkIcons = true
         )
-        penggunaViewModel.getPengguna() // Fetch user data on screen load
+        penggunaViewModel.getPengguna()
     }
 
-    // Update state when penggunaState changes
     LaunchedEffect(penggunaState) {
         if (penggunaState is ProfileState.Success) {
-            val pengguna = (penggunaState as ProfileState.Success).pengguna
-            name = pengguna.nama_user ?: ""
-            email = pengguna.email_user ?: ""
-            phoneNumber = pengguna.telpon_user ?: ""
+            pengguna = (penggunaState as ProfileState.Success).pengguna
+            name = pengguna?.nama_user ?: ""
+            email = pengguna?.email_user ?: ""
+            phoneNumber = pengguna?.telpon_user ?: ""
+            imageUri = null
+
+            Log.d("EditProfile", "Foto profile URL: ${pengguna?.foto_profile}")
         }
     }
+
 
     LaunchedEffect(editState) {
         when (editState) {
             is EditProfileState.Success -> {
-                val pengguna = (editState as EditProfileState.Success).pengguna
-                if (pengguna != null) {
+                val updatedPengguna = (editState as EditProfileState.Success).pengguna
+                if (updatedPengguna != null) {
                     successMessage = "Profil berhasil diperbarui!"
                     errorMessage = null
                     // Navigasi ke halaman notifikasi profile
@@ -110,10 +189,12 @@ fun HalamanEditProfile(
                         popUpTo(Routes.HALAMAN_EDIT_PROFILE) { inclusive = true }
                     }
                 } else {
-                    errorMessage = "Profil berhasil diperbarui, tetapi data pengguna tidak diperbarui dari server."
+                    errorMessage =
+                        "Profil berhasil diperbarui, tetapi data pengguna tidak diperbarui dari server."
                     successMessage = null
                 }
             }
+
             is EditProfileState.SuccessMessage -> {
                 successMessage = (editState as EditProfileState.SuccessMessage).message
                 errorMessage = null
@@ -122,15 +203,18 @@ fun HalamanEditProfile(
                     popUpTo(Routes.HALAMAN_EDIT_PROFILE) { inclusive = true }
                 }
             }
+
             is EditProfileState.Error -> {
                 errorMessage = (editState as EditProfileState.Error).message
                 successMessage = null
             }
+
             else -> {
                 Log.d("EditProfile", "State tidak dikenali")
             }
         }
     }
+
 
     Scaffold(
         modifier = modifier,
@@ -150,12 +234,11 @@ fun HalamanEditProfile(
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
         ) {
-            // Header Section
             HeaderSection(navController)
 
-            // Profile Picture Section
             ProfilePictureSection(
-                showPopup = showPopup,
+                imageUri = imageUri,
+                serverImageUrl = pengguna?.foto_profile,
                 onPopupChange = { value ->
                     showPopup = value
                     showBottomNav = !value
@@ -191,55 +274,27 @@ fun HalamanEditProfile(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-
-            // Display Success or Error Message
-            successMessage?.let {
-                Text(
-                    text = it,
-                    color = Color.Green,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .background(Color(0xFFDCF9D6), shape = RoundedCornerShape(8.dp))
-                        .padding(16.dp)
-                )
-            }
-
-            errorMessage?.let {
-                Text(
-                    text = it,
-                    color = Color.Red,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .background(Color(0xFFFFD5D5), shape = RoundedCornerShape(8.dp))
-                        .padding(16.dp)
-                )
-            }
         }
 
-        // Confirmation Dialog
         if (showDialog) {
             ConfirmationDialog(
                 message = "Apakah Kamu Yakin Ingin Mengubahnya?",
                 onDismissRequest = { showDialog = false },
                 onConfirm = {
                     showDialog = false
-
                     penggunaViewModel.editPengguna(
-                        Pengguna(
-                            nama_user = name.ifBlank { null },
-                            email_user = email.ifBlank { null },
-                            telpon_user = phoneNumber.ifBlank { null },
-                            foto_profile = null // Foto profil tetap kosong jika tidak ada perubahan
-                        )
+                        namaUser = name.ifBlank { null } ?: "",
+                        emailUser = email.ifBlank { null } ?: "",
+                        telponUser = phoneNumber.ifBlank { null } ?: "",
+                        fotoUri = imageUri, // URI dari gambar kamera/galeri
+                        context = context
                     )
                 },
                 onCancel = { showDialog = false }
             )
         }
 
-        // Popup for Editing Photo
+        // Popup untuk memilih kamera atau galeri
         if (showPopup) {
             PhotoEditPopup(
                 onClose = {
@@ -247,39 +302,31 @@ fun HalamanEditProfile(
                     showBottomNav = true
                 },
                 onOptionSelected = { option ->
-                    // Implement logic for camera/gallery/delete
                     showPopup = false
                     showBottomNav = true
+                    when (option) {
+                        "Camera" -> {
+                            if (hasCameraPermission) {
+                                cameraLauncher.launch()
+                            } else {
+                                requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                            }
+                        }
+
+                        "Gallery" -> galleryLauncher.launch("image/*")
+                    }
                 }
             )
         }
     }
 }
 
-
-// Header Section
 @Composable
-fun HeaderSection(navController: NavController) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                color = colorResource(id = R.color.green),
-                shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
-            )
-    ) {
-        TopBar(
-            title = "Edit Profile",
-            navController = navController,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
-        )
-    }
-}
-
-// Profile Picture Section
-@Composable
-fun ProfilePictureSection(showPopup: Boolean, onPopupChange: (Boolean) -> Unit) {
+fun ProfilePictureSection(
+    imageUri: Uri?,  // Untuk gambar lokal yang diambil dari kamera/galeri
+    serverImageUrl: String?,  // URL gambar dari server
+    onPopupChange: (Boolean) -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -289,20 +336,51 @@ fun ProfilePictureSection(showPopup: Boolean, onPopupChange: (Boolean) -> Unit) 
         Box(contentAlignment = Alignment.BottomEnd) {
             Box(
                 modifier = Modifier
-                    .size(110.dp)
+                    .size(110.dp) // Ukuran lingkaran
                     .background(Color.White, CircleShape)
                     .padding(2.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.fotoprofil),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                )
+                // Menampilkan gambar profil
+                when {
+                    imageUri != null -> {
+                        // Gambar lokal (kamera/galeri)
+                        Image(
+                            painter = rememberAsyncImagePainter(model = imageUri),
+                            contentDescription = "Profile Picture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                        )
+                    }
+
+                    !serverImageUrl.isNullOrEmpty() -> {
+                        // Gambar dari server
+                        Image(
+                            painter = rememberAsyncImagePainter(model = serverImageUrl),
+                            contentDescription = "Profile Picture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                        )
+                    }
+
+                    else -> {
+                        // Gambar default jika tidak ada gambar
+                        Image(
+                            painter = painterResource(id = R.drawable.default_image),
+                            contentDescription = "Default Profile Picture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                        )
+                    }
+                }
             }
 
-            // Camera Icon
+            // Camera Icon untuk memilih foto
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -323,6 +401,124 @@ fun ProfilePictureSection(showPopup: Boolean, onPopupChange: (Boolean) -> Unit) 
                 )
             }
         }
+    }
+}
+
+
+@Composable
+fun PhotoEditPopup(
+    onClose: () -> Unit,
+    onOptionSelected: (String) -> Unit
+) {
+    Dialog(onDismissRequest = { onClose() }) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(Color.Transparent),
+            elevation = CardDefaults.cardElevation(12.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.width(24.dp))
+                    Text(
+                        text = "Foto Profil",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.Black
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Tutup",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable { onClose() }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Tombol Kamera
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onOptionSelected("Camera")
+                            onClose()
+                        }
+                        .padding(vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.camera_2),
+                        contentDescription = "Kamera",
+                        tint = colorResource(R.color.green_jadwal),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Kamera",
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        color = Color.Black
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onOptionSelected("Gallery")
+                            onClose()
+                        }
+                        .padding(vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.photograph),
+                        contentDescription = "Galeri",
+                        tint = colorResource(R.color.green_jadwal),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Galeri",
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp,
+                        color = Color.Black
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HeaderSection(navController: NavController) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+            .background(
+                color = colorResource(id = R.color.green),
+                shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+            )
+    ) {
+        TopBar(
+            title = "Edit Profile",
+            navController = navController,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
+        )
     }
 }
 
@@ -359,8 +555,8 @@ fun InputField(label: String, value: String, onValueChange: (String) -> Unit) {
         modifier = Modifier.padding(bottom = 8.dp)
     )
     BasicTextField(
-        value = value, // Nilai yang ditampilkan di input
-        onValueChange = onValueChange, // Fungsi untuk mengubah nilai
+        value = value,
+        onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
         modifier = Modifier
             .fillMaxWidth()
@@ -390,36 +586,5 @@ fun InputField(label: String, value: String, onValueChange: (String) -> Unit) {
     )
 }
 
-// Popup for Editing Photo
-@Composable
-fun PhotoEditPopup(onClose: () -> Unit, onOptionSelected: (String) -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.3f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .fillMaxHeight(0.2f),
-            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-            elevation = CardDefaults.elevatedCardElevation(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
-        ) {
-            // Photo Edit Popup Implementation
-        }
-    }
-}
 
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun HalamanEditProfilePreview() {
-//    EdufarmTheme {
-//        HalamanEditProfile(
-//            navController = rememberNavController()
-//        )
-//    }
-//}
+

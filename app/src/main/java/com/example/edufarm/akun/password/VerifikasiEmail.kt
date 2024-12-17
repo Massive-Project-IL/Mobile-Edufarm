@@ -1,6 +1,5 @@
 package com.example.edufarm.akun.password
 
-import com.example.edufarm.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,20 +19,25 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,18 +45,41 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.edufarm.navigation.Routes
+import com.example.edufarm.R
+import com.example.edufarm.data.api.ApiClient
+import com.example.edufarm.data.repository.AuthRepository
+import com.example.edufarm.factory.LupaPasswordViewModelFactory
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.LupaPasswordState
+import com.example.edufarm.viewModel.LupaPasswordViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Modifier) {
-
+fun VerifikasiEmailScreen(
+    navController: NavController,
+    email: String,
+    viewModel: LupaPasswordViewModel = viewModel(factory = LupaPasswordViewModelFactory(
+        AuthRepository(ApiClient.apiService)
+    )),
+    modifier: Modifier = Modifier
+) {
     val kodeLength = 4
     var kodeVerifikasi by remember { mutableStateOf("") }
+    val errorMessage = remember { mutableStateOf("") }
+    val successMessage = remember { mutableStateOf("") }
+    val resetState by viewModel.resetState.collectAsState()
+    val focusRequesters = List(kodeLength) { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    // Masking email untuk privasi
+    val maskedEmail = email.replaceBefore("@", "****")
+
+    val errors = remember { mutableStateListOf<String>() }
+
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
@@ -61,6 +88,22 @@ fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Mod
             color = topBarColor,
             darkIcons = true
         )
+    }
+
+    // Respons Backend untuk verifikasi OTP
+    LaunchedEffect(resetState) {
+        when (resetState) {
+            is LupaPasswordState.Success -> {
+                successMessage.value = (resetState as LupaPasswordState.Success).message
+                // Navigasi ke halaman Atur Ulang Sandi dengan membawa email dan OTP
+                navController.navigate("halamanAturUlangSandi?email=${email}&otp=${kodeVerifikasi}")
+            }
+            is LupaPasswordState.Error -> {
+                errors.clear() // Bersihkan error sebelumnya
+                errors.add("Kode OTP yang kamu masukkan salah. Silakan periksa kembali.")
+            }
+            else -> {}
+        }
     }
 
     Column(
@@ -98,9 +141,8 @@ fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Mod
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp) // Samakan padding dengan kolom kata sandi
+                        .padding(horizontal = 16.dp)
                 ) {
-                    // Teks Edu Farm
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -125,19 +167,25 @@ fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Mod
                     Text(
                         text = "Masukkan kode Verifikasi yang telah dikirim ke E-mail kamu",
                         fontFamily = poppinsFontFamily,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally),
                         textAlign = TextAlign.Center
                     )
                 }
 
-                Spacer(modifier = Modifier.height(50.dp))
+                Text(
+                    text = "Verifikasi untuk email: $maskedEmail",
+                    fontFamily = poppinsFontFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
 
+                Spacer(modifier = Modifier.height(50.dp))
+                // Input Kode OTP
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -154,12 +202,16 @@ fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Mod
                                 value = if (index < kodeVerifikasi.length) kodeVerifikasi[index].toString() else "",
                                 onValueChange = { value ->
                                     if (value.length <= 1 && value.all { it.isDigit() }) {
-                                        kodeVerifikasi =
-                                            if (value.isEmpty() && index < kodeVerifikasi.length) {
-                                                kodeVerifikasi.dropLast(1)
-                                            } else {
-                                                kodeVerifikasi + value
-                                            }
+                                        kodeVerifikasi = kodeVerifikasi
+                                            .take(index) + value + kodeVerifikasi.drop(index + 1)
+
+                                        // Pindahkan fokus ke kotak berikutnya
+                                        if (value.isNotEmpty() && index < kodeLength - 1) {
+                                            focusRequesters[index + 1].requestFocus()
+                                        } else if (index == kodeLength - 1) {
+                                            // Jika sudah di kotak terakhir, tutup keyboard
+                                            focusManager.clearFocus()
+                                        }
                                     }
                                 },
                                 modifier = Modifier
@@ -170,6 +222,7 @@ fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Mod
                                         color = if (isFocused) colorResource(id = R.color.green_logo) else Color.Gray,
                                         shape = RoundedCornerShape(8.dp)
                                     )
+                                    .focusRequester(focusRequesters[index])
                                     .padding(8.dp),
                                 textStyle = TextStyle(
                                     color = Color.Black,
@@ -179,18 +232,36 @@ fun VerifikasiEmailScreen(navController: NavController, modifier: Modifier = Mod
                                 ),
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Number,
-                                    imeAction = ImeAction.Next
+                                    imeAction = ImeAction.Done
                                 ),
                                 singleLine = true
                             )
                         }
                     }
 
+                    // Pesan Error
+                    if (errorMessage.value.isNotEmpty()) {
+                        Text(
+                            text = errorMessage.value,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(90.dp))
 
-                    // Login Button
+                    // Tombol Konfirmasi
                     Button(
-                        onClick = { navController.navigate(Routes.ATUR_ULANG_SANDI) },
+                        onClick = {
+                            if (kodeVerifikasi.length == kodeLength) {
+                                // Panggil viewModel untuk verifikasi OTP
+                                viewModel.verifikasiOtp(email, kodeVerifikasi)
+                            } else {
+                                errorMessage.value = "Kode verifikasi harus 4 digit."
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -216,7 +287,8 @@ fun VerifikasiEmailScreenPreview() {
     EdufarmTheme {
         VerifikasiEmailScreen(
             navController = rememberNavController(),
-            modifier = Modifier
+            modifier = Modifier,
+            email = ""
         )
     }
 }

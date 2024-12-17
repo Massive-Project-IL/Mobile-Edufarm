@@ -1,10 +1,19 @@
 package com.example.edufarm.data.repository
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.example.edufarm.data.api.ApiService
 import com.example.edufarm.data.model.PasswordResponse
 import com.example.edufarm.data.model.PasswordUpdateRequest
 import com.example.edufarm.data.model.Pengguna
+import com.example.edufarm.data.model.ProfileResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Response
+import java.io.File
 
 class PenggunaRepository(private val apiService: ApiService) {
 
@@ -26,16 +35,6 @@ class PenggunaRepository(private val apiService: ApiService) {
         }
     }
 
-    // Fungsi untuk mengedit data pengguna
-    suspend fun editPengguna(authorization: String, updatedProfile: Pengguna): String {
-        val response = apiService.editProfile(authorization, updatedProfile)
-        if (response.isSuccessful) {
-            val profileResponse = response.body()
-            return profileResponse?.msg ?: "Profil berhasil diperbarui."
-        } else {
-            throw Exception("Gagal mengupdate data pengguna: ${response.message()} (code: ${response.code()})")
-        }
-    }
 
     suspend fun updatePassword(token: String, passwordUpdateRequest: PasswordUpdateRequest): PasswordResponse {
         Log.d("UpdatePassword", "Header Authorization: $token")
@@ -43,6 +42,32 @@ class PenggunaRepository(private val apiService: ApiService) {
         return apiService.updatePassword(token, passwordUpdateRequest)
     }
 
+    suspend fun updateProfile(
+        token: String,
+        namaUser: String,
+        emailUser: String,
+        telponUser: String,
+        fotoUri: Uri?,
+        context: Context
+    ): Response<ProfileResponse> {
+        val namaRequestBody = namaUser.toRequestBody("text/plain".toMediaTypeOrNull())
+        val emailRequestBody = emailUser.toRequestBody("text/plain".toMediaTypeOrNull())
+        val telponRequestBody = telponUser.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        val fotoPart = fotoUri?.let {
+            val file = File(it.path!!)
+            val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData("foto_profile", file.name, requestFile)
+        }
+
+        return apiService.updateProfile(
+            authorization = "Bearer $token",
+            namaUser = namaRequestBody,
+            emailUser = emailRequestBody,
+            telponUser = telponRequestBody,
+            foto_profile = fotoPart
+        )
+    }
 }
 
 

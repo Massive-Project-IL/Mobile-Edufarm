@@ -1,6 +1,6 @@
 package com.example.edufarm
 
-import android.util.Log
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,11 +49,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.edufarm.data.api.ApiClient
 import com.example.edufarm.data.model.Kategori
+import com.example.edufarm.data.repository.BookmarkRepository
+import com.example.edufarm.factory.BookmarkViewModelFactory
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.SearchBar
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.BookmarkViewModel
 import com.example.edufarm.viewModel.PelatihanViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -60,7 +65,13 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun PelatihanScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    pelatihanViewModel: PelatihanViewModel = viewModel()
+    pelatihanViewModel: PelatihanViewModel = viewModel(),
+    bookmarkViewModel: BookmarkViewModel = viewModel(
+        factory = BookmarkViewModelFactory(
+            BookmarkRepository(ApiClient.apiService),
+            LocalContext.current.applicationContext as Application
+        )
+    )
 ) {
     val pelatihanList by pelatihanViewModel.pelatihanList.collectAsState()
     val errorMessage by pelatihanViewModel.errorMessage.collectAsState()
@@ -68,6 +79,13 @@ fun PelatihanScreen(
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
+    // Query untuk pencarian
+    var searchQuery by remember { mutableStateOf("") }
+
+    // Filter data berdasarkan query
+    val filteredPelatihanList = pelatihanList.filter {
+        it.nama_kategori.contains(searchQuery, ignoreCase = true)
+    }
 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
@@ -75,6 +93,7 @@ fun PelatihanScreen(
             darkIcons = true
         )
         pelatihanViewModel.fetchPelatihan()
+        bookmarkViewModel.getBookmarks()
     }
 
     Scaffold(
@@ -88,10 +107,8 @@ fun PelatihanScreen(
                 .background(colorResource(id = R.color.background))
         ) {
             Column(
-                modifier = Modifier
-                    .padding(horizontal = 35.dp)
+                modifier = Modifier.padding(horizontal = 35.dp)
             ) {
-
                 Text(
                     text = "Pelatihan",
                     fontSize = 18.sp,
@@ -101,7 +118,12 @@ fun PelatihanScreen(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-                SearchBar(placeholder = "Cari Pelatihan")
+                SearchBar(
+                    placeholder = "Cari Pelatihan",
+                    onSearchQueryChanged = { query ->
+                        searchQuery = query
+                    }
+                )
                 Spacer(modifier = Modifier.height(28.dp))
 
                 if (errorMessage != null) {
@@ -113,9 +135,8 @@ fun PelatihanScreen(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()
                     ) {
-
-                        items(pelatihanList) { pelatihan ->
-                            CardPelatihanKategori(navController, pelatihan)
+                        items(filteredPelatihanList) { pelatihan ->
+                            CardPelatihanKategori(navController, pelatihan, bookmarkViewModel)
                             Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
@@ -125,13 +146,17 @@ fun PelatihanScreen(
     }
 }
 
+
+
 @Composable
 fun CardPelatihanKategori(
     navController: NavController,
-    pelatihan: Kategori
+    pelatihan: Kategori,
+    bookmarkViewModel: BookmarkViewModel
 ) {
-    Log.e("CardPelatihanKategori", "Gambar URL: ${pelatihan.gambar}")
-    var isBookmarked by remember { mutableStateOf(false) }
+    // Status bookmark didapat dari ViewModel
+    val isBookmarkedMap by bookmarkViewModel.isBookmarkedMap.collectAsState()
+    val isBookmarked = isBookmarkedMap[pelatihan.kategori_id] ?: false
 
     Card(
         modifier = Modifier
@@ -140,15 +165,13 @@ fun CardPelatihanKategori(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.white))
-    )
-    {
-        Log.e("CardPelatihanKategori", "Gambar: ${pelatihan.gambar}")
+    ) {
         Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(
@@ -164,7 +187,6 @@ fun CardPelatihanKategori(
                         .clip(RoundedCornerShape(16.dp))
                 )
 
-
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -174,7 +196,9 @@ fun CardPelatihanKategori(
                             color = if (isBookmarked) Color.White else Color.Gray,
                             shape = RoundedCornerShape(6.dp)
                         )
-                        .clickable { isBookmarked = !isBookmarked },
+                        .clickable {
+                            bookmarkViewModel.toggleBookmark(pelatihan.kategori_id)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
@@ -187,9 +211,10 @@ fun CardPelatihanKategori(
                 }
             }
 
-            Column(modifier = Modifier
-                .padding(horizontal = 15.dp)
-                .padding(top = 8.dp)
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 15.dp)
+                    .padding(top = 8.dp)
             ) {
                 Text(
                     text = pelatihan.nama_kategori,
@@ -218,7 +243,6 @@ fun CardPelatihanKategori(
                 ) {
                     Button(
                         onClick = {
-                            // Pastikan kategori_id yang benar dikirim
                             navController.navigate("halamanSubMateri/${pelatihan.kategori_id}")
                         },
                         shape = RoundedCornerShape(8.dp),
@@ -233,15 +257,16 @@ fun CardPelatihanKategori(
                             fontSize = 10.sp,
                             color = Color.White,
                             fontFamily = poppinsFontFamily,
-                            fontWeight = FontWeight(500),
+                            fontWeight = FontWeight(500)
                         )
                     }
-
                 }
             }
         }
     }
 }
+
+
 
 
 @Preview(showBackground = true)

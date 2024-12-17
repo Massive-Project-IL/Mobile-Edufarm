@@ -65,6 +65,7 @@ fun EdufarmNavHost(
             ContentScreen(navController)
         }
 
+
         composable(Routes.HALAMAN_DAFTAR) {
             DaftarScreen(navController)
         }
@@ -72,7 +73,6 @@ fun EdufarmNavHost(
         composable(Routes.HALAMAN_NOTIFIKASI_DAFTAR) {
             NotifikasiDaftarScreen(navController)
         }
-
 
         composable(Routes.HALAMAN_LIVE_MENTOR) {
             LiveMentorScreen(navController)
@@ -87,7 +87,7 @@ fun EdufarmNavHost(
         }
 
         composable(Routes.HALAMAN_BOOKMARK) {
-            BookmarkScreen(navController = navController)
+            BookmarkScreen(navController)
         }
 
         composable(
@@ -103,17 +103,40 @@ fun EdufarmNavHost(
             )
         }
 
-
-        composable(Routes.HALAMAN_ISI_MATERI) {
-            IsiMateriScreen(navController)
+        composable(
+            route = "HALAMAN_ISI_MATERI/{kategoriId}/{modulId}",
+            arguments = listOf(
+                navArgument("kategoriId") { type = NavType.IntType },
+                navArgument("modulId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val kategoriId = backStackEntry.arguments?.getInt("kategoriId") ?: 0
+            val modulId = backStackEntry.arguments?.getInt("modulId") ?: 0
+            IsiMateriScreen(navController = navController, kategoriId = kategoriId, modulId = modulId)
         }
 
-        composable(Routes.HALAMAN_MATERI_VIDEO){
-            MateriVideoScreen(navController)
+        composable(
+            route = "HALAMAN_MATERI_DOKUMEN/{kategoriId}/{modulId}",
+            arguments = listOf(
+                navArgument("kategoriId") { type = NavType.IntType },
+                navArgument("modulId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val kategoriId = backStackEntry.arguments?.getInt("kategoriId") ?: 0
+            val modulId = backStackEntry.arguments?.getInt("modulId") ?: 0
+            MateriDokumenScreen(navController = navController, kategoriId = kategoriId, modulId = modulId)
         }
 
-        composable(Routes.HALAMAN_MATERI_DOKUMEN){
-            MateriDokumenScreen(navController = navController)
+        composable(
+            route = "HALAMAN_MATERI_VIDEO/{kategoriId}/{modulId}",
+            arguments = listOf(
+                navArgument("kategoriId") { type = NavType.IntType },
+                navArgument("modulId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val kategoriId = backStackEntry.arguments?.getInt("kategoriId") ?: 0
+            val modulId = backStackEntry.arguments?.getInt("modulId") ?: 0
+            MateriVideoScreen(navController = navController, kategoriId = kategoriId, modulId = modulId)
         }
 
         // Akun
@@ -164,9 +187,18 @@ fun EdufarmNavHost(
         }
 
         //LupaKataSandi
-        composable(Routes.ATUR_ULANG_SANDI) {
-            AturUlangSandiScreen(navController = navController)
+        composable(
+            route = "halamanAturUlangSandi?email={email}&otp={otp}",
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType },
+                navArgument("otp") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            val otp = backStackEntry.arguments?.getString("otp")
+            AturUlangSandiScreen(navController = navController, email = email ?: "", otp = otp ?: "")
         }
+
 
         composable(Routes.LUPA_PASSWORD) {
             LupaPasswordScreen(navController = navController)
@@ -176,8 +208,9 @@ fun EdufarmNavHost(
             NotifikasiPasswordScreen(navController = navController)
         }
 
-        composable(Routes.VERIFIKASI_EMAIL) {
-            VerifikasiEmailScreen(navController = navController)
+        composable("verifikasi_email_screen/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            VerifikasiEmailScreen(navController = navController, email = email ?: "")
         }
     }
 }

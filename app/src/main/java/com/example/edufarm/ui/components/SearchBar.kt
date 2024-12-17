@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -31,7 +32,10 @@ import androidx.compose.ui.unit.sp
 import com.example.edufarm.R
 
 @Composable
-fun SearchBar(placeholder: String) {
+fun SearchBar(
+    placeholder: String,
+    onSearchQueryChanged: (String) -> Unit
+) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     Box(
         modifier = Modifier
@@ -63,12 +67,15 @@ fun SearchBar(placeholder: String) {
             Spacer(modifier = Modifier.width(8.dp))
             BasicTextField(
                 value = searchQuery,
-                onValueChange = { searchQuery = it },
+                onValueChange = {
+                    searchQuery = it
+                    onSearchQueryChanged(it.text) // Kirim query pencarian
+                },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 textStyle = TextStyle(
                     fontSize = 14.sp,
-                    color = colorResource(R.color.gray_text)
+                    color = Color.Black
                 ),
                 decorationBox = { innerTextField ->
                     if (searchQuery.text.isEmpty()) {
@@ -87,3 +94,4 @@ fun SearchBar(placeholder: String) {
         }
     }
 }
+

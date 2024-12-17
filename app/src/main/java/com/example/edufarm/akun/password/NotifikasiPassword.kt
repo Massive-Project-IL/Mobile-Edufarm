@@ -90,7 +90,7 @@ fun NotifikasiPasswordScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { navController.navigate(Routes.HALAMAN_AKUN) },
+                    onClick = { navController.navigate(Routes.HALAMAN_LOGIN) },
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                     modifier = Modifier

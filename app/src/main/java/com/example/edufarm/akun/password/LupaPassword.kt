@@ -1,6 +1,5 @@
 package com.example.edufarm.akun.password
 
-import com.example.edufarm.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +22,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,26 +39,58 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.edufarm.navigation.Routes
+import com.example.edufarm.R
+import com.example.edufarm.data.api.ApiClient
+import com.example.edufarm.data.repository.AuthRepository
+import com.example.edufarm.factory.LupaPasswordViewModelFactory
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.LupaPasswordState
+import com.example.edufarm.viewModel.LupaPasswordViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun LupaPasswordScreen(navController: NavController, modifier: Modifier = Modifier) {
-
+fun LupaPasswordScreen(
+    navController: NavController,
+    viewModel: LupaPasswordViewModel = viewModel(
+        factory = LupaPasswordViewModelFactory(
+            AuthRepository(ApiClient.apiService)
+        )
+    ),
+    modifier: Modifier = Modifier
+) {
     val emailText = remember { mutableStateOf("") }
+    val errorMessage = remember { mutableStateOf("") }
+    val successMessage = remember { mutableStateOf("") }
+    val lupaPasswordState by viewModel.otpState.collectAsState()
+
     val systemUiController = rememberSystemUiController()
     val topBarColor = colorResource(id = R.color.background)
 
     LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = topBarColor,
-            darkIcons = true
-        )
+        systemUiController.setStatusBarColor(color = topBarColor, darkIcons = true)
     }
+
+    // Respons Backend
+    LaunchedEffect(lupaPasswordState) {
+        when (lupaPasswordState) {
+            is LupaPasswordState.Success -> {
+                successMessage.value = (lupaPasswordState as LupaPasswordState.Success).message
+                // Navigasi ke halaman verifikasi jika OTP berhasil dikirim
+                navController.navigate("verifikasi_email_screen/${emailText.value}")
+            }
+
+            is LupaPasswordState.Error -> {
+                errorMessage.value = "Gagal mengirim OTP. Silakan coba lagi nanti."
+            }
+
+            else -> {}
+        }
+    }
+
 
     Column(
         modifier = modifier
@@ -89,14 +122,12 @@ fun LupaPasswordScreen(navController: NavController, modifier: Modifier = Modifi
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Row untuk Edu Farm dan deskripsi
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
-                    // Teks Edu Farm
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -122,7 +153,7 @@ fun LupaPasswordScreen(navController: NavController, modifier: Modifier = Modifi
                     Text(
                         text = "Untuk mengatur ulang kata sandi, masukkan E-mail kamu yang sudah terdaftar akun EduFarm kamu",
                         fontFamily = poppinsFontFamily,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
                         modifier = Modifier
@@ -134,7 +165,6 @@ fun LupaPasswordScreen(navController: NavController, modifier: Modifier = Modifi
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                // Input Email
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -175,11 +205,43 @@ fun LupaPasswordScreen(navController: NavController, modifier: Modifier = Modifi
                         }
                     )
 
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Menampilkan Pesan Error jika ada
+                    if (errorMessage.value.isNotEmpty()) {
+                        Text(
+                            text = errorMessage.value,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                    // Menampilkan Pesan Sukses jika ada
+                    if (successMessage.value.isNotEmpty()) {
+                        Text(
+                            text = successMessage.value,
+                            color = Color.Green,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(90.dp))
 
-                    // Button
+                    // Tombol Kirim Kode Verifikasi
                     Button(
-                        onClick = { navController.navigate(Routes.VERIFIKASI_EMAIL) },
+                        onClick = {
+                            if (emailText.value.isNotEmpty()) {
+                                errorMessage.value = ""
+                                successMessage.value = ""
+
+                                // Panggil ViewModel untuk mengirim OTP
+                                viewModel.kirimOtp(emailText.value)
+                            } else {
+                                errorMessage.value = "Email tidak boleh kosong."
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -205,6 +267,7 @@ fun LupaPasswordScreenPreview() {
     EdufarmTheme {
         LupaPasswordScreen(
             navController = rememberNavController(),
-            modifier = Modifier)
+            modifier = Modifier
+        )
     }
 }

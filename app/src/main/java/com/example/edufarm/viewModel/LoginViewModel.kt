@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edufarm.data.dataStore.saveCurrentUserEmail
 import com.example.edufarm.data.dataStore.saveToken
+import com.example.edufarm.data.model.IdTokenRequest
 import com.example.edufarm.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,14 +40,45 @@ class LoginViewModel(
                         _loginState.value = LoginState.Error("Token tidak ditemukan dalam response")
                     }
                 } else {
-                    _loginState.value = LoginState.Error("Login gagal: ${response.message()}")
+                    _loginState.value = LoginState.Error("Login gagal: Periksa kembail email dan password Anda ")
                 }
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error("Terjadi kesalahan: ${e.localizedMessage}")
             }
         }
     }
+
+    fun loginWithGoogle(idToken: String) {
+        viewModelScope.launch {
+            _loginState.value = LoginState.Loading
+            try {
+                val requestBody = IdTokenRequest(idToken)
+                val response = repository.loginWithGoogle(requestBody)
+
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    Log.d("GoogleLogin", "Server Response: $body")
+                    val token = body?.token
+                    val email = body?.user?.email
+
+                    if (token != null && email != null) {
+                        saveToken(getApplication<Application>().applicationContext, email, token)
+                        saveCurrentUserEmail(getApplication<Application>().applicationContext, email)
+                        _loginState.value = LoginState.Success(token)
+                    } else {
+                        _loginState.value = LoginState.Error("Token atau Email tidak ditemukan dalam response")
+                    }
+                } else {
+                    _loginState.value = LoginState.Error("Login gagal: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                _loginState.value = LoginState.Error("Kesalahan: ${e.localizedMessage}")
+            }
+        }
+    }
+
 }
+
 
 sealed class LoginState {
     object Idle : LoginState()

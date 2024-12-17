@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -77,7 +78,7 @@ fun ProfileScreen(
     viewModel: PenggunaViewModel = viewModel(
         factory = PenggunaViewModelFactory(
             PenggunaRepository(ApiClient.apiService),
-            LocalContext.current.applicationContext as Application // Cast Context to Application
+            LocalContext.current.applicationContext as Application
         )
     )
 ) {
@@ -179,62 +180,77 @@ fun ProfileContent(
                 Image(
                     painter = painterResource(id = R.drawable.default_image),
                     contentDescription = "Default Profile",
-                    modifier = Modifier.size(110.dp)
+                    modifier = Modifier
+                        .size(110.dp)
+                        .clip(CircleShape)
                 )
             } else {
                 Image(
                     painter = rememberAsyncImagePainter(model = profile.foto_profile),
                     contentDescription = "Foto Profil",
-                    modifier = Modifier.size(110.dp)
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(110.dp)
+                        .clip(CircleShape)
                 )
             }
         }
 
-
         Spacer(modifier = Modifier.height(15.dp))
-
-        // Nama dan Email
         Text(
-            text = profile.nama_user ?: "Nama Tidak Tersedia",  // Elvis operator untuk menampilkan teks default jika null
+            text = profile.nama_user ?: "Nama Tidak Tersedia",
             fontSize = 22.sp,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.SemiBold,
             fontFamily = poppinsFontFamily
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = profile.email_user ?: "Email Tidak Tersedia", // Elvis operator untuk menampilkan teks default jika null
-            fontSize = 16.sp,
-            color = Color.Gray,
-            fontFamily = poppinsFontFamily
-        )
         Spacer(modifier = Modifier.height(8.dp))
-
         Text(
-            text = profile.telpon_user ?: "Nomor Telepon Tidak Tersedia", // Elvis operator untuk menampilkan teks default jika null
+            text = profile.email_user ?: "Email Tidak Tersedia",
             fontSize = 16.sp,
             color = Color.Gray,
             fontFamily = poppinsFontFamily
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = profile.telpon_user ?: "Nomor Telepon Tidak Tersedia",
+            fontSize = 16.sp,
+            color = Color.Gray,
+            fontFamily = poppinsFontFamily
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
+        if (profile.is_default_password) {
+            Text(
+                text = "Peringatan: Anda masih menggunakan sandi bawaan. Ubah sandi Anda untuk melindungi akun.",
+                color = Color.Red,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppinsFontFamily,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
 
+        Spacer(modifier = Modifier.height(10.dp))
         Image(
             painter = painterResource(id = R.drawable.pembatas),
             contentDescription = "Pembatas",
-            modifier = Modifier.size(width = 319.dp, height = 2.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(2.dp)
         )
-        Spacer(modifier = Modifier.height(22.dp))
 
+        Spacer(modifier = Modifier.height(22.dp))
         Text(
             text = "Profil",
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = poppinsFontFamily
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
+        Spacer(modifier = Modifier.height(12.dp))
         ProfileRowItem(
             iconId = R.drawable.ic_edit,
             text = "Edit",
@@ -242,7 +258,6 @@ fun ProfileContent(
         )
 
         Spacer(modifier = Modifier.height(21.dp))
-
         // Privasi & Keamanan
         ProfileRowItem(
             iconId = R.drawable.ic_keamanan,
@@ -251,7 +266,6 @@ fun ProfileContent(
         )
 
         Spacer(modifier = Modifier.height(21.dp))
-
         // Pengaturan
         Text(
             text = "Pengaturan",
@@ -259,23 +273,22 @@ fun ProfileContent(
             fontWeight = FontWeight.SemiBold,
             fontFamily = poppinsFontFamily
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
+        Spacer(modifier = Modifier.height(12.dp))
         // Tentang Kami
         ProfileRowItem(
             iconId = R.drawable.ic_aboutus,
             text = "Tentang Kami",
             onClick = { navController.navigate(Routes.HALAMAN_TENTANG_KAMI) }
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
+        Spacer(modifier = Modifier.height(12.dp))
         // Keluar
         ProfileRowItem(
             iconId = R.drawable.logout,
             text = "Keluar",
             onClick = { onDialogChange(true) }
         )
-
         if (showDialog) {
             ConfirmationKeluar(
                 message = "Apakah Kamu Yakin Ingin Keluar?",

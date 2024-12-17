@@ -14,10 +14,12 @@ object Routes {
     const val HALAMAN_LIVE_MENTOR = "halamanLiveMentor"
     const val HALAMAN_BOOKMARK = "halamanBookmark"
     const val HALAMAN_PELATIHAN = "halamanPelatihan"
+
+
     const val HALAMAN_SUB_MATERI = "halamanSubMateri/{kategoriId}"
-    const val HALAMAN_ISI_MATERI = "halamanIsiMateri/{id}/{title}"
+    const val HALAMAN_ISI_MATERI = "halamanIsiMateri/{kategoriId}"
     const val HALAMAN_MATERI_VIDEO = "halamanMateriVideo/{videoUri}"
-    const val HALAMAN_MATERI_DOKUMEN = "halamanMateriDokumen/{id}/{title}"
+    const val HALAMAN_MATERI_DOKUMEN = "halamanMateriDokumen/{kategoriId}/{modelId}"
 
     // Akun
     const val HALAMAN_AKUN = "halamanAkun"

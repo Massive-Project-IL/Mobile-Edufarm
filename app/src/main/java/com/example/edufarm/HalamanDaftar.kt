@@ -1,5 +1,6 @@
 package com.example.edufarm
 
+import android.app.Application
 import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,10 +49,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.edufarm.data.api.ApiClient
 import com.example.edufarm.data.repository.AuthRepository
+import com.example.edufarm.factory.LoginViewModelFactory
 import com.example.edufarm.factory.RegisterViewModelFactory
 import com.example.edufarm.navigation.Routes
+import com.example.edufarm.ui.components.ErrorMessages
+import com.example.edufarm.ui.components.OrSeparator
+import com.example.edufarm.ui.components.SocialMediaLogin
 import com.example.edufarm.ui.theme.EdufarmTheme
 import com.example.edufarm.ui.theme.poppinsFontFamily
+import com.example.edufarm.viewModel.LoginState
+import com.example.edufarm.viewModel.LoginViewModel
 import com.example.edufarm.viewModel.RegisterState
 import com.example.edufarm.viewModel.RegisterViewModel
 
@@ -63,6 +71,13 @@ fun DaftarScreen(
     val factory = RegisterViewModelFactory(repository)
     val viewModel: RegisterViewModel = viewModel(factory = factory)
 
+    val loginViewModel: LoginViewModel = viewModel(
+        factory = LoginViewModelFactory(
+            AuthRepository(ApiClient.apiService),
+            LocalContext.current.applicationContext as Application
+        )
+    )
+
     // Input field states
     val namaText = remember { mutableStateOf("") }
     val emailText = remember { mutableStateOf("") }
@@ -70,28 +85,19 @@ fun DaftarScreen(
     val telponText = remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // Global error state
     val errorMessages = remember { mutableStateOf(listOf<String>()) }
-
-    // RegisterState from ViewModel
     val registerState by viewModel.registerState.collectAsState()
+    val loginState by loginViewModel.loginState.collectAsState()
 
     fun validateForm(): Boolean {
         val errors = mutableListOf<String>()
-
-        if (namaText.value.isEmpty()) {
-            errors.add("Nama lengkap harus diisi.")
-        }
-        if (emailText.value.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(emailText.value).matches()) {
+        if (namaText.value.isEmpty()) errors.add("Nama lengkap harus diisi.")
+        if (emailText.value.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(emailText.value).matches())
             errors.add("Email harus valid.")
-        }
-        if (passwordText.value.isEmpty() || passwordText.value.length < 8) {
+        if (passwordText.value.isEmpty() || passwordText.value.length < 8)
             errors.add("Password minimal 8 karakter.")
-        }
-        if (telponText.value.isEmpty() || !telponText.value.all { it.isDigit() } || telponText.value.length < 10) {
+        if (telponText.value.isEmpty() || !telponText.value.all { it.isDigit() } || telponText.value.length < 10)
             errors.add("Nomor HP harus berupa angka minimal 10 digit.")
-        }
-
         errorMessages.value = errors
         return errors.isEmpty()
     }
@@ -101,57 +107,32 @@ fun DaftarScreen(
             .fillMaxSize()
             .background(colorResource(id = R.color.background))
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Daftar",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(top = 26.dp)
-                .align(Alignment.Start)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Lengkapi data diri kamu",
-            fontSize = 16.sp,
-            fontFamily = poppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.align(Alignment.Start)
-        )
-
+        Text("Daftar", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 26.dp))
         Spacer(modifier = Modifier.height(28.dp))
 
-        // Tampilkan pesan error di atas form
         if (errorMessages.value.isNotEmpty()) {
             ErrorMessages(errors = errorMessages.value)
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Nama Lengkap Field
         InputField(
             text = namaText.value,
             onTextChange = { namaText.value = it },
             placeholder = "Nama Lengkap",
             isError = errorMessages.value.contains("Nama lengkap harus diisi.")
         )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(25.dp))
-
-        // Alamat Email Field
         InputField(
             text = emailText.value,
             onTextChange = { emailText.value = it },
             placeholder = "Alamat Email",
             isError = errorMessages.value.contains("Email harus valid.")
         )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(25.dp))
-
-        // Password Field
         PasswordField(
             text = passwordText.value,
             onTextChange = { passwordText.value = it },
@@ -159,20 +140,16 @@ fun DaftarScreen(
             onPasswordVisibilityChange = { passwordVisible = it },
             isError = errorMessages.value.contains("Password minimal 8 karakter.")
         )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(25.dp))
-
-        // No HP Field
         InputField(
             text = telponText.value,
             onTextChange = { telponText.value = it },
-            placeholder = "No. Hp",
+            placeholder = "Nomor Telepon",
             isError = errorMessages.value.contains("Nomor HP harus berupa angka minimal 10 digit.")
         )
-
         Spacer(modifier = Modifier.height(25.dp))
 
-        // Daftar Button
         Button(
             onClick = {
                 if (validateForm()) {
@@ -185,29 +162,18 @@ fun DaftarScreen(
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = "Daftar",
-                color = Color.White,
-                fontSize = 15.sp,
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight.SemiBold
-            )
+            Text("Daftar", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
         }
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        // Login Link
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Sudah Memiliki Akun ?",
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black
@@ -215,7 +181,7 @@ fun DaftarScreen(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "Masuk",
-                fontSize = 15.sp,
+                fontSize = 14.sp,
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(id = R.color.green_logo),
@@ -224,50 +190,36 @@ fun DaftarScreen(
                 }
             )
         }
-
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Handle Register State
+        OrSeparator("atau daftar dengan")
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SocialMediaLogin(viewModel = loginViewModel, navController = navController)
+
         when (registerState) {
             is RegisterState.Loading -> CircularProgressIndicator()
-            is RegisterState.Success -> {
-                navController.navigate(Routes.HALAMAN_NOTIFIKASI_DAFTAR)
+            is RegisterState.Success -> navController.navigate(Routes.HALAMAN_NOTIFIKASI_DAFTAR)
+            is RegisterState.Error -> errorMessages.value = listOf((registerState as RegisterState.Error).message)
+            else -> Unit
+        }
+
+        when (loginState) {
+            is LoginState.Loading -> CircularProgressIndicator()
+            is LoginState.Success -> {
+                navController.navigate(Routes.HALAMAN_BERANDA) {
+                    popUpTo(0)
+                }
             }
-            is RegisterState.Error -> {
-                errorMessages.value = listOf((registerState as RegisterState.Error).message)
-            }
+            is LoginState.Error -> errorMessages.value = listOf((loginState as LoginState.Error).message)
             else -> Unit
         }
     }
 }
 
-@Composable
-fun ErrorMessages(errors: List<String>) {
-    if (errors.isNotEmpty()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .background(Color.Red.copy(alpha = 0.2f), RoundedCornerShape(10.dp)) // Background merah transparan dengan rounded corner
-                .padding(16.dp)
-        ) {
-            Column {
-                errors.forEach { error ->
-                    Text(
-                        text = error,
-                        color = Color.Red, // Warna teks merah
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 4.dp) // Padding antar pesan error
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
-fun InputField(
+private fun InputField(
     text: String,
     onTextChange: (String) -> Unit,
     placeholder: String,
@@ -280,8 +232,8 @@ fun InputField(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp)) // Garis luar merah jika error, hijau jika valid
-            .background(if (isError) Color(0x1AFF0000) else Color.Transparent) // Background merah jika error
+            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(15.dp))
+            .background(if (isError) Color(0x1AFF0000) else Color.Transparent)
             .padding(horizontal = 21.dp),
         decorationBox = { innerTextField ->
             Box(
@@ -292,7 +244,7 @@ fun InputField(
                     Text(
                         text = placeholder,
                         color = Color.Gray,
-                        fontSize = 15.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = poppinsFontFamily
                     )
@@ -304,7 +256,7 @@ fun InputField(
 }
 
 @Composable
-fun PasswordField(
+private fun PasswordField(
     text: String,
     onTextChange: (String) -> Unit,
     passwordVisible: Boolean,
@@ -356,7 +308,6 @@ fun PasswordField(
         }
     )
 }
-
 
 @Preview(showBackground = true)
 @Composable

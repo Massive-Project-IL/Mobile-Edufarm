@@ -42,12 +42,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.edufarm.ErrorMessages
 import com.example.edufarm.R
 import com.example.edufarm.data.model.PasswordUpdateRequest
 import com.example.edufarm.navigation.Routes
 import com.example.edufarm.ui.components.BottomNavigationBar
 import com.example.edufarm.ui.components.ConfirmationDialog
+import com.example.edufarm.ui.components.ErrorMessages
 import com.example.edufarm.ui.components.TopBar
 import com.example.edufarm.ui.theme.poppinsFontFamily
 import com.example.edufarm.viewModel.PenggunaViewModel
@@ -69,14 +69,12 @@ fun UbahSandiScreen(
     val topBarColor = colorResource(id = R.color.background)
     val errorMessages = remember { mutableStateOf(listOf<String>()) } // To display errors locally
 
-    // Set status bar color
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
             color = topBarColor,
             darkIcons = true
         )
     }
-
     Scaffold(
         modifier = Modifier,
         bottomBar = { BottomNavigationBar(navController, selectedItem) }
@@ -94,14 +92,11 @@ fun UbahSandiScreen(
             )
 
             Spacer(modifier = Modifier.height(41.dp))
-
-            // Display error messages
             if (errorMessages.value.isNotEmpty()) {
                 ErrorMessages(errors = errorMessages.value)
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // Input for Old Password
             Text(
                 text = "Kata Sandi Lama",
                 fontSize = 15.sp,
@@ -111,11 +106,10 @@ fun UbahSandiScreen(
                 fontFamily = poppinsFontFamily,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            SandiField(value = oldPassword, onValueChange = { oldPassword = it })
+            SandiField(value = oldPassword, onValueChange = { oldPassword = it },
+                isError = errorMessages.value.contains("Kata sandi lama harus diisi."))
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Input for New Password
             Text(
                 text = "Kata Sandi Baru",
                 fontSize = 14.sp,
@@ -124,11 +118,11 @@ fun UbahSandiScreen(
                 fontFamily = poppinsFontFamily,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            SandiField(value = newPassword, onValueChange = { newPassword = it })
+            SandiField(value = newPassword,
+                onValueChange = { newPassword = it },
+                isError = errorMessages.value.contains("Kata sandi baru harus minimal 8 karakter"))
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Input for Confirm Password
             Text(
                 text = "Konfirmasi Kata Sandi Baru",
                 fontSize = 14.sp,
@@ -137,22 +131,23 @@ fun UbahSandiScreen(
                 fontFamily = poppinsFontFamily,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            SandiField(value = confirmPassword, onValueChange = { confirmPassword = it })
+            SandiField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                isError = errorMessages.value.contains("Konfirmasi kata sandi tidak sesuai."))
 
             Spacer(modifier = Modifier.height(60.dp))
 
-            // Save Changes Button
             Button(
                 onClick = {
-                    // Validate input locally
                     val errors = mutableListOf<String>()
                     if (oldPassword.isEmpty()) errors.add("Kata sandi lama harus diisi.")
                     if (newPassword.length < 8) errors.add("Kata sandi baru harus minimal 8 karakter.")
                     if (newPassword != confirmPassword) errors.add("Konfirmasi kata sandi tidak sesuai.")
                     if (errors.isNotEmpty()) {
-                        errorMessages.value = errors // Display errors
+                        errorMessages.value = errors
                     } else {
-                        showDialog = true // Show confirmation dialog
+                        showDialog = true
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.green)),
@@ -171,7 +166,6 @@ fun UbahSandiScreen(
                 )
             }
 
-            // Handle Update Password State from ViewModel
             when (updatePasswordState) {
                 is UpdatePasswordState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -190,7 +184,6 @@ fun UbahSandiScreen(
             }
         }
 
-        // Confirmation Dialog
         if (showDialog) {
             ConfirmationDialog(
                 message = "Apakah Kamu Yakin Ingin Mengubahnya?",
@@ -213,7 +206,7 @@ fun UbahSandiScreen(
 }
 
 @Composable
-private fun SandiField(value: String, onValueChange: (String) -> Unit) {
+private fun SandiField(value: String, onValueChange: (String) -> Unit, isError: Boolean = false) {
     var passwordVisible by remember { mutableStateOf(false) }
 
     BasicTextField(
@@ -232,7 +225,8 @@ private fun SandiField(value: String, onValueChange: (String) -> Unit) {
             .fillMaxWidth()
             .background(colorResource(R.color.white))
             .height(45.dp)
-            .border(1.dp, colorResource(id = R.color.green), RoundedCornerShape(10.dp))
+            .border(1.dp, if (isError) Color.Red else colorResource(id = R.color.green), RoundedCornerShape(10.dp))
+            .background(if (isError) Color(0x1AFF0000) else Color.Transparent)
             .padding(horizontal = 20.dp),
 
         decorationBox = { innerTextField ->
@@ -291,14 +285,4 @@ private fun SandiField(value: String, onValueChange: (String) -> Unit) {
     )
 }
 
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewUbahSandiScreen() {
-//    EdufarmTheme {
-//        UbahSandiScreen(navController = rememberNavController(),
-//            penggunaViewModel = PenggunaViewModel()
-//        )
-//    }
-//}
 
