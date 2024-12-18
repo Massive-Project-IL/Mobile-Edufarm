@@ -34,7 +34,7 @@ fun BottomNavigationBar(
 ) {
     NavigationBar(
         modifier = Modifier
-            .height(61.dp)
+            .height(70.dp)
             .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
         containerColor = colorResource(id = R.color.white)
     ) {
