@@ -127,7 +127,6 @@ fun ContentScreen(
     var searchQuery by remember { mutableStateOf("") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
 
-    // Filter kategori berdasarkan input pencarian
     val filteredKategoriList = if (searchQuery.isNotBlank()) {
         pelatihanList.filter { kategori ->
             kategori.nama_kategori.contains(
@@ -175,10 +174,9 @@ fun ContentScreen(
                     .fillMaxSize()
                     .padding(horizontal = 35.dp)
             ) {
-                // Bagian Statis
                 Spacer(modifier = Modifier.height(16.dp))
                 CardLiveScrollable(filteredJadwalLive, navController)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 KategoriBertani()
                 Spacer(modifier = Modifier.height(6.dp))
                 SelectKategori(navController, pelatihanList)
@@ -186,11 +184,10 @@ fun ContentScreen(
                 RekomendasiPelatihan(navController)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Scrollable Daftar Pelatihan
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f) // Bagian ini yang bisa di-scroll
+                        .weight(1f)
                 ) {
                     items(pelatihanList) { pelatihan ->
                         CardPelatihanBeranda(navController, pelatihan, bookmarkViewModel)
@@ -199,7 +196,6 @@ fun ContentScreen(
                 }
             }
 
-            // Dropdown hasil pencarian
             if (isDropdownExpanded && filteredKategoriList.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier
@@ -399,126 +395,114 @@ fun CardLiveScrollable(jadwalLive: List<JadwalLive>, navController: NavControlle
     } else {
         LazyRow(
             contentPadding = PaddingValues(bottom = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
             items(jadwalLive) { session ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    CardLive(session, navController)
+                Box(modifier = Modifier.width(340.dp)) {
+                    var showDialog by remember { mutableStateOf(false) }
+                    val dateOnly = session.tanggal.substring(0, 10)
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .clickable { navController.navigate(Routes.HALAMAN_LIVE_MENTOR) }
+                            .padding(vertical = 6.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
+                        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = session.judul_notifikasi,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.green_title),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column {
+                                    Text(
+                                        text = "Waktu",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = poppinsFontFamily,
+                                        color = colorResource(id = R.color.green_title),
+                                        modifier = Modifier.padding(bottom = 3.dp)
+                                    )
+                                    Text(
+                                        text = dateOnly,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = poppinsFontFamily,
+                                        color = colorResource(id = R.color.green_title)
+                                    )
+                                }
+                                Column {
+                                    Text(
+                                        text = "Nama Mentor",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = poppinsFontFamily,
+                                        color = colorResource(id = R.color.green_title),
+                                        modifier = Modifier.padding(bottom = 3.dp)
+                                    )
+                                    Text(
+                                        text = session.nama_mentor,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = poppinsFontFamily,
+                                        color = colorResource(id = R.color.green_title)
+                                    )
+                                }
+                                Button(
+                                    onClick = { showDialog = true },
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
+                                    modifier = Modifier.width(93.dp).height(30.dp),
+                                    contentPadding = PaddingValues(0.dp)
+                                ) {
+                                    Text(
+                                        text = "Gabung Live",
+                                        color = Color.White,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontFamily = poppinsFontFamily
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    if (showDialog) {
+                        ConfirmationDialog(
+                            message = "Apakah Kamu Mau Gabung Live?",
+                            onDismissRequest = { showDialog = false },
+                            onConfirm = { showDialog = false },
+                            onCancel = { showDialog = false }
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-private fun CardLive(session: JadwalLive, navController: NavController) {
-    var showDialog by remember { mutableStateOf(false) }
-    val dateOnly = session.tanggal.substring(0, 10)
-
-    Card(
-        modifier = Modifier
-            .width(320.dp)
-            .padding(2.dp)
-            .clickable {
-                navController.navigate(Routes.HALAMAN_LIVE_MENTOR)
-            }
-            .padding(vertical = 8.dp),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.card_notif))
-    ) {
-        Column(modifier = Modifier.padding(16.dp),horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = session.judul_notifikasi,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.green_title),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "Waktu",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title),
-                        modifier = Modifier.padding(bottom = 3.dp)
-                    )
-                    Text(
-                        text = dateOnly,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title)
-                    )
-                }
-                Column {
-                    Text(
-                        text = "Nama Mentor",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title),
-                        modifier = Modifier.padding(bottom = 3.dp)
-                    )
-                    Text(
-                        text = session.nama_mentor,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = poppinsFontFamily,
-                        color = colorResource(id = R.color.green_title)
-                    )
-                }
-                Button(
-                    onClick = { showDialog = true },
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.green)),
-                    modifier = Modifier
-                        .width(93.dp)
-                        .height(30.dp),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        text = "Gabung Live",
-                        color = Color.White,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = poppinsFontFamily
-                    )
-                }
-            }
-        }
-    }
-
-    if (showDialog) {
-        ConfirmationDialog(
-            message = "Apakah Kamu Mau Gabung Live?",
-            onDismissRequest = { showDialog = false },
-            onConfirm = { showDialog = false },
-            onCancel = { showDialog = false }
-        )
-    }
-}
 
 @Composable
 private fun NoJadwalCard() {
@@ -579,7 +563,7 @@ fun SelectKategori(navController: NavController, pelatihanList: List<Kategori>) 
     LazyRow(
         modifier = Modifier
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(pelatihanList) { pelatihan ->
             KategoriItem(
@@ -685,7 +669,6 @@ fun CardPelatihanBeranda(
     pelatihan: Kategori,
     bookmarkViewModel: BookmarkViewModel
 ) {
-    // Ambil status bookmark dari ViewModel
     val isBookmarkedMap by bookmarkViewModel.isBookmarkedMap.collectAsState()
     val isBookmarked = isBookmarkedMap[pelatihan.kategori_id] ?: false
 
